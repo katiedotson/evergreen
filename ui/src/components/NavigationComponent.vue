@@ -1,0 +1,146 @@
+<template>
+  <nav>
+    <i
+      v-if="!shown"
+      v-on:click="toggleShown"
+      v-on:keyup="keyboardEvent"
+      class="material-icons menu-icon menu"
+      tabindex="200"
+      >menu</i
+    >
+    <div class="nav-links" :class="!shown ? 'hide' : ''" @click="toggleShown">
+      <router-link to="/"><i class="material-icons menu-icon menu-item">home</i></router-link>
+      <router-link to="/about">About</router-link>
+      <router-link to="/posts">Posts</router-link>
+      <router-link to="/account" v-if="userIsAuth">Account</router-link>
+      <router-link to="/sign-in" v-if="!userIsAuth">Sign In</router-link>
+      <div v-if="userIsAuth" v-on:click="logOut" tabindex="1">
+        Log Out
+      </div>
+      <div v-on:click="toggleShown" v-on:keyup="keyboardEvent" tabindex="2">
+        <i class="material-icons menu-icon menu-item">close</i>
+      </div>
+    </div>
+  </nav>
+</template>
+
+<script lang="ts">
+import Vue from "vue";
+import EventUtils from "../utils/EventUtils";
+import baseAuth from "../auth/BaseAuth";
+
+export default Vue.extend({
+  data: function() {
+    return { shown: false, userIsAuth: false };
+  },
+  methods: {
+    toggleShown() {
+      this.shown = !this.shown;
+    },
+    keyboardEvent(event: KeyboardEvent) {
+      EventUtils.keyboardEvent(event, this.toggleShown, this);
+    },
+    getIsUserAuthenticated() {
+      return baseAuth.userIsAuth();
+    },
+    logOut() {
+      baseAuth.signOut();
+      if (this.$route.path.includes("account")) {
+        this.$router.push("/");
+        window.location.reload();
+      } else {
+        window.location.reload();
+      }
+    }
+  },
+  mounted() {
+    this.userIsAuth = this.getIsUserAuthenticated();
+  },
+  watch: {
+    $route(to, from) {
+      // const notPostsToPost = !(to.path.includes("post") && from.path.includes("posts"));
+      // const reload = to.path == from.path;
+      // if (notPostsToPost && !reload) this.toggleShown();
+    }
+  }
+});
+</script>
+
+<style lang="scss">
+nav {
+  div.nav-links {
+    position: fixed;
+    top: 0px;
+    right: 15px;
+    padding-bottom: 15px;
+    width: 100%;
+    font-size: x-large;
+    transition: width 0.6s ease-in-out;
+    background-image: linear-gradient(to left, $light-gray 10%, $light-gray 90%, $smoke 10%);
+    overflow: hidden;
+    height: 100%;
+    z-index: 1;
+    box-shadow: 8px 0px;
+
+    &.hide {
+      width: 0;
+    }
+
+    div,
+    a {
+      display: block;
+      margin-top: 10px;
+      text-align: end;
+      cursor: pointer;
+      transition: background-color 0.3s, width 0.3s;
+      background-color: $smoke;
+      color: $dark-blue-grey;
+      padding: 4px;
+      width: 75%;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 2px;
+
+      &:hover,
+      &:focus {
+        width: 80%;
+        outline: none;
+      }
+
+      &.router-link-exact-active {
+        :not(i) {
+          -webkit-text-decoration-line: overline; /* Safari */
+          text-decoration-line: overline;
+        }
+        background-color: $light-gray;
+        color: $dark-blue-grey;
+      }
+
+      a {
+        i {
+          position: relative;
+          top: 5px;
+        }
+      }
+    }
+  }
+
+  i {
+    cursor: pointer;
+
+    &.menu {
+      right: 15px;
+      position: fixed;
+      top: 25px;
+      background-color: $smoke;
+      padding: 5px;
+    }
+
+    &.menu-item {
+      position: relative;
+      top: 3px;
+      color: $dark-blue-grey;
+    }
+  }
+}
+</style>

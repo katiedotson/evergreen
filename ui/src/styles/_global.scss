@@ -1,0 +1,46 @@
+button {
+  color: $dark-blue-grey;
+  text-align: center;
+  text-decoration: none;
+  padding: 16px;
+  font-family: "Merriweater", serif;
+  border: 1px solid $dirty-snow;
+  &.submit {
+    background-color: $seafoam-green;
+  }
+}
+
+a.button {
+  display: block;
+  color: $dark-blue-grey;
+  margin-bottom: 8px;
+  padding: 6px;
+  font-family: "Merriweater", serif;
+  text-align: center;
+  text-decoration: none;
+  font-size: small;
+  border: 1px solid $dirty-snow;
+  &.edit {
+    background-color: $seafoam-green;
+  }
+  &.delete {
+    background-color: $light-gray;
+  }
+}
+
+div.button {
+  display: block;
+  color: $dark-blue-grey;
+  margin-bottom: 8px;
+  padding: 16px;
+  font-family: "Merriweater", serif;
+  text-align: center;
+  font-size: small;
+  border: 1px solid $dirty-snow;
+  &.edit {
+    background-color: $seafoam-green;
+  }
+  &.delete {
+    background-color: $light-gray;
+  }
+}

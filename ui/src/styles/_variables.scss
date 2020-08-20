@@ -1,0 +1,77 @@
+//MERRIWEATHER
+@import url("https://fonts.googleapis.com/css2?family=Merriweather:wght@300&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+@import url("https://fonts.googleapis.com/icon?family=Material+Icons");
+
+.material-icons {
+  font-family: "Material Icons";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px; /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Support for IE. */
+  font-feature-settings: "liga";
+}
+
+//COLORS
+$seafoam-green: rgb(206, 236, 186);
+$orange-yellow: #ffc300;
+$bright-orange: #ff5733;
+$firetruck: #c70039;
+$cranberry: #900c3f;
+$red-purple: #581845;
+$dark-blue-grey: #2c3e50;
+$snow: #ffffff;
+$smoke: #f4f6f6;
+$dirty-snow: #cccccc;
+$light-gray: #d6c4c4;
+
+//SCREEN SIZES
+$screen-sm-min: 576px;
+$screen-md-min: 768px;
+$screen-lg-min: 992px;
+$screen-xl-min: 1200px;
+
+// BREAKPOINTS
+// Small tablets and large smartphones (landscape view)
+@mixin sm {
+  @media (min-width: #{$screen-sm-min}) and (max-width:#{$screen-md-min}) {
+    @content;
+  }
+}
+
+// Small tablets (portrait view)
+@mixin md {
+  @media (min-width: #{$screen-md-min}) and (max-width:#{$screen-lg-min}) {
+    @content;
+  }
+}
+
+// Tablets and small desktops
+@mixin lg {
+  @media (min-width: #{$screen-lg-min}) and (max-width: #{$screen-xl-min}) {
+    @content;
+  }
+}
+
+// Large tablets and desktops
+@mixin xl {
+  @media (min-width: #{$screen-xl-min}) {
+    @content;
+  }
+}
