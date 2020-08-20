@@ -9,9 +9,7 @@ async function createListing(
     .db("sample_airbnb")
     .collection("listingsAndReviews")
     .insertOne(data);
-  console.log(
-    `New listing created with the following id: ${result.insertedId}`
-  );
+  console.log(`New listing created: ${result.insertedId}`);
 }
 
 async function c_createListing(data: Record<string, unknown>): Promise<void> {
