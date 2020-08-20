@@ -23,14 +23,22 @@ export default Vue.extend({
   },
   mounted() {
     this.loadPost();
-    this.loadAuthor();
   },
   methods: {
     loadPost() {
-      this.post = session.getPost(this.urlName);
+      session.getPost(this.urlName).then(post => {
+        if (post) {
+          this.post = post;
+          this.loadAuthor();
+        }
+      });
     },
     loadAuthor() {
-      this.author = session.getAuthor(this.post.authorId);
+      session.getAuthor(this.post.authorId).then(author => {
+        if (author) {
+          this.author = author;
+        }
+      });
     }
   },
   router

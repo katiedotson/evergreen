@@ -1,4 +1,4 @@
-import executeCall from "./mongoClient";
+import { executeInsert } from "./mongoClient";
 import { MongoClient } from "mongodb";
 
 async function createListing(
@@ -13,7 +13,7 @@ async function createListing(
 }
 
 async function c_createListing(data: Record<string, unknown>): Promise<void> {
-  executeCall(createListing, data);
+  executeInsert(createListing, data);
 }
 
 export default c_createListing;

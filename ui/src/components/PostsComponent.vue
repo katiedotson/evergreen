@@ -15,7 +15,7 @@ export default Vue.extend({
   },
   methods: {
     loadPosts() {
-      this.posts = session.getPosts();
+      session.getPosts().then(posts => (this.posts = posts));
     }
   },
   mounted() {

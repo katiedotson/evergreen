@@ -1,11 +1,14 @@
 import config from "../config/index";
-import { ExecutableMongoCallback } from "../types";
+import {
+  ExecutableMongoFindCallback,
+  ExecutableMongoInsertCallback,
+} from "../types";
 import { MongoClient } from "mongodb";
 
 const mongoConfig = config.mongo;
 
-async function executeCall(
-  cb: ExecutableMongoCallback,
+export async function executeInsert(
+  cb: ExecutableMongoInsertCallback,
   data: Record<string, unknown>
 ): Promise<void> {
   const client = new MongoClient(mongoConfig.uri);
@@ -19,5 +22,17 @@ async function executeCall(
     await client.close();
   }
 }
+export async function executeFind(
+  cb: ExecutableMongoFindCallback
+): Promise<any> {
+  const client = new MongoClient(mongoConfig.uri);
 
-export default executeCall;
+  try {
+    await client.connect();
+    return cb(client);
+  } catch (e) {
+    console.error(e);
+  } finally {
+    await client.close();
+  }
+}
