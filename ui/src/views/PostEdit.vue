@@ -1,19 +1,23 @@
 <template>
-  <div class="post-edit">
-    <PostEditor
-      :valueChanged="updateValue"
-      :titleChanged="updateTitle"
-      :taglineChanged="updateTagline"
-      :imgChanged="updateImg"
-      :post="postValue"
-      :title="titleValue"
-      :tagline="taglineValue"
-      :img="imgUrlValue"
-      v-if="!loading"
-    />
-    <div class="button-wrapper">
-      <button type="submit" @click="save" :class="{ active: isChangedSinceUpdate }">Submit</button>
-      <button>Preview</button>
+  <div>
+    <Loader :show="isLoading" />
+    <div class="post-edit" v-if="!isLoading">
+      <PostEditor
+        :valueChanged="updateValue"
+        :titleChanged="updateTitle"
+        :taglineChanged="updateTagline"
+        :imgChanged="updateImg"
+        :post="postValue"
+        :title="titleValue"
+        :tagline="taglineValue"
+        :img="imgUrlValue"
+      />
+      <div class="button-wrapper">
+        <button type="submit" @click="save" :class="{ active: isChangedSinceUpdate }">
+          Submit
+        </button>
+        <button>Preview</button>
+      </div>
     </div>
   </div>
 </template>
@@ -21,6 +25,7 @@
 <script lang="ts">
 import Vue from "vue";
 import PostEditor from "../components/PostEditorComponent.vue";
+import Loader from "../components/Loader.vue";
 import session from "../session";
 
 export default Vue.extend({
@@ -30,7 +35,8 @@ export default Vue.extend({
     }
   },
   components: {
-    PostEditor
+    PostEditor,
+    Loader
   },
   data() {
     return {
@@ -39,7 +45,7 @@ export default Vue.extend({
       taglineValue: "",
       imgUrlValue: "",
       isChangedSinceUpdate: false,
-      loading: true
+      isLoading: true
     };
   },
   mounted() {
@@ -87,7 +93,7 @@ export default Vue.extend({
           this.titleValue = post.title;
           this.taglineValue = post.tagline;
           this.imgUrlValue = post.img;
-          this.loading = false;
+          this.isLoading = false;
         } else {
           throw new Error("No post was found");
         }

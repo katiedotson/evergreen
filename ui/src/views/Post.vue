@@ -1,17 +1,25 @@
 <template>
-  <PostView v-bind:post="post" v-bind:author="author" />
+  <div>
+    <Loader :show="isLoading" />
+    <PostView v-bind:post="post" v-bind:author="author" v-if="!isLoading" />
+  </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import router from "../router";
 import PostView from "../components/PostViewComponent.vue";
+import Loader from "../components/Loader.vue";
 import { Post, User } from "../types";
 import session from "../session";
 
 export default Vue.extend({
-  data: function() {
-    return { post: {} as Post, author: {} as User | undefined };
+  data() {
+    return {
+      post: {} as Post,
+      author: {} as User | undefined,
+      isLoading: true
+    };
   },
   props: {
     urlName: {
@@ -19,7 +27,8 @@ export default Vue.extend({
     }
   },
   components: {
-    PostView
+    PostView,
+    Loader
   },
   mounted() {
     this.loadPost();
@@ -37,6 +46,7 @@ export default Vue.extend({
       session.getAuthor(this.post.authorId).then(author => {
         if (author) {
           this.author = author;
+          this.isLoading = false;
         }
       });
     }

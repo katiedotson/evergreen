@@ -1,28 +1,36 @@
 <template>
-  <div class="posts">
-    <PostCard v-for="(post, i) in posts" v-bind:key="i" v-bind:post="post" />
+  <div>
+    <Loader :show="isLoading" />
+    <div class="posts" v-if="!isLoading">
+      <PostCard v-for="(post, i) in posts" v-bind:key="i" v-bind:post="post" />
+    </div>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
 import { Post } from "../types";
 import PostCard from "../components/PostCardComponent.vue";
+import Loader from "./Loader.vue";
 import session from "../session";
 
 export default Vue.extend({
   data: function() {
-    return { posts: {} as Post[] };
+    return { posts: {} as Post[], isLoading: true };
   },
   methods: {
     loadPosts() {
-      session.getPosts().then(posts => (this.posts = posts));
+      session.getPosts().then(posts => {
+        this.posts = posts;
+        this.isLoading = false;
+      });
     }
   },
   mounted() {
     this.loadPosts();
   },
   components: {
-    PostCard
+    PostCard,
+    Loader
   }
 });
 </script>
