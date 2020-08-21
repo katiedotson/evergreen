@@ -49,20 +49,19 @@ class FacebookAuth implements PluginObject<any> {
    * returns Promise with true value if user is authenticated
    */
   signIn = () => {
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<UserData | undefined>((resolve, reject) => {
       if (this.isAuthorized) {
-        reject(true);
+        reject();
         return;
       }
       window.FB.login((res: any) => {
         this.isAuthorized = res.status == "connected";
         if (this.isAuthorized) {
           const userData = this.buildUserData(res);
-          session.storeUserData(userData);
-          resolve(this.isAuthorized);
+          resolve(userData);
           return;
         }
-        reject(this.isAuthorized);
+        reject();
       });
     });
   };

@@ -7,7 +7,7 @@
       <hr />
       <div class="body" v-html="post.body"></div>
       <hr />
-      <AuthorInfoCard :author="author" />
+      <AuthorInfoCard :author="author" v-if="author" />
     </div>
   </div>
 </template>

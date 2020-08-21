@@ -1,5 +1,8 @@
 <template>
-  <PostView v-bind:post="post" v-bind:author="author" />
+  <div>
+    <PostView v-bind:post="post" v-bind:author="undefined" />
+    <button class="deletePost" @click="deletePost">Delete</button>
+  </div>
 </template>
 
 <script lang="ts">
@@ -11,7 +14,7 @@ import session from "../session";
 
 export default Vue.extend({
   data: function() {
-    return { post: {} as Post, author: {} as User | undefined };
+    return { post: {} as Post };
   },
   props: {
     urlName: {
@@ -29,14 +32,13 @@ export default Vue.extend({
       session.getPost(this.urlName).then(post => {
         if (post) {
           this.post = post;
-          this.loadAuthor();
         }
       });
     },
-    loadAuthor() {
-      session.getAuthor(this.post.authorId).then(author => {
-        if (author) {
-          this.author = author;
+    deletePost() {
+      session.deletePost(this.urlName).then(res => {
+        if (res) {
+          router.push("/account#posts");
         }
       });
     }
@@ -44,3 +46,12 @@ export default Vue.extend({
   router
 });
 </script>
+
+<style lang="scss">
+button.deletePost {
+  position: sticky;
+  bottom: 8px;
+  right: 0;
+  background-color: $light-gray;
+}
+</style>

@@ -10,9 +10,9 @@ export class BaseAuth {
   signIn(platform: string): Promise<boolean> {
     switch (platform) {
       case "facebook": {
-        return facebookAuth.signIn().then(res => {
-          if (res) {
-            return session.loadUserData();
+        return facebookAuth.signIn().then(userData => {
+          if (userData) {
+            return session.loadUserData(userData, platform);
           } else {
             return new Promise((resolve, reject) => {
               reject(false);
@@ -23,7 +23,7 @@ export class BaseAuth {
       case "google": {
         return googleAuth.signIn().then(res => {
           if (res) {
-            return session.loadUserData();
+            return session.loadUserData(res, platform);
           } else {
             return new Promise((resolve, reject) => {
               reject(false);

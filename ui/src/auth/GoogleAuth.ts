@@ -61,7 +61,7 @@ class GoogleAuth implements PluginObject<any> {
    * returns Promise with true value if user is authenticated
    */
   signIn = () => {
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<UserData | undefined>((resolve, reject) => {
       if (!this.authInstance) {
         reject(this.isAuthorized);
         return;
@@ -74,8 +74,7 @@ class GoogleAuth implements PluginObject<any> {
         .then((googleUser: any) => {
           this.isAuthorized = this.authInstance.isSignedIn.get();
           const userData = this.buildUserData(googleUser);
-          session.storeUserData(userData);
-          resolve(this.isAuthorized);
+          resolve(userData);
         })
         .catch((error: Error) => {
           reject(error);
@@ -94,7 +93,7 @@ class GoogleAuth implements PluginObject<any> {
   getAuthCode = (): Promise<any> => {
     return new Promise((resolve, reject) => {
       if (!this.authInstance) {
-        reject(false);
+        reject();
         return;
       }
       this.authInstance

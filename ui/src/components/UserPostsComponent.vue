@@ -24,14 +24,19 @@ export default Vue.extend({
     };
   },
   mounted() {
-    this.posts = session.getUserPosts();
+    session.getUserPosts().then(posts => {
+      this.posts = posts;
+    });
   },
   components: {
     AccountHeading
   },
   methods: {
     deletePost(urlName: string) {
-      console.log(urlName);
+      session.deletePost(urlName).then(success => {
+        if (success) {
+        }
+      });
     }
   }
 });
@@ -74,7 +79,7 @@ a.new-post-button {
   text-decoration: none;
   text-align: center;
   padding: 16px;
-  max-width: 546px;
+  max-width: 334px;
   display: block;
   margin-left: auto;
   margin-right: auto;
