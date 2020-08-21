@@ -9,8 +9,10 @@
       :title="titleValue"
       :img="imgUrlValue"
     />
-    <button type="submit" @click="save" :class="{ active: isChangedSinceUpdate }">Submit</button>
-    <button>Preview</button>
+    <div class="button-wrapper">
+      <button type="submit" @click="save" :class="{ active: isChangedSinceUpdate }">Submit</button>
+      <button>Preview</button>
+    </div>
   </div>
 </template>
 

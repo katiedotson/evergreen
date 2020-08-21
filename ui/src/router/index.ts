@@ -45,6 +45,12 @@ const routes: Array<RouteConfig> = [
     path: "/create",
     name: "Create",
     component: () => import("../views/PostCreate.vue")
+  },
+  {
+    path: "/delete-post/:urlName",
+    props: true,
+    name: "Delete",
+    component: () => import("../views/PostDelete.vue")
   }
 ];
 

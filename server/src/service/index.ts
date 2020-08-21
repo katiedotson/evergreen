@@ -115,15 +115,12 @@ export default {
     };
     return this.executeInsert(update, post);
   },
-  async deletePost(post: Post): Promise<any> {
+  async deletePost(urlName: string): Promise<any> {
     const deletePost = async (client: MongoClient, post: Post) => {
-      await client
-        .db("evergreen")
-        .collection("posts")
-        .deleteOne({ urlName: post.urlName });
+      await client.db("evergreen").collection("posts").deleteOne({ urlName });
       return post;
     };
-    return this.executeInsert(deletePost, post);
+    return this.executeInsert(deletePost, urlName);
   },
   async executeInsert(
     cb: ExecutableMongoInsertCallback,

@@ -12,6 +12,7 @@ export default {
     return new Promise(resolve => {
       axios.get(`getUserPosts?authorId=${authorId}`).then(res => {
         if (res.status == 200) {
+          console.log(res.data);
           resolve(res.data);
         } else resolve([]);
       });
@@ -87,6 +88,22 @@ export default {
           method: "POST",
           url: "savePost",
           data: post
+        })
+        .then(res => {
+          if (res.status == 200) {
+            resolve(res.data);
+          } else {
+            resolve(undefined);
+          }
+        });
+    });
+  },
+  deletePost(urlName: string): Promise<any> {
+    return new Promise(resolve => {
+      axios
+        .request({
+          method: "DELETE",
+          url: `deletePost?urlName=${urlName}`
         })
         .then(res => {
           if (res.status == 200) {

@@ -36,7 +36,7 @@ export default {
             ["bold", "italic", "underline", "strike"],
             ["blockquote", "code-block"],
             [{ list: "ordered" }, { list: "bullet" }, { align: [] }],
-            ["link", "image", "video"],
+            ["link", "image"],
             [{ direction: "rtl" }]
           ]
         },
@@ -49,7 +49,7 @@ export default {
 
 <style lang="scss">
 .ql-editor {
-  height: calc(100vh - 360px);
+  height: calc(100vh - 390px);
   font-family: "Merriweather";
 }
 </style>

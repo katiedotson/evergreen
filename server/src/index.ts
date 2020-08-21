@@ -76,6 +76,19 @@ app.get("/getPosts", (req, res) => {
     });
 });
 
+app.delete("/deletePost", (req, res) => {
+  const urlName = String(req.query.urlName);
+  services
+    .deletePost(urlName)
+    .then(() => {
+      res.status(200).send("OK");
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send(error);
+    });
+});
+
 app.post("/savePost", (req, res) => {
   const post = req.body;
   const currentUrlName = post.urlName;

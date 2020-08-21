@@ -68,7 +68,7 @@ export default {
   },
   async getUserPosts(): Promise<Post[]> {
     const authorId = this.getUser()?.authorId;
-    if (!authorId) return [];
+    if (authorId === undefined) return [];
     return api.getUserPosts(authorId);
   },
   async getPost(urlName: string): Promise<Post | undefined> {
@@ -104,5 +104,8 @@ export default {
       };
     }
     throw new Error("No author could be found in the session");
+  },
+  async deletePost(urlName: string): Promise<any> {
+    return api.deletePost(urlName);
   }
 };
