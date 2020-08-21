@@ -1,12 +1,15 @@
 <template>
-  <div>
+  <div class="post-create">
     <PostEditor
       :valueChanged="updateValue"
       :titleChanged="updateTitle"
+      :taglineChanged="updateTagline"
+      :imgChanged="updateImg"
       :post="postValue"
       :title="titleValue"
+      :img="imgUrlValue"
     />
-    <button type="submit" @click="save">Submit</button>
+    <button type="submit" @click="save" :class="{ active: isChangedSinceUpdate }">Submit</button>
     <button>Preview</button>
   </div>
 </template>
@@ -23,19 +26,58 @@ export default Vue.extend({
   data() {
     return {
       postValue: "",
-      titleValue: ""
+      titleValue: "",
+      taglineValue: "",
+      imgUrlValue: "",
+      urlName: "",
+      isChangedSinceUpdate: false
     };
   },
   methods: {
     updateValue(a: string) {
       this.postValue = a;
+      this.updateIsValueChanged();
     },
     updateTitle(title: string) {
       this.titleValue = title;
+      this.updateIsValueChanged();
+    },
+    updateTagline(tagline: string) {
+      this.taglineValue = tagline;
+      this.updateIsValueChanged();
+    },
+    updateImg(url: string) {
+      this.imgUrlValue = url;
+      this.updateIsValueChanged();
+    },
+    updateIsValueChanged() {
+      this.isChangedSinceUpdate = true;
     },
     save() {
-      session.savePost(this.titleValue, this.postValue).catch(e => console.error(e));
+      session
+        .savePost(
+          this.titleValue,
+          this.postValue,
+          this.taglineValue,
+          this.imgUrlValue,
+          this.urlName
+        )
+        .then(res => {
+          if (!res) throw new Error("No response ");
+          console.log(res);
+          this.urlName = res.urlName;
+          this.isChangedSinceUpdate = false;
+        })
+        .catch(e => console.error(e));
     }
   }
 });
 </script>
+
+<style lang="scss">
+div.post-create {
+  button.active {
+    background-color: green;
+  }
+}
+</style>

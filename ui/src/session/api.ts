@@ -90,8 +90,7 @@ export default {
         })
         .then(res => {
           if (res.status == 200) {
-            console.log(res.data);
-            resolve(post);
+            resolve(res.data);
           } else {
             resolve(undefined);
           }

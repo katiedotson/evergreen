@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import services from "./service";
 import bodyParser from "body-parser";
+import util from "./util";
 
 const jsonParser = bodyParser.json();
 const app = express();
@@ -77,16 +78,31 @@ app.get("/getPosts", (req, res) => {
 
 app.post("/savePost", (req, res) => {
   const post = req.body;
-  services
-    .savePost(post)
-    .then((result) => {
-      console.log("result in app", result);
-      res.status(200).send(result);
-    })
-    .catch((error) => {
-      console.error(error);
-      res.status(500).send(error);
-    });
+  const currentUrlName = post.urlName;
+  const wouldBeUrlName = util.createUrlNameFromTitle(post.title);
+
+  if (currentUrlName == "") {
+    post.urlName = wouldBeUrlName;
+    services
+      .saveNewPost(post)
+      .then((result) => {
+        res.status(200).send(result);
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send(error);
+      });
+  } else {
+    services
+      .updatePost(post, wouldBeUrlName)
+      .then((result) => {
+        res.status(200).send(result);
+      })
+      .catch((error) => {
+        console.error(error);
+        res.status(500).send(error);
+      });
+  }
 });
 
 app.listen(port, () => {

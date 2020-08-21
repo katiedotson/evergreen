@@ -87,12 +87,43 @@ export default {
     }
     return results;
   },
-  async savePost(post: Post): Promise<any> {
+  async saveNewPost(post: Post): Promise<any> {
     const save = async (client: MongoClient, post: Post) => {
       await client.db("evergreen").collection("posts").insertOne(post);
       return post;
     };
     return this.executeInsert(save, post);
+  },
+  async updatePost(post: Post, wouldBeUrlName: string): Promise<any> {
+    const update = async (client: MongoClient, post: Post) => {
+      const newValues = {
+        $set: {
+          title: post.title,
+          tagline: post.tagline,
+          body: post.body,
+          urlName: wouldBeUrlName,
+          img: post.img,
+          relevance: post.relevance,
+        },
+      };
+      await client
+        .db("evergreen")
+        .collection("posts")
+        .updateOne({ urlName: post.urlName }, newValues);
+      post.urlName = wouldBeUrlName;
+      return post;
+    };
+    return this.executeInsert(update, post);
+  },
+  async deletePost(post: Post): Promise<any> {
+    const deletePost = async (client: MongoClient, post: Post) => {
+      await client
+        .db("evergreen")
+        .collection("posts")
+        .deleteOne({ urlName: post.urlName });
+      return post;
+    };
+    return this.executeInsert(deletePost, post);
   },
   async executeInsert(
     cb: ExecutableMongoInsertCallback,

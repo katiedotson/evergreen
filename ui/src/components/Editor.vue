@@ -49,7 +49,7 @@ export default {
 
 <style lang="scss">
 .ql-editor {
-  height: calc(100vh - 200px);
+  height: calc(100vh - 360px);
   font-family: "Merriweather";
 }
 </style>

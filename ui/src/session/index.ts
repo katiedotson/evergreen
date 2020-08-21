@@ -74,20 +74,32 @@ export default {
   async getPost(urlName: string): Promise<Post | undefined> {
     return api.getPost(urlName);
   },
-  async savePost(postTitle: string, postBody: string): Promise<Post | undefined> {
-    const post = this.createPost(postTitle, postBody);
+  async savePost(
+    postTitle: string,
+    postBody: string,
+    postTagline: string,
+    imgUrl: string,
+    urlName: string
+  ): Promise<Post | undefined> {
+    const post = this.createPost(postTitle, postBody, postTagline, imgUrl, urlName);
     return api.savePost(post);
   },
-  createPost(postTitle: string, postBody: string): Post {
+  createPost(
+    postTitle: string,
+    postBody: string,
+    postTagline: string,
+    imgUrl: string,
+    url: string
+  ): Post {
     const authorId = this.getUser()?.authorId;
     if (authorId !== undefined) {
       return {
         title: postTitle,
         body: postBody,
         relevance: 0,
-        tagline: "",
-        img: "",
-        urlName: "",
+        tagline: postTagline,
+        img: imgUrl,
+        urlName: url,
         authorId
       };
     }
