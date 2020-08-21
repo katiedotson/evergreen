@@ -1,13 +1,16 @@
 <template>
   <div>
     <AccountHeading name="Posts" />
-    <a href="../create" class="new-post-button">New Post</a>
-    <div class="user-post" v-for="post in posts" v-bind:key="post.title">
-      <div class="title">{{ post.title }}</div>
-      <a class="url-name" :href="'../post/' + post.urlName">{{ post.urlName }}</a>
-      <div class="edit-button-wrapper">
-        <a class="button edit" :href="'../edit-post/' + post.urlName">Edit</a>
-        <a class="button delete" :href="'../delete-post/' + post.urlName">Delete</a>
+    <Loader :show="isLoading" />
+    <div v-if="!isLoading">
+      <a href="../create" class="new-post-button">New Post</a>
+      <div class="user-post" v-for="post in posts" v-bind:key="post.title">
+        <div class="title">{{ post.title }}</div>
+        <a class="url-name" :href="'../post/' + post.urlName">{{ post.urlName }}</a>
+        <div class="edit-button-wrapper">
+          <a class="button edit" :href="'../edit-post/' + post.urlName">Edit</a>
+          <a class="button delete" :href="'../delete-post/' + post.urlName">Delete</a>
+        </div>
       </div>
     </div>
   </div>
@@ -16,28 +19,24 @@
 <script lang="ts">
 import Vue from "vue";
 import AccountHeading from "./AccountHeading.vue";
+import Loader from "./Loader.vue";
 import session from "../session";
 export default Vue.extend({
   data() {
     return {
-      posts: {}
+      posts: {},
+      isLoading: true
     };
   },
   mounted() {
     session.getUserPosts().then(posts => {
       this.posts = posts;
+      this.isLoading = false;
     });
   },
   components: {
-    AccountHeading
-  },
-  methods: {
-    deletePost(urlName: string) {
-      session.deletePost(urlName).then(success => {
-        if (success) {
-        }
-      });
-    }
+    AccountHeading,
+    Loader
   }
 });
 </script>

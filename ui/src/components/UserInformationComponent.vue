@@ -1,7 +1,8 @@
 <template>
   <div>
     <AccountHeading name="Information" />
-    <div class="form">
+    <Loader :show="isLoading" />
+    <div class="form" v-if="!isLoading">
       <div class="field-wrapper" :class="{ 'form-group--error': $v.author.email.$error }">
         <label for="email">Email</label>
         <input id="email" v-model.trim="$v.author.email.$model" />
@@ -62,21 +63,24 @@
 <script lang="ts">
 import Vue from "vue";
 import AccountHeading from "./AccountHeading.vue";
+import Loader from "./Loader.vue";
+import AuthorCardModal from "./AuthorCardModal.vue";
 import { validationMixin } from "vuelidate";
 import { required, minLength, maxLength, email } from "vuelidate/lib/validators";
-import AuthorCardModal from "./AuthorCardModal.vue";
 import { HTMLInputEvent } from "@/types";
 import session from "../session";
 
 export default Vue.extend({
   components: {
     AccountHeading,
-    AuthorCardModal
+    AuthorCardModal,
+    Loader
   },
   data() {
     return {
       showAuthorCard: false,
-      author: {}
+      author: {},
+      isLoading: true
     };
   },
   mounted() {
@@ -107,6 +111,7 @@ export default Vue.extend({
     },
     loadAuthor() {
       this.author = session.getUser();
+      this.isLoading = false;
     },
     processFile(event: HTMLInputEvent) {
       if (event && event.target && event.target.files) {
@@ -125,6 +130,23 @@ export default Vue.extend({
 </script>
 
 <style lang="scss">
+div.loader {
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
 div.form {
   margin-top: 36px;
   max-width: 560px;

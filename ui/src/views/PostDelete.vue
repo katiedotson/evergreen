@@ -1,7 +1,10 @@
 <template>
   <div>
-    <PostView v-bind:post="post" v-bind:author="undefined" />
-    <button class="deletePost" @click="deletePost">Delete</button>
+    <Loader :show="isLoading" />
+    <div v-if="!isLoading">
+      <PostView v-bind:post="post" v-bind:author="undefined" />
+      <button class="deletePost" @click="deletePost">Delete</button>
+    </div>
   </div>
 </template>
 
@@ -9,12 +12,13 @@
 import Vue from "vue";
 import router from "../router";
 import PostView from "../components/PostViewComponent.vue";
+import Loader from "../components/Loader.vue";
 import { Post, User } from "../types";
 import session from "../session";
 
 export default Vue.extend({
   data: function() {
-    return { post: {} as Post };
+    return { post: {} as Post, isLoading: true };
   },
   props: {
     urlName: {
@@ -22,7 +26,8 @@ export default Vue.extend({
     }
   },
   components: {
-    PostView
+    PostView,
+    Loader
   },
   mounted() {
     this.loadPost();
@@ -32,6 +37,7 @@ export default Vue.extend({
       session.getPost(this.urlName).then(post => {
         if (post) {
           this.post = post;
+          this.isLoading = false;
         }
       });
     },
