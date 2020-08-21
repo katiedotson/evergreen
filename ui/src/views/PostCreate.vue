@@ -6,7 +6,7 @@
       :post="postValue"
       :title="titleValue"
     />
-    <button type="submit">Submit</button>
+    <button type="submit" @click="save">Submit</button>
     <button>Preview</button>
   </div>
 </template>
@@ -14,6 +14,7 @@
 <script lang="ts">
 import Vue from "vue";
 import PostEditor from "../components/PostEditorComponent.vue";
+import session from "../session";
 
 export default Vue.extend({
   components: {
@@ -31,6 +32,9 @@ export default Vue.extend({
     },
     updateTitle(title: string) {
       this.titleValue = title;
+    },
+    save() {
+      session.savePost(this.titleValue, this.postValue).catch(e => console.error(e));
     }
   }
 });

@@ -1,10 +1,13 @@
 import express from "express";
 import cors from "cors";
 import services from "./service";
+import bodyParser from "body-parser";
 
+const jsonParser = bodyParser.json();
 const app = express();
 const port = 5000;
 
+app.use(jsonParser);
 app.use(cors());
 
 app.get("/getUserPosts", (req, res) => {
@@ -65,6 +68,20 @@ app.get("/getPosts", (req, res) => {
     .getRelevantPosts()
     .then((postArray) => {
       res.json(postArray);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send(error);
+    });
+});
+
+app.post("/savePost", (req, res) => {
+  const post = req.body;
+  services
+    .savePost(post)
+    .then((result) => {
+      console.log("result in app", result);
+      res.status(200).send(result);
     })
     .catch((error) => {
       console.error(error);

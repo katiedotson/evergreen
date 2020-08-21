@@ -1,4 +1,9 @@
-import { Post, User, ExecutableMongoFindCallback } from "../types";
+import {
+  Post,
+  User,
+  ExecutableMongoFindCallback,
+  ExecutableMongoInsertCallback,
+} from "../types";
 // import { executeFind } from "./mongoClient";
 import { MongoClient } from "mongodb";
 import config from "../config/index";
@@ -64,10 +69,10 @@ export default {
    *
    */
   async getRelevantPosts(): Promise<Post[]> {
-    const func = (client: MongoClient): Promise<Post[]> => {
+    const getPosts = (client: MongoClient): Promise<Post[]> => {
       return client.db("evergreen").collection("posts").find({}).toArray();
     };
-    return this.executeFind(func);
+    return this.executeFind(getPosts);
   },
   async executeFind(cb: ExecutableMongoFindCallback): Promise<any> {
     const client = new MongoClient(mongoConfig.uri);
@@ -81,5 +86,28 @@ export default {
       await client.close();
     }
     return results;
+  },
+  async savePost(post: Post): Promise<any> {
+    const save = async (client: MongoClient, post: Post) => {
+      await client.db("evergreen").collection("posts").insertOne(post);
+      return post;
+    };
+    return this.executeInsert(save, post);
+  },
+  async executeInsert(
+    cb: ExecutableMongoInsertCallback,
+    data: Record<string, unknown>
+  ): Promise<any> {
+    const client = new MongoClient(mongoConfig.uri);
+    let result = {};
+    try {
+      await client.connect();
+      result = await cb(client, data);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      await client.close();
+    }
+    return result;
   },
 };

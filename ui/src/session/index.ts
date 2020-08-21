@@ -73,5 +73,24 @@ export default {
   },
   async getPost(urlName: string): Promise<Post | undefined> {
     return api.getPost(urlName);
+  },
+  async savePost(postTitle: string, postBody: string): Promise<Post | undefined> {
+    const post = this.createPost(postTitle, postBody);
+    return api.savePost(post);
+  },
+  createPost(postTitle: string, postBody: string): Post {
+    const authorId = this.getUser()?.authorId;
+    if (authorId !== undefined) {
+      return {
+        title: postTitle,
+        body: postBody,
+        relevance: 0,
+        tagline: "",
+        img: "",
+        urlName: "",
+        authorId
+      };
+    }
+    throw new Error("No author could be found in the session");
   }
 };
