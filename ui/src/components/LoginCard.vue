@@ -28,14 +28,16 @@ a.login-card {
   position: fixed;
   bottom: 15px;
   right: 15px;
-  background-color: $light-gray;
   height: 30px;
+  line-height: 30px;
   width: 100px;
-  color: $dark-blue-grey;
-  border-radius: 4px;
+  color: $snow;
+  background-color: $dark-blue-grey;
   text-align: center;
   text-decoration: none;
-  line-height: 30px;
   font-family: "Open Sans", sans-serif;
+  text-transform: uppercase;
+  font-size: large;
+  font-weight: bold;
 }
 </style>

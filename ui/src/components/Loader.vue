@@ -22,7 +22,7 @@ div.loader {
   height: 120px;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 40%;
+  margin-top: 20%;
   -webkit-animation: spin 2s linear infinite;
   animation: spin 2s linear infinite;
 }

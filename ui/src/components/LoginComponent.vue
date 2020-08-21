@@ -1,20 +1,23 @@
 <template>
-  <div class="account-creation">
-    <div class="wrapper" v-if="!isAuth">
-      <div id="login-logo"></div>
-      <div id="google" class="login-button" v-on:click="authenticateGmail">
-        <div class="login-icon g-icon"></div>
-        Sign in with Google
+  <div>
+    <ErrorCard :show="showError" :message="errorMessage" />
+    <div class="account-creation">
+      <div class="wrapper" v-if="!isAuth">
+        <div id="login-logo"></div>
+        <div id="google" class="login-button" v-on:click="authenticateGmail">
+          <div class="login-icon g-icon"></div>
+          Sign in with Google
+        </div>
+        <div id="facebook" class="login-button" v-on:click="authenticateFacebook">
+          <div class="login-icon fb-icon"></div>
+          Sign in with Facebook
+        </div>
       </div>
-      <div id="facebook" class="login-button" v-on:click="authenticateFacebook">
-        <div class="login-icon fb-icon"></div>
-        Sign in with Facebook
+      <br />
+      <div class="wrapper" v-if="isAuth">
+        <div id="login-logo"></div>
+        <div class="login-button logout" v-on:click="logOut">Logout</div>
       </div>
-    </div>
-    <br />
-    <div class="wrapper" v-if="isAuth">
-      <div id="login-logo"></div>
-      <div class="login-button logout" v-on:click="logOut">Logout</div>
     </div>
   </div>
 </template>
@@ -22,12 +25,15 @@
 <script lang="ts">
 import Vue from "vue";
 import baseAuth from "../auth/BaseAuth";
+import ErrorCard from "./ErrorCard.vue";
 
 export default Vue.extend({
   data: function() {
     return {
       isAuth: false,
-      baseAuth: baseAuth
+      baseAuth: baseAuth,
+      showError: false,
+      errorMessage: ""
     };
   },
   mounted() {
@@ -40,16 +46,16 @@ export default Vue.extend({
     authenticateFacebook() {
       this.signIn("facebook");
     },
-    signOut() {
-      this.baseAuth.signOut();
-    },
     signIn(platform: string) {
       this.baseAuth
         .signIn(platform)
         .then((isAuth: boolean) => {
           this.isAuth = isAuth;
+          if (!isAuth) throw new Error();
         })
         .catch((error: Error) => {
+          this.showError = true;
+          this.errorMessage = "Could not sign in at this time.";
           console.error(error);
         });
     },
@@ -58,11 +64,17 @@ export default Vue.extend({
         .signOut()
         .then((isAuth: boolean) => {
           this.isAuth = isAuth;
+          if (isAuth) throw new Error();
         })
         .catch((error: Error) => {
+          this.showError = true;
+          this.errorMessage = "Could not log out at this time.";
           console.error(error);
         });
     }
+  },
+  components: {
+    ErrorCard
   }
 });
 </script>

@@ -1,5 +1,6 @@
 <template>
   <div class="account">
+    <ErrorCard :show="showError" :message="errorMessage" />
     <ul>
       <li>
         <a href="#information" :class="{ selected: selectedItem == 'information' }">Information</a>
@@ -18,18 +19,23 @@ import Vue from "vue";
 import { User } from "../types/index";
 import UserInformationComponent from "./UserInformationComponent.vue";
 import UserPostsComponent from "./UserPostsComponent.vue";
+import ErrorCard from "./ErrorCard.vue";
 import session from "../session";
 
 export default Vue.extend({
   data: function() {
     return {
       userData: {} as User,
-      selectedItem: "information"
+      selectedItem: "information",
+      errorMessage: "Hmm. Something went wrong.",
+      showError: false
     };
   },
-  computed: {},
   mounted() {
     this.userData = session.getUser();
+    if (!this.userData) {
+      this.showError = true;
+    }
     this.selectedItem = this.getSelection();
   },
   methods: {
@@ -44,7 +50,8 @@ export default Vue.extend({
   },
   components: {
     UserInformationComponent,
-    UserPostsComponent
+    UserPostsComponent,
+    ErrorCard
   }
 });
 </script>

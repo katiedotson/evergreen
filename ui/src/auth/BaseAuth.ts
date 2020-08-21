@@ -21,7 +21,7 @@ export class BaseAuth {
         });
       }
       case "google": {
-        return googleAuth.signIn().then(res => {
+        return googleAuth.signIn().then((res: any) => {
           if (res) {
             return session.loadUserData(res, platform);
           } else {

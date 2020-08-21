@@ -1,5 +1,6 @@
 <template>
   <div>
+    <ErrorCard :show="showError" :message="errorMessage" />
     <Loader :show="isLoading" />
     <div class="posts" v-if="!isLoading">
       <PostCard v-for="(post, i) in posts" v-bind:key="i" v-bind:post="post" />
@@ -10,19 +11,32 @@
 import Vue from "vue";
 import { Post } from "../types";
 import PostCard from "../components/PostCardComponent.vue";
+import ErrorCard from "../components/ErrorCard.vue";
 import Loader from "./Loader.vue";
 import session from "../session";
 
 export default Vue.extend({
-  data: function() {
-    return { posts: {} as Post[], isLoading: true };
+  data() {
+    return {
+      posts: {} as Post[],
+      isLoading: true,
+      errorMessage: "",
+      showError: false
+    };
   },
   methods: {
     loadPosts() {
-      session.getPosts().then(posts => {
-        this.posts = posts;
-        this.isLoading = false;
-      });
+      session
+        .getPosts()
+        .then(posts => {
+          this.posts = posts;
+          this.isLoading = false;
+        })
+        .catch(err => {
+          this.errorMessage = "Hmm. Something went wrong.";
+          this.isLoading = false;
+          this.showError = true;
+        });
     }
   },
   mounted() {
@@ -30,7 +44,8 @@ export default Vue.extend({
   },
   components: {
     PostCard,
-    Loader
+    Loader,
+    ErrorCard
   }
 });
 </script>

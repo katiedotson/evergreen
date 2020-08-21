@@ -17,9 +17,6 @@
       <div v-if="userIsAuth" v-on:click="logOut" tabindex="1">
         Log Out
       </div>
-      <div v-on:click="toggleShown" v-on:keyup="keyboardEvent" tabindex="2">
-        <i class="material-icons menu-icon menu-item">close</i>
-      </div>
     </div>
   </nav>
 </template>
@@ -69,6 +66,8 @@ export default Vue.extend({
 <style lang="scss">
 nav {
   div.nav-links {
+    font-family: "Merriweather", serif;
+    text-transform: lowercase;
     position: fixed;
     top: 0px;
     right: 15px;
@@ -76,7 +75,7 @@ nav {
     width: 100%;
     font-size: x-large;
     transition: width 0.6s ease-in-out;
-    background-image: linear-gradient(to left, $light-gray 10%, $light-gray 90%, $smoke 10%);
+    background-image: linear-gradient(to left, $forestgreen 10%, $forestgreen 90%, $smoke 10%);
     overflow: hidden;
     height: 100%;
     z-index: 1;
@@ -94,15 +93,13 @@ nav {
       cursor: pointer;
       transition: background-color 0.3s, width 0.3s;
       background-color: $smoke;
-      color: $dark-blue-grey;
+      color: $forestgreen;
       padding: 4px;
       width: 75%;
-      font-weight: bold;
       text-decoration: none;
-      border-radius: 2px;
 
-      &:hover,
-      &:focus {
+      &:hover:not(.router-link-exact-active),
+      &:focus:not(.router-link-exact-active) {
         width: 80%;
         outline: none;
       }
@@ -112,8 +109,9 @@ nav {
           -webkit-text-decoration-line: overline; /* Safari */
           text-decoration-line: overline;
         }
-        background-color: $light-gray;
-        color: $dark-blue-grey;
+        background-color: $forestgreen;
+        color: $smoke;
+        cursor: initial;
       }
 
       a {
@@ -139,7 +137,6 @@ nav {
     &.menu-item {
       position: relative;
       top: 3px;
-      color: $dark-blue-grey;
     }
   }
 }

@@ -52,23 +52,29 @@ export default {
     return api.getPosts();
   },
   async loadUserData(userData: UserData, platform: string): Promise<boolean> {
-    return new Promise(resolve => {
-      api.getUser(userData, platform).then(user => {
-        if (userData && user) {
-          this.storeUserData(userData);
-          this.storeUser(user);
-          window.location.reload();
-          resolve(true);
-          return;
-        } else {
-          throw new Error("");
-        }
-      });
+    return new Promise((resolve, reject) => {
+      api
+        .getUser(userData, platform)
+        .then(user => {
+          if (userData && user) {
+            this.storeUserData(userData);
+            this.storeUser(user);
+            window.location.reload();
+            resolve(true);
+            return;
+          } else {
+            reject(false);
+          }
+        })
+        .catch(() => reject(false));
     });
   },
   async getUserPosts(): Promise<Post[]> {
     const authorId = this.getUser()?.authorId;
-    if (authorId === undefined) return [];
+    if (authorId === undefined)
+      return new Promise<any>((resolve, reject) => {
+        reject([]);
+      });
     return api.getUserPosts(authorId);
   },
   async getPost(urlName: string): Promise<Post | undefined> {
