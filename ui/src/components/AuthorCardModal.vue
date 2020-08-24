@@ -1,7 +1,7 @@
 <template>
   <div class="modal" v-if="show">
     <div class="modal-content-wrapper">
-      <AuthorInfoCard :author="author" />
+      <AuthorInfoCard :author="user" />
       <div class="close" v-on:click="$emit('close-modal')">Close</div>
     </div>
   </div>
@@ -12,7 +12,7 @@ import Vue from "vue";
 import AuthorInfoCard from "./AuthorInfoCard.vue";
 export default Vue.extend({
   props: {
-    author: {
+    user: {
       type: Object
     },
     show: {

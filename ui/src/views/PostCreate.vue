@@ -1,17 +1,22 @@
 <template>
-  <div class="post-create">
-    <PostEditor
-      :valueChanged="updateValue"
-      :titleChanged="updateTitle"
-      :taglineChanged="updateTagline"
-      :imgChanged="updateImg"
-      :post="postValue"
-      :title="titleValue"
-      :img="imgUrlValue"
-    />
-    <div class="button-wrapper">
-      <button type="submit" @click="save" :class="{ active: isChangedSinceUpdate }">Submit</button>
-      <button>Preview</button>
+  <div>
+    <ErrorCard :show="showError" :message="errorMessage" />
+    <div class="post-create">
+      <PostEditor
+        :valueChanged="updateValue"
+        :titleChanged="updateTitle"
+        :taglineChanged="updateTagline"
+        :imgChanged="updateImg"
+        :post="postValue"
+        :title="titleValue"
+        :img="imgUrlValue"
+      />
+      <div class="button-wrapper">
+        <button type="submit" @click="save" :class="{ active: isChangedSinceUpdate }">
+          Submit
+        </button>
+        <button>Preview</button>
+      </div>
     </div>
   </div>
 </template>
@@ -19,11 +24,13 @@
 <script lang="ts">
 import Vue from "vue";
 import PostEditor from "../components/PostEditorComponent.vue";
+import ErrorCard from "../components/ErrorCard.vue";
 import session from "../session";
 
 export default Vue.extend({
   components: {
-    PostEditor
+    PostEditor,
+    ErrorCard
   },
   data() {
     return {
@@ -32,7 +39,9 @@ export default Vue.extend({
       taglineValue: "",
       imgUrlValue: "",
       urlName: "",
-      isChangedSinceUpdate: false
+      isChangedSinceUpdate: false,
+      showError: false,
+      errorMessage: ""
     };
   },
   methods: {
@@ -65,12 +74,15 @@ export default Vue.extend({
           this.urlName
         )
         .then(res => {
-          if (!res) throw new Error("No response ");
-          console.log(res);
+          if (!res) throw new Error("No response body.");
           this.urlName = res.urlName;
           this.isChangedSinceUpdate = false;
+          this.showError = false;
         })
-        .catch(e => console.error(e));
+        .catch(e => {
+          this.showError = true;
+          this.errorMessage = "Unable to save post at this time.";
+        });
     }
   }
 });
@@ -78,8 +90,17 @@ export default Vue.extend({
 
 <style lang="scss">
 div.post-create {
-  button.active {
-    background-color: green;
+  div.button-wrapper {
+    margin-top: 20px;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: right;
+    button.active {
+      background-color: $forestgreen;
+      color: $smoke;
+    }
   }
 }
 </style>

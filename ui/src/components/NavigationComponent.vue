@@ -13,12 +13,9 @@
       <router-link to="/about">About</router-link>
       <router-link to="/posts">Posts</router-link>
       <router-link to="/account" v-if="userIsAuth">Account</router-link>
-      <router-link to="/sign-in" v-if="!userIsAuth">Sign In</router-link>
+      <router-link to="/sign-in" v-if="!userIsAuth">Sign&nbsp;In</router-link>
       <div v-if="userIsAuth" v-on:click="logOut" tabindex="1">
-        Log Out
-      </div>
-      <div v-on:click="toggleShown" v-on:keyup="keyboardEvent" tabindex="2">
-        <i class="material-icons menu-icon menu-item">close</i>
+        Log&nbsp;Out
       </div>
     </div>
   </nav>
@@ -43,14 +40,24 @@ export default Vue.extend({
     getIsUserAuthenticated() {
       return baseAuth.userIsAuth();
     },
-    logOut() {
-      baseAuth.signOut();
+    processLogOut() {
       if (this.$route.path.includes("account")) {
         this.$router.push("/");
         window.location.reload();
       } else {
         window.location.reload();
       }
+    },
+    logOut() {
+      baseAuth
+        .signOut()
+        .then(() => {
+          this.processLogOut();
+        })
+        .catch(error => {
+          console.error(error);
+          this.processLogOut();
+        });
     }
   },
   mounted() {
@@ -69,6 +76,8 @@ export default Vue.extend({
 <style lang="scss">
 nav {
   div.nav-links {
+    font-family: "Merriweather", serif;
+    text-transform: lowercase;
     position: fixed;
     top: 0px;
     right: 15px;
@@ -76,7 +85,7 @@ nav {
     width: 100%;
     font-size: x-large;
     transition: width 0.6s ease-in-out;
-    background-image: linear-gradient(to left, $light-gray 10%, $light-gray 90%, $smoke 10%);
+    background-image: linear-gradient(to top, $seafoam-green 10%, $forestgreen 90%);
     overflow: hidden;
     height: 100%;
     z-index: 1;
@@ -94,15 +103,13 @@ nav {
       cursor: pointer;
       transition: background-color 0.3s, width 0.3s;
       background-color: $smoke;
-      color: $dark-blue-grey;
+      color: $forestgreen;
       padding: 4px;
       width: 75%;
-      font-weight: bold;
       text-decoration: none;
-      border-radius: 2px;
 
-      &:hover,
-      &:focus {
+      &:hover:not(.router-link-exact-active),
+      &:focus:not(.router-link-exact-active) {
         width: 80%;
         outline: none;
       }
@@ -112,8 +119,9 @@ nav {
           -webkit-text-decoration-line: overline; /* Safari */
           text-decoration-line: overline;
         }
-        background-color: $light-gray;
-        color: $dark-blue-grey;
+        background-color: transparent;
+        color: $smoke;
+        cursor: initial;
       }
 
       a {
@@ -139,7 +147,6 @@ nav {
     &.menu-item {
       position: relative;
       top: 3px;
-      color: $dark-blue-grey;
     }
   }
 }

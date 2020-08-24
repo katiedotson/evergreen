@@ -2,7 +2,7 @@
   <div class="search">
     <div class="wrapper">
       <input type="text" v-model="search" placeholder="Evergreen" />
-      <button type="submit" v-on:click="submit">Search</button>
+      <button type="submit" class="submit" v-on:click="submit">Search</button>
     </div>
   </div>
 </template>
@@ -36,10 +36,6 @@ div.search {
     }
     button {
       padding: 8px;
-      font-family: "Merriweather", serif;
-      border: 1px solid $dirty-snow;
-      background-color: $dark-blue-grey;
-      color: $smoke;
       opacity: 70%;
     }
   }

@@ -78,20 +78,26 @@ class FacebookAuth implements PluginObject<any> {
    * returns Promise with false value is user is not logged in
    */
   signOut = (): Promise<boolean> => {
-    return new Promise((resolve, reject) => {
-      if (!this.isAuthorized) {
-        reject(false);
-        return;
-      }
-      window.FB.logout((res: any) => {
-        if (res) {
+    return this.isAuth().then(isConnected => {
+      console.log("isConnected", isConnected);
+      if (isConnected) {
+        return new Promise((resolve, reject) => {
+          window.FB.logout((res: any) => {
+            if (res) {
+              this.isAuthorized = false;
+              session.removeUserData();
+              resolve(false);
+              return;
+            }
+            reject(false);
+          });
+        });
+      } else
+        return new Promise((resolve, reject) => {
           this.isAuthorized = false;
           session.removeUserData();
-          resolve(false);
-          return;
-        }
-        return false;
-      });
+          reject(false);
+        });
     });
   };
 }

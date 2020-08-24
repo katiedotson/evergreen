@@ -3,11 +3,20 @@ button {
   text-align: center;
   text-decoration: none;
   padding: 16px;
-  font-family: "Merriweater", serif;
-  border: 1px solid $dirty-snow;
+  font-family: "Open Sans", sans-serif;
+  font-size: smaller;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
   &.submit {
-    background-color: $seafoam-green;
+    color: $smoke;
+    background-color: $forestgreen;
   }
+  &:hover {
+    font-weight: bold;
+    opacity: 70%;
+  }
+  transition: 0.5s;
 }
 
 a.button {
@@ -15,32 +24,48 @@ a.button {
   color: $dark-blue-grey;
   margin-bottom: 8px;
   padding: 6px;
-  font-family: "Merriweater", serif;
+  font-family: "Open Sans", sans-serif;
+  font-size: smaller;
+  text-transform: uppercase;
   text-align: center;
   text-decoration: none;
-  font-size: small;
-  border: 1px solid $dirty-snow;
+  border: none;
   &.edit {
-    background-color: $seafoam-green;
+    background-color: $forestgreen;
+    color: $smoke;
   }
   &.delete {
     background-color: $light-gray;
   }
+  &:hover {
+    font-weight: bold;
+    opacity: 70%;
+  }
+  transition: 0.5s;
 }
 
 div.button {
   display: block;
-  color: $dark-blue-grey;
+  color: $snow;
+  background-color: $dark-blue-grey;
   margin-bottom: 8px;
   padding: 16px;
-  font-family: "Merriweater", serif;
+  font-family: "Open Sans", sans-serif;
+  font-size: smaller;
+  text-transform: uppercase;
   text-align: center;
-  font-size: small;
-  border: 1px solid $dirty-snow;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
   &.edit {
-    background-color: $seafoam-green;
+    background-color: $forestgreen;
   }
   &.delete {
     background-color: $light-gray;
   }
+  &:hover {
+    font-weight: bold;
+    opacity: 70%;
+  }
+  transition: 0.5s;
 }

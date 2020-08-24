@@ -12,9 +12,9 @@ app.use(jsonParser);
 app.use(cors());
 
 app.get("/getUserPosts", (req, res) => {
-  const authorId = Number(req.query.authorId);
+  const userId = String(req.query.userId);
   services
-    .getUserPostsByAuthorId(authorId)
+    .getUserPostsByUserId(userId)
     .then((postArray) => {
       res.json(postArray);
     })
@@ -38,11 +38,11 @@ app.get("/getPost", (req, res) => {
 });
 
 app.get("/getAuthor", (req, res) => {
-  const authorId = Number(req.query.authorId);
+  const authorId = String(req.query.authorId);
   services
-    .getAuthorByAuthorId(authorId)
-    .then((author) => {
-      res.json(author);
+    .getAuthorByUserId(authorId)
+    .then((user) => {
+      res.json(user);
     })
     .catch((error) => {
       console.error(error);
@@ -61,6 +61,34 @@ app.get("/getUser", (req, res) => {
     .catch((error) => {
       console.error(error);
       res.status(500).send(error);
+    });
+});
+
+app.post("/createNewUser", (req, res) => {
+  const userData = req.body.userData;
+  const user = req.body.user;
+  services
+    .insertNewUser(userData, user)
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send();
+    });
+});
+
+app.post("/updateUser", (req, res) => {
+  const userData = req.body.userData;
+  const user = req.body.user;
+  services
+    .updateUser(userData, user)
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send();
     });
 });
 

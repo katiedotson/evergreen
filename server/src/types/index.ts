@@ -31,14 +31,15 @@ export interface User {
   occupation: string;
   email: string;
   img: string;
-}
-
-export interface HTMLInputEvent extends Event {
-  target: HTMLInputElement & EventTarget;
+  platform: string;
 }
 
 export interface UserData {
   id: string;
   platform: string;
   expiration: number;
+}
+
+export interface HTMLInputEvent extends Event {
+  target: HTMLInputElement & EventTarget;
 }

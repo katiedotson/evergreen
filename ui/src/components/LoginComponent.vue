@@ -1,20 +1,23 @@
 <template>
-  <div class="account-creation">
-    <div class="wrapper" v-if="!isAuth">
-      <div id="login-logo"></div>
-      <div id="google" class="login-button" v-on:click="authenticateGmail">
-        <div class="login-icon g-icon"></div>
-        Sign in with Google
+  <div>
+    <ErrorCard :show="showError" :message="errorMessage" />
+    <div class="account-creation">
+      <div class="wrapper" v-if="!isAuth">
+        <div id="login-logo"></div>
+        <div id="google" class="login-button" v-on:click="authenticateGmail">
+          <div class="login-icon g-icon"></div>
+          Sign in with Google
+        </div>
+        <div id="facebook" class="login-button" v-on:click="authenticateFacebook">
+          <div class="login-icon fb-icon"></div>
+          Sign in with Facebook
+        </div>
       </div>
-      <div id="facebook" class="login-button" v-on:click="authenticateFacebook">
-        <div class="login-icon fb-icon"></div>
-        Sign in with Facebook
+      <br />
+      <div class="wrapper" v-if="isAuth">
+        <div id="login-logo"></div>
+        <div class="login-button logout" v-on:click="logOut">Logout</div>
       </div>
-    </div>
-    <br />
-    <div class="wrapper" v-if="isAuth">
-      <div id="login-logo"></div>
-      <div class="login-button logout" v-on:click="logOut">Logout</div>
     </div>
   </div>
 </template>
@@ -22,12 +25,16 @@
 <script lang="ts">
 import Vue from "vue";
 import baseAuth from "../auth/BaseAuth";
+import ErrorCard from "./ErrorCard.vue";
 
 export default Vue.extend({
   data: function() {
     return {
       isAuth: false,
-      baseAuth: baseAuth
+      baseAuth: baseAuth,
+      showError: false,
+      errorMessage: "",
+      platform: ""
     };
   },
   mounted() {
@@ -40,29 +47,42 @@ export default Vue.extend({
     authenticateFacebook() {
       this.signIn("facebook");
     },
-    signOut() {
-      this.baseAuth.signOut();
-    },
     signIn(platform: string) {
+      this.platform = platform;
       this.baseAuth
         .signIn(platform)
         .then((isAuth: boolean) => {
           this.isAuth = isAuth;
+          if (!isAuth) throw new Error();
         })
-        .catch((error: Error) => {
-          console.error(error);
+        .catch(() => {
+          this.showError = true;
+          this.errorMessage =
+            "Could not sign in. Please be sure you are signed into your chosen platform. ";
         });
     },
+    processLogOut() {
+      if (this.$route.path.includes("account")) {
+        this.$router.push("/");
+        window.location.reload();
+      } else {
+        window.location.reload();
+      }
+    },
     logOut() {
-      this.baseAuth
+      baseAuth
         .signOut()
-        .then((isAuth: boolean) => {
-          this.isAuth = isAuth;
+        .then(() => {
+          this.processLogOut();
         })
-        .catch((error: Error) => {
+        .catch(error => {
           console.error(error);
+          this.processLogOut();
         });
     }
+  },
+  components: {
+    ErrorCard
   }
 });
 </script>
@@ -76,7 +96,6 @@ div.account-creation {
     padding: 20px;
     border-radius: 4px;
     height: 100%;
-    background: url(/img/kenrick-mills-unsplash.jpg);
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center center;

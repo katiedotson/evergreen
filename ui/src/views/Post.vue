@@ -17,7 +17,7 @@ export default Vue.extend({
   data() {
     return {
       post: {} as Post,
-      author: {} as User | undefined,
+      author: {} as User,
       isLoading: true
     };
   },

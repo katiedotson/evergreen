@@ -2,8 +2,9 @@
   <div>
     <AccountHeading name="Posts" />
     <Loader :show="isLoading" />
+    <ErrorCard :show="showError" :message="errorMessage" />
     <div v-if="!isLoading">
-      <a href="../create" class="new-post-button">New Post</a>
+      <a href="../create" class="new-post-button button">New Post</a>
       <div class="user-post" v-for="post in posts" v-bind:key="post.title">
         <div class="title">{{ post.title }}</div>
         <a class="url-name" :href="'../post/' + post.urlName">{{ post.urlName }}</a>
@@ -19,24 +20,34 @@
 <script lang="ts">
 import Vue from "vue";
 import AccountHeading from "./AccountHeading.vue";
+import ErrorCard from "./ErrorCard.vue";
 import Loader from "./Loader.vue";
 import session from "../session";
 export default Vue.extend({
   data() {
     return {
       posts: {},
-      isLoading: true
+      isLoading: true,
+      showError: false,
+      errorMessage: ""
     };
   },
   mounted() {
-    session.getUserPosts().then(posts => {
-      this.posts = posts;
-      this.isLoading = false;
-    });
+    session
+      .getUserPosts()
+      .then(posts => {
+        this.posts = posts;
+        this.isLoading = false;
+      })
+      .catch(err => {
+        this.showError = true;
+        this.errorMessage = "Could  not load posts.";
+      });
   },
   components: {
     AccountHeading,
-    Loader
+    Loader,
+    ErrorCard
   }
 });
 </script>
@@ -73,7 +84,7 @@ div.user-post {
     }
   }
 }
-a.new-post-button {
+a.new-post-button.button {
   width: 100%;
   text-decoration: none;
   text-align: center;

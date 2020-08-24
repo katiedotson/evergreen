@@ -106,10 +106,14 @@ export default Vue.extend({
 <style lang="scss">
 div.post-edit {
   div.button-wrapper {
-    float: right;
     margin-top: 20px;
+    width: 100%;
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: right;
     button.active {
-      background-color: green;
+      background-color: $forestgreen;
     }
   }
 }
