@@ -15,11 +15,11 @@ export default Vue.extend({
 
 <style lang="scss">
 div.loader {
-  border: 16px solid $light-gray;
+  border: 16px solid $forestgreen;
   border-top: 16px solid $dark-blue-grey;
   border-radius: 50%;
-  width: 120px;
-  height: 120px;
+  width: 100px;
+  height: 100px;
   margin-left: auto;
   margin-right: auto;
   margin-top: 20%;

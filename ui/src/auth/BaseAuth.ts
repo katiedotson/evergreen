@@ -12,9 +12,11 @@ export class BaseAuth {
       case "facebook": {
         return facebookAuth.signIn().then(userData => {
           if (userData) {
+            console.log(userData);
             return session.loadUserData(userData, platform);
           } else {
             return new Promise((resolve, reject) => {
+              console.log(userData);
               reject(false);
             });
           }

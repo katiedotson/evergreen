@@ -31,6 +31,11 @@ const routes: Array<RouteConfig> = [
     component: () => import("../views/SignIn.vue")
   },
   {
+    path: "/sign-in/first-time",
+    name: "Create Account",
+    component: () => import("../views/NewAccount.vue")
+  },
+  {
     path: "/account",
     name: "Account",
     component: () => import("../views/Account.vue")

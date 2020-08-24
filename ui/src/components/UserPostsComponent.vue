@@ -36,7 +36,6 @@ export default Vue.extend({
     session
       .getUserPosts()
       .then(posts => {
-        if (!posts) throw new Error("Posts failed to load");
         this.posts = posts;
         this.isLoading = false;
       })

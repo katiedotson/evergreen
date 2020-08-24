@@ -33,7 +33,8 @@ export default Vue.extend({
       isAuth: false,
       baseAuth: baseAuth,
       showError: false,
-      errorMessage: ""
+      errorMessage: "",
+      platform: ""
     };
   },
   mounted() {
@@ -47,29 +48,36 @@ export default Vue.extend({
       this.signIn("facebook");
     },
     signIn(platform: string) {
+      this.platform = platform;
       this.baseAuth
         .signIn(platform)
         .then((isAuth: boolean) => {
           this.isAuth = isAuth;
           if (!isAuth) throw new Error();
         })
-        .catch((error: Error) => {
+        .catch(() => {
           this.showError = true;
-          this.errorMessage = "Could not sign in at this time.";
-          console.error(error);
+          this.errorMessage =
+            "Could not sign in. Please be sure you are signed into your chosen platform. ";
         });
     },
+    processLogOut() {
+      if (this.$route.path.includes("account")) {
+        this.$router.push("/");
+        window.location.reload();
+      } else {
+        window.location.reload();
+      }
+    },
     logOut() {
-      this.baseAuth
+      baseAuth
         .signOut()
-        .then((isAuth: boolean) => {
-          this.isAuth = isAuth;
-          if (isAuth) throw new Error();
+        .then(() => {
+          this.processLogOut();
         })
-        .catch((error: Error) => {
-          this.showError = true;
-          this.errorMessage = "Could not log out at this time.";
+        .catch(error => {
           console.error(error);
+          this.processLogOut();
         });
     }
   },
@@ -88,7 +96,6 @@ div.account-creation {
     padding: 20px;
     border-radius: 4px;
     height: 100%;
-    background: url(/img/kenrick-mills-unsplash.jpg);
     background-size: 100% 100%;
     background-repeat: no-repeat;
     background-position: center center;

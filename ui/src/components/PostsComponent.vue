@@ -32,7 +32,7 @@ export default Vue.extend({
           this.posts = posts;
           this.isLoading = false;
         })
-        .catch(err => {
+        .catch(() => {
           this.errorMessage = "Hmm. Something went wrong.";
           this.isLoading = false;
           this.showError = true;

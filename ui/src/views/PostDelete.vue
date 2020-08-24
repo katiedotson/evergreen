@@ -13,7 +13,7 @@ import Vue from "vue";
 import router from "../router";
 import PostView from "../components/PostViewComponent.vue";
 import Loader from "../components/Loader.vue";
-import { Post, User } from "../types";
+import { Post } from "../types";
 import session from "../session";
 
 export default Vue.extend({

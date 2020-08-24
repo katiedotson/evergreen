@@ -13,9 +13,9 @@
       <router-link to="/about">About</router-link>
       <router-link to="/posts">Posts</router-link>
       <router-link to="/account" v-if="userIsAuth">Account</router-link>
-      <router-link to="/sign-in" v-if="!userIsAuth">Sign In</router-link>
+      <router-link to="/sign-in" v-if="!userIsAuth">Sign&nbsp;In</router-link>
       <div v-if="userIsAuth" v-on:click="logOut" tabindex="1">
-        Log Out
+        Log&nbsp;Out
       </div>
     </div>
   </nav>
@@ -40,14 +40,24 @@ export default Vue.extend({
     getIsUserAuthenticated() {
       return baseAuth.userIsAuth();
     },
-    logOut() {
-      baseAuth.signOut();
+    processLogOut() {
       if (this.$route.path.includes("account")) {
         this.$router.push("/");
         window.location.reload();
       } else {
         window.location.reload();
       }
+    },
+    logOut() {
+      baseAuth
+        .signOut()
+        .then(() => {
+          this.processLogOut();
+        })
+        .catch(error => {
+          console.error(error);
+          this.processLogOut();
+        });
     }
   },
   mounted() {
@@ -75,7 +85,7 @@ nav {
     width: 100%;
     font-size: x-large;
     transition: width 0.6s ease-in-out;
-    background-image: linear-gradient(to left, $forestgreen 10%, $forestgreen 90%, $smoke 10%);
+    background-image: linear-gradient(to top, $seafoam-green 10%, $forestgreen 90%);
     overflow: hidden;
     height: 100%;
     z-index: 1;
@@ -109,7 +119,7 @@ nav {
           -webkit-text-decoration-line: overline; /* Safari */
           text-decoration-line: overline;
         }
-        background-color: $forestgreen;
+        background-color: transparent;
         color: $smoke;
         cursor: initial;
       }

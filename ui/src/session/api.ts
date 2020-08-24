@@ -1,17 +1,19 @@
 import { Post, User, UserData } from "@/types";
 import axios from "./axios-instance";
 
+axios.defaults.timeout = 5000;
+
 export default {
   /**
-   * getUserPosts?authorId=${authorId}
+   * getUserPosts?userId=${authorId}
    *
    * returns posts for an author
    * @param authorId -> the author for which posts should be found
    */
-  getUserPosts(authorId: number): Promise<Post[]> {
+  getUserPosts(id: string): Promise<Post[]> {
     return new Promise((resolve, reject) => {
       axios
-        .get(`getUserPosts?authorId=${authorId}`)
+        .get(`getUserPosts?userId=${id}`)
         .then(res => {
           if (res.status == 200) {
             resolve(res.data);
@@ -46,10 +48,10 @@ export default {
    *
    * @param authorId -> the ID for an author
    */
-  getAuthor(authorId: number): Promise<User | undefined> {
+  getAuthor(userId: string): Promise<User | undefined> {
     return new Promise((resolve, reject) => {
       axios
-        .get(`getAuthor?authorId=${authorId}`)
+        .get(`getAuthor?authorId=${userId}`)
         .then(res => {
           if (res.status == 200) {
             return resolve(res.data);
@@ -74,6 +76,7 @@ export default {
         .get(`getUser?userId=${userData.id}&platform=${platform}`)
         .then(res => {
           if (res.status == 200) {
+            console.log(res.status);
             resolve(res.data);
           } else reject(undefined);
         })
@@ -96,7 +99,8 @@ export default {
             throw new Error("Non-200 status returned.");
           }
         })
-        .catch(() => {
+        .catch(err => {
+          console.error(err);
           reject([]);
         });
     });
@@ -136,6 +140,40 @@ export default {
           }
         })
         .catch(() => reject(undefined));
+    });
+  },
+  updateUser(userData: UserData, user: User): Promise<any> {
+    return new Promise((resolve, reject) => {
+      axios
+        .request({
+          method: "POST",
+          url: "updateUser",
+          data: { userData, user }
+        })
+        .then(res => {
+          if (res.status == 200) {
+            resolve(res.data);
+          } else {
+            reject(undefined);
+          }
+        });
+    });
+  },
+  createNewUser(userData: UserData, user: User): Promise<any> {
+    return new Promise((resolve, reject) => {
+      axios
+        .request({
+          method: "POST",
+          url: "createNewUser",
+          data: { userData, user }
+        })
+        .then(res => {
+          if (res.status == 200) {
+            resolve(res.data);
+          } else {
+            reject(undefined);
+          }
+        });
     });
   }
 };

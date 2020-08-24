@@ -38,8 +38,8 @@ export default {
   getUser(): User {
     return this.getSessionItem(this.userKey);
   },
-  getAuthor(authorId: number) {
-    return api.getAuthor(authorId);
+  getAuthor(userId: string) {
+    return api.getAuthor(userId);
   },
   getSessionItem(key: string): any {
     const item = sessionStorage.getItem(key);
@@ -61,8 +61,11 @@ export default {
             this.storeUser(user);
             window.location.reload();
             resolve(true);
-            return;
           } else {
+            if (userData && platform) {
+              this.storeUserData(userData);
+              window.location.replace("/sign-in/first-time");
+            }
             reject(false);
           }
         })
@@ -70,12 +73,8 @@ export default {
     });
   },
   async getUserPosts(): Promise<Post[]> {
-    const authorId = this.getUser()?.authorId;
-    if (authorId === undefined)
-      return new Promise<any>((resolve, reject) => {
-        reject([]);
-      });
-    return api.getUserPosts(authorId);
+    const id = this.getUser()?.userId;
+    return api.getUserPosts(id);
   },
   async getPost(urlName: string): Promise<Post | undefined> {
     return api.getPost(urlName);
@@ -90,6 +89,26 @@ export default {
     const post = this.createPost(postTitle, postBody, postTagline, imgUrl, urlName);
     return api.savePost(post);
   },
+  async updateUser(user: User): Promise<any> {
+    const userData = this.getUserData();
+    if (userData) {
+      return api.updateUser(userData, user);
+    } else {
+      return new Promise((resolve, reject) => {
+        reject("No user data found in session.");
+      });
+    }
+  },
+  async createNewUser(user: User) {
+    const userData = this.getUserData();
+    if (userData) {
+      return api.createNewUser(userData, user);
+    } else {
+      return new Promise((resolve, reject) => {
+        reject("No user data found in session.");
+      });
+    }
+  },
   createPost(
     postTitle: string,
     postBody: string,
@@ -97,7 +116,7 @@ export default {
     imgUrl: string,
     url: string
   ): Post {
-    const authorId = this.getUser()?.authorId;
+    const authorId = this.getUser()?.userId;
     if (authorId !== undefined) {
       return {
         title: postTitle,

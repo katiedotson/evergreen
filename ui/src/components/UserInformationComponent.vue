@@ -1,62 +1,62 @@
 <template>
   <div>
-    <AccountHeading name="Information" />
+    <AccountHeading :name="getName()" />
     <Loader :show="isLoading" />
+    <ErrorCard :show="showError" :message="errorMessage" />
+    <p v-if="firstTime">Please provide some information for the best experience.</p>
     <div class="form" v-if="!isLoading">
-      <div class="field-wrapper" :class="{ 'form-group--error': $v.author.email.$error }">
+      <div class="field-wrapper" :class="{ 'form-group--error': $v.user.email.$error }">
         <label for="email">Email</label>
-        <input id="email" v-model.trim="$v.author.email.$model" />
-        <div class="error" v-if="!$v.author.email.required">
+        <input id="email" v-model.trim="$v.user.email.$model" />
+        <div class="error" v-if="!$v.user.email.required">
           Field is required
         </div>
-        <div class="error" v-if="!$v.author.email.email">
+        <div class="error" v-if="!$v.user.email.email">
           Please enter a valid email address
         </div>
       </div>
-      <div class="field-wrapper" :class="{ 'form-group--error': $v.author.firstName.$error }">
+      <div class="field-wrapper" :class="{ 'form-group--error': $v.user.firstName.$error }">
         <label for="firstName">First Name</label>
-        <input id="firstName" v-model.trim="$v.author.firstName.$model" />
-        <div class="error" v-if="!$v.author.firstName.required">
+        <input id="firstName" v-model.trim="$v.user.firstName.$model" />
+        <div class="error" v-if="!$v.user.firstName.required">
           Field is required
         </div>
-        <div class="error" v-if="!$v.author.firstName.minLength">
-          Minimum length: {{ $v.author.firstName.$params.minLength.min }} characters
+        <div class="error" v-if="!$v.user.firstName.minLength">
+          Minimum length: {{ $v.user.firstName.$params.minLength.min }} characters
         </div>
       </div>
-      <div class="field-wrapper" :class="{ 'form-group--error': $v.author.lastName.$error }">
+      <div class="field-wrapper" :class="{ 'form-group--error': $v.user.lastName.$error }">
         <label for="lastName">Last Name</label>
-        <input id="lastName" v-model.trim="$v.author.lastName.$model" />
-        <div class="error" v-if="!$v.author.lastName.required">
+        <input id="lastName" v-model.trim="$v.user.lastName.$model" />
+        <div class="error" v-if="!$v.user.lastName.required">
           Field is required
         </div>
-        <div class="error" v-if="!$v.author.lastName.minLength">
-          Minimum length: {{ $v.author.lastName.$params.minLength.min }} characters
+        <div class="error" v-if="!$v.user.lastName.minLength">
+          Minimum length: {{ $v.user.lastName.$params.minLength.min }} characters
         </div>
       </div>
       <div class="field-wrapper">
         <label for="location">Location</label>
-        <input id="location" v-model="author.location" />
+        <input id="location" v-model="user.location" />
       </div>
       <div class="field-wrapper">
         <label for="occupation">Occupation</label>
-        <input id="occupation" v-model="author.occupation" />
+        <input id="occupation" v-model="user.occupation" />
       </div>
       <div class="field-wrapper">
         <label for="bio">Bio</label>
-        <textarea id="bio" v-model="author.bio" />
+        <textarea id="bio" v-model="user.bio" />
       </div>
       <div class="field-wrapper">
         <label for="img">Avatar</label>
         <input type="file" id="img" @change="processFile($event)" />
       </div>
-      <div class="button" @click="openAuthorCard">View Author Card</div>
-      <button class="submit" type="submit" @click="submit">Submit</button>
+      <div class="button" @click="openUserCard" v-if="!this.firstTime">View User Card</div>
+      <button class="submit" type="submit" @click="submit" :disabled="this.$v.$invalid">
+        {{ getSubmitBtnText }}
+      </button>
     </div>
-    <AuthorCardModal
-      :author="this.author"
-      v-on:close-modal="showAuthorCard = false"
-      :show="showAuthorCard"
-    />
+    <UserCardModal :user="this.user" v-on:close-modal="showUserCard = false" :show="showUserCard" />
   </div>
 </template>
 
@@ -64,31 +64,42 @@
 import Vue from "vue";
 import AccountHeading from "./AccountHeading.vue";
 import Loader from "./Loader.vue";
-import AuthorCardModal from "./AuthorCardModal.vue";
+import UserCardModal from "./AuthorCardModal.vue";
+import ErrorCard from "./ErrorCard.vue";
 import { validationMixin } from "vuelidate";
 import { required, minLength, maxLength, email } from "vuelidate/lib/validators";
 import { HTMLInputEvent } from "@/types";
+import { User } from "../types";
 import session from "../session";
 
 export default Vue.extend({
+  props: {
+    firstTime: {
+      type: Boolean
+    }
+  },
   components: {
     AccountHeading,
-    AuthorCardModal,
-    Loader
+    UserCardModal,
+    Loader,
+    ErrorCard
   },
   data() {
     return {
-      showAuthorCard: false,
-      author: {},
-      isLoading: true
+      showUserCard: false,
+      user: {} as User,
+      isLoading: true,
+      showError: false,
+      errorMessage: "",
+      submitBtnText: "Submit"
     };
   },
   mounted() {
-    this.loadAuthor();
+    this.loadUser();
   },
   mixins: [validationMixin],
   validations: {
-    author: {
+    user: {
       email: {
         required,
         email
@@ -106,12 +117,31 @@ export default Vue.extend({
     }
   },
   methods: {
-    openAuthorCard() {
-      this.showAuthorCard = true;
+    getName(): string {
+      if (this.firstTime) {
+        return "Welcome to Evergreen";
+      }
+      return "Information";
     },
-    loadAuthor() {
-      this.author = session.getUser();
-      this.isLoading = false;
+    openUserCard() {
+      this.showUserCard = true;
+    },
+    loadUser() {
+      if (!this.firstTime) {
+        this.user = session.getUser();
+        this.isLoading = false;
+      } else {
+        this.user = {
+          firstName: "",
+          lastName: "",
+          email: "",
+          bio: "",
+          img: "",
+          location: "",
+          occupation: ""
+        } as User;
+        this.isLoading = false;
+      }
     },
     processFile(event: HTMLInputEvent) {
       if (event && event.target && event.target.files) {
@@ -121,8 +151,39 @@ export default Vue.extend({
     },
     submit() {
       this.$v.$touch();
-      if (!this.$v.$invalid) {
-        console.log("submit!");
+      if (!this.$v.$invalid && !this.firstTime) {
+        session
+          .updateUser(this.user)
+          .then(success => {
+            session.storeUser(this.user);
+          })
+          .catch(() => {
+            this.errorMessage = "Something went wrong.";
+            this.showError = true;
+          });
+      } else if (!this.$v.$invalid) {
+        session
+          .createNewUser(this.user)
+          .then(success => {
+            session.storeUser(this.user);
+          })
+          .catch(() => {
+            this.errorMessage = "Something went wrong.";
+            this.showError = true;
+          });
+      }
+    }
+  },
+  computed: {
+    getSubmitBtnText: function(): string {
+      if (this.$v.$invalid) {
+        return "Invalid";
+      } else {
+        if (this.firstTime) {
+          return "Continue";
+        } else {
+          return "Update";
+        }
       }
     }
   }
@@ -198,6 +259,9 @@ div.form {
     display: block;
     width: 100%;
     margin-bottom: 8px;
+    &:disabled {
+      background-color: $firetruck;
+    }
   }
 }
 </style>
