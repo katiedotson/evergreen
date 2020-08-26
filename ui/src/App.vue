@@ -35,7 +35,7 @@ body {
   color: $dark-blue-grey;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: "Merriweather";
+  font-family: "Barlow";
 }
 
 div.content {

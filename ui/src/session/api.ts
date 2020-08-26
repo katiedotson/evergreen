@@ -1,5 +1,6 @@
 import { Post, User, UserData } from "@/types";
 import axios from "./axios-instance";
+import publitio from "../assets";
 
 axios.defaults.timeout = 5000;
 
@@ -27,7 +28,7 @@ export default {
    *
    * @param urlName -> returns a post with the given url name
    */
-  getPost(urlName: string): Promise<Post | undefined> {
+  getPost(urlName: string): Promise<Post> {
     return new Promise((resolve, reject) => {
       axios
         .get(`getPost?urlName=${urlName}`)
@@ -76,7 +77,6 @@ export default {
         .get(`getUser?userId=${userData.id}&platform=${platform}`)
         .then(res => {
           if (res.status == 200) {
-            console.log(res.status);
             resolve(res.data);
           } else reject(undefined);
         })
@@ -174,6 +174,19 @@ export default {
             reject(undefined);
           }
         });
+    });
+  },
+  uploadImage(file: File, publicId: string): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      publitio
+        .uploadFile(file, "file", {
+          // eslint-disable-next-line @typescript-eslint/camelcase
+          public_id: publicId
+        })
+        .then(data => {
+          resolve(data.url_preview);
+        })
+        .catch(error => reject(error));
     });
   }
 };

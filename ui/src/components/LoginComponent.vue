@@ -125,7 +125,7 @@ div.account-creation {
 
       &.logout {
         background: $snow;
-        font-family: "Merriweather";
+        font-family: "Playfair Display";
         text-align: center;
       }
 

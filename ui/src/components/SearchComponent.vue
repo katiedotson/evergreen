@@ -29,7 +29,7 @@ div.search {
     float: right;
     input[type="text"] {
       padding: 8px;
-      font-family: "Merriweather", serif;
+      font-family: "Playfair Display", serif;
       border: 1px solid $dirty-snow;
       opacity: 70%;
       background-color: $smoke;

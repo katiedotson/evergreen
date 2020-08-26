@@ -122,7 +122,7 @@ app.post("/savePost", (req, res) => {
   const currentUrlName = post.urlName;
   const wouldBeUrlName = util.createUrlNameFromTitle(post.title);
 
-  if (currentUrlName == "") {
+  if (currentUrlName == "" || currentUrlName == undefined) {
     post.urlName = wouldBeUrlName;
     services
       .saveNewPost(post)

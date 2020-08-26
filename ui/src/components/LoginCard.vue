@@ -35,7 +35,7 @@ a.login-card {
   background-color: $dark-blue-grey;
   text-align: center;
   text-decoration: none;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Barlow", sans-serif;
   text-transform: uppercase;
   font-size: large;
   font-weight: bold;

@@ -1,10 +1,11 @@
 import facebookAuth from "./FacebookAuth";
 import googleAuth from "./GoogleAuth";
 import session from "../session";
+import sessionData from "../session/sessionData";
 
 export class BaseAuth {
   userIsAuth() {
-    return session.getUserData() != null;
+    return sessionData.getUserData() != null;
   }
 
   signIn(platform: string): Promise<boolean> {
@@ -12,11 +13,9 @@ export class BaseAuth {
       case "facebook": {
         return facebookAuth.signIn().then(userData => {
           if (userData) {
-            console.log(userData);
             return session.loadUserData(userData, platform);
           } else {
             return new Promise((resolve, reject) => {
-              console.log(userData);
               reject(false);
             });
           }
@@ -41,7 +40,7 @@ export class BaseAuth {
   }
 
   signOut(): Promise<boolean> {
-    const platform = session.getUserData()?.platform;
+    const platform = sessionData.getUserData()?.platform;
     switch (platform) {
       case "facebook": {
         return facebookAuth.signOut();

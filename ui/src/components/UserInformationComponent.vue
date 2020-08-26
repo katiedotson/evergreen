@@ -71,6 +71,7 @@ import { required, minLength, maxLength, email } from "vuelidate/lib/validators"
 import { HTMLInputEvent } from "@/types";
 import { User } from "../types";
 import session from "../session";
+import sessionData from "../session/sessionData";
 
 export default Vue.extend({
   props: {
@@ -128,7 +129,7 @@ export default Vue.extend({
     },
     loadUser() {
       if (!this.firstTime) {
-        this.user = session.getUser();
+        this.user = sessionData.getUser();
         this.isLoading = false;
       } else {
         this.user = {
@@ -146,7 +147,16 @@ export default Vue.extend({
     processFile(event: HTMLInputEvent) {
       if (event && event.target && event.target.files) {
         const file = event.target.files[0];
-        session.saveAvatarImageLocal(file);
+        session
+          .storeImage(file)
+          .then((location: string) => {
+            this.user.img = location;
+          })
+          .catch(() => {
+            this.showError = true;
+            this.errorMessage = "Problem while uploading new image.";
+          });
+      } else {
       }
     },
     submit() {
@@ -154,8 +164,8 @@ export default Vue.extend({
       if (!this.$v.$invalid && !this.firstTime) {
         session
           .updateUser(this.user)
-          .then(success => {
-            session.storeUser(this.user);
+          .then(() => {
+            sessionData.storeUser(this.user);
           })
           .catch(() => {
             this.errorMessage = "Something went wrong.";
@@ -164,8 +174,8 @@ export default Vue.extend({
       } else if (!this.$v.$invalid) {
         session
           .createNewUser(this.user)
-          .then(success => {
-            session.storeUser(this.user);
+          .then(() => {
+            sessionData.storeUser(this.user);
           })
           .catch(() => {
             this.errorMessage = "Something went wrong.";
@@ -211,7 +221,7 @@ div.form {
 
     div.error {
       display: block;
-      font-family: "Open Sans", sans-serif;
+      font-family: "Barlow", sans-serif;
       font-size: x-small;
       color: $bright-orange;
       margin-left: 4px;
@@ -235,7 +245,7 @@ div.form {
       width: 92%;
       margin-left: auto;
       margin-right: auto;
-      font-family: "Merriweather", serif;
+      font-family: "Barlow", sans-serif;
       @include xl {
         width: 300px;
       }

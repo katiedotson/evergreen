@@ -1,6 +1,6 @@
 <template>
   <div class="post">
-    <img :src="post.img" />
+    <img :src="post.img" v-if="post.img.length" />
     <div class="post-content">
       <div v-html="post.title" class="title"></div>
       <div v-html="post.tagline" class="tagline"></div>
@@ -50,9 +50,10 @@ div.post {
     div.tagline {
       margin-top: 5px;
       font-style: italic;
+      font-family: "Barlow", sans-serif;
     }
     div.body {
-      font-family: "Open Sans", sans-serif;
+      font-family: "Barlow", sans-serif;
     }
   }
 }

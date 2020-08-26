@@ -39,7 +39,7 @@ export default Vue.extend({
         this.posts = posts;
         this.isLoading = false;
       })
-      .catch(err => {
+      .catch(() => {
         this.showError = true;
         this.errorMessage = "Could  not load posts.";
       });
@@ -70,7 +70,7 @@ div.user-post {
     font-size: x-small;
   }
   a.url-name {
-    font-family: "Open Sans", sans-serif;
+    font-family: "Barlow", sans-serif;
     color: $dark-blue-grey;
   }
   div.edit-button-wrapper {

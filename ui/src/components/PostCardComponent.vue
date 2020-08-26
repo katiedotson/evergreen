@@ -1,6 +1,6 @@
 <template>
   <a class="post-card" :href="redirectToPost(post.urlName)" tabindex="200">
-    <img :src="post.img" />
+    <img :src="post.img" v-if="post.img.length" />
     <div v-html="post.title" class="title"></div>
     <div v-html="post.tagline" class="tagline"></div>
     <hr />
@@ -15,8 +15,8 @@ import Vue from "vue";
 export default Vue.extend({
   props: {
     post: {
-      type: Object,
-    },
+      type: Object
+    }
   },
   methods: {
     redirectToPost(urlName: string) {
@@ -24,8 +24,8 @@ export default Vue.extend({
     },
     abbreviate(postBody: string) {
       return postBody.substring(0, 200).concat("...");
-    },
-  },
+    }
+  }
 });
 </script>
 
@@ -49,12 +49,15 @@ a.post-card {
     margin-top: 5px;
     font-size: 10pt;
     font-style: italic;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Barlow", sans-serif;
   }
   .body {
     font-size: 10pt;
     margin-top: 5px;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Barlow", sans-serif;
+    img {
+      display: none;
+    }
   }
   hr {
     border-top: 1px solid;

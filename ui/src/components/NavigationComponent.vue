@@ -64,11 +64,11 @@ export default Vue.extend({
     this.userIsAuth = this.getIsUserAuthenticated();
   },
   watch: {
-    $route(to, from) {
-      // const notPostsToPost = !(to.path.includes("post") && from.path.includes("posts"));
-      // const reload = to.path == from.path;
-      // if (notPostsToPost && !reload) this.toggleShown();
-    }
+    // $route(to, from) {
+    //   // const notPostsToPost = !(to.path.includes("post") && from.path.includes("posts"));
+    //   // const reload = to.path == from.path;
+    //   // if (notPostsToPost && !reload) this.toggleShown();
+    // }
   }
 });
 </script>
@@ -76,7 +76,7 @@ export default Vue.extend({
 <style lang="scss">
 nav {
   div.nav-links {
-    font-family: "Merriweather", serif;
+    font-family: "Playfair Display", serif;
     text-transform: lowercase;
     position: fixed;
     top: 0px;

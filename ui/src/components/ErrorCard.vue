@@ -40,7 +40,7 @@ div.error-card {
   bottom: 8px;
   right: 8px;
   padding: 6px;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Barlow", sans-serif;
   width: 200px;
   p {
     display: inline-block;

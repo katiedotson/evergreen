@@ -1,5 +1,5 @@
 import Vue, { PluginObject } from "vue";
-import session from "../session";
+import sessionData from "../session/sessionData";
 import { UserData } from "@/types";
 
 import config from "../config";
@@ -79,13 +79,12 @@ class FacebookAuth implements PluginObject<any> {
    */
   signOut = (): Promise<boolean> => {
     return this.isAuth().then(isConnected => {
-      console.log("isConnected", isConnected);
       if (isConnected) {
         return new Promise((resolve, reject) => {
           window.FB.logout((res: any) => {
             if (res) {
               this.isAuthorized = false;
-              session.removeUserData();
+              sessionData.removeUserData();
               resolve(false);
               return;
             }
@@ -95,7 +94,7 @@ class FacebookAuth implements PluginObject<any> {
       } else
         return new Promise((resolve, reject) => {
           this.isAuthorized = false;
-          session.removeUserData();
+          sessionData.removeUserData();
           reject(false);
         });
     });

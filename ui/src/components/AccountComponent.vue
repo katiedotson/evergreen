@@ -20,7 +20,7 @@ import { User } from "../types/index";
 import UserInformationComponent from "./UserInformationComponent.vue";
 import UserPostsComponent from "./UserPostsComponent.vue";
 import ErrorCard from "./ErrorCard.vue";
-import session from "../session";
+import sessionData from "../session/sessionData";
 
 export default Vue.extend({
   data: function() {
@@ -32,7 +32,7 @@ export default Vue.extend({
     };
   },
   mounted() {
-    this.userData = session.getUser();
+    this.userData = sessionData.getUser();
     if (!this.userData) {
       this.showError = true;
     }
@@ -72,7 +72,7 @@ div.account {
       display: inline;
       a {
         text-decoration: none;
-        font-family: "Open Sans", sans-serif;
+        font-family: "Barlow", sans-serif;
         text-transform: uppercase;
         font-size: small;
         color: $snow;

@@ -36,11 +36,11 @@ div.author {
   .location {
     font-size: 10pt;
     font-style: italic;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Barlow", sans-serif;
   }
   .bio {
     font-size: 10pt;
-    font-family: "Open Sans", sans-serif;
+    font-family: "Barlow", sans-serif;
   }
 }
 </style>

@@ -1,55 +1,49 @@
 import { Post, User, UserData } from "../types";
 import api from "./api";
-
-interface Data {
-  posts: Post[];
-  users: User[];
-}
+import sessionData from "./sessionData";
 
 export default {
-  userDataKey: "userData",
-  userKey: "user",
-  saveAvatarImageLocal(file: File): void {
-    this.saveFileLocally("avatar", file);
+  async storeImage(file: File): Promise<string> {
+    const fileType = file.type.toLowerCase();
+    const userId = sessionData.getUser()?.userId;
+    if (fileType.includes("png") || (fileType.includes("jpeg") && userId)) {
+      const timestamp = new Date().getTime();
+      return new Promise<string>((resolve, reject) => {
+        const publicId = `${userId}-${timestamp}`;
+        api
+          .uploadImage(file, publicId)
+          .then(imgUrl => {
+            sessionData.storeTempFile(publicId);
+            resolve(imgUrl);
+          })
+          .catch(error => {
+            console.error(error);
+            reject(error);
+          });
+      });
+    } else throw new Error("Image is not either PNG or JPEG, or user could not be found.");
   },
-  saveFileLocally(key: string, file: File): void {
-    const reader = new FileReader();
-    reader.onload = function() {
-      const thisImage = reader.result;
-      if (typeof thisImage == "string") {
-        localStorage.setItem(key, thisImage);
-      }
-    };
-    reader.readAsDataURL(file);
-  },
-  storeUserData(userData: UserData) {
-    sessionStorage.setItem(this.userDataKey, JSON.stringify(userData));
-  },
-  storeUser(user: User) {
-    sessionStorage.setItem(this.userKey, JSON.stringify(user));
-  },
-  removeUserData() {
-    sessionStorage.removeItem(this.userDataKey);
-    sessionStorage.removeItem(this.userKey);
-  },
-  getUserData(): UserData | null {
-    return this.getSessionItem(this.userDataKey);
-  },
-  getUser(): User {
-    return this.getSessionItem(this.userKey);
-  },
-  getAuthor(userId: string) {
-    return api.getAuthor(userId);
-  },
-  getSessionItem(key: string): any {
-    const item = sessionStorage.getItem(key);
-    if (item != null && item != "") {
-      return JSON.parse(item);
-    }
-    return null;
+  async getAuthor(userId: string): Promise<User> {
+    return new Promise<User>((resolve, reject) => {
+      api
+        .getAuthor(userId)
+        .then(user => resolve(user))
+        .catch(error => {
+          console.error(error);
+          reject(error);
+        });
+    });
   },
   async getPosts(): Promise<Post[]> {
-    return api.getPosts();
+    return new Promise<Post[]>((resolve, reject) => {
+      api
+        .getPosts()
+        .then(posts => resolve(posts))
+        .catch(error => {
+          console.error(error);
+          reject(error);
+        });
+    });
   },
   async loadUserData(userData: UserData, platform: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
@@ -57,13 +51,13 @@ export default {
         .getUser(userData, platform)
         .then(user => {
           if (userData && user) {
-            this.storeUserData(userData);
-            this.storeUser(user);
+            sessionData.storeUserData(userData);
+            sessionData.storeUser(user);
             window.location.reload();
             resolve(true);
           } else {
             if (userData && platform) {
-              this.storeUserData(userData);
+              sessionData.storeUserData(userData);
               window.location.replace("/sign-in/first-time");
             }
             reject(false);
@@ -73,41 +67,72 @@ export default {
     });
   },
   async getUserPosts(): Promise<Post[]> {
-    const id = this.getUser()?.userId;
-    return api.getUserPosts(id);
+    const id = sessionData.getUser()?.userId;
+    return new Promise<Post[]>((resolve, reject) => {
+      api
+        .getUserPosts(id)
+        .then(postArray => resolve(postArray))
+        .catch(error => {
+          console.error(error);
+          reject(error);
+        });
+    });
   },
   async getPost(urlName: string): Promise<Post | undefined> {
-    return api.getPost(urlName);
+    return new Promise<Post>((resolve, reject) => {
+      api
+        .getPost(urlName)
+        .then(post => resolve(post))
+        .catch(error => {
+          console.error(error);
+          reject(error);
+        });
+    });
   },
-  async savePost(
-    postTitle: string,
-    postBody: string,
-    postTagline: string,
-    imgUrl: string,
-    urlName: string
-  ): Promise<Post | undefined> {
-    const post = this.createPost(postTitle, postBody, postTagline, imgUrl, urlName);
-    return api.savePost(post);
+  async savePost(post: Post): Promise<Post> {
+    const userId = sessionData.getUser()?.userId;
+    post.authorId = userId;
+    return new Promise<Post>((resolve, reject) => {
+      api
+        .savePost(post)
+        .then(post => resolve(post))
+        .catch(error => {
+          console.error(error);
+          reject(error);
+        });
+    });
   },
   async updateUser(user: User): Promise<any> {
-    const userData = this.getUserData();
-    if (userData) {
-      return api.updateUser(userData, user);
-    } else {
-      return new Promise((resolve, reject) => {
+    return new Promise<any>((resolve, reject) => {
+      const userData = sessionData.getUserData();
+      if (userData) {
+        api
+          .updateUser(userData, user)
+          .then(response => resolve(response))
+          .catch(error => {
+            console.error(error);
+            reject(error);
+          });
+      } else {
         reject("No user data found in session.");
-      });
-    }
+      }
+    });
   },
-  async createNewUser(user: User) {
-    const userData = this.getUserData();
-    if (userData) {
-      return api.createNewUser(userData, user);
-    } else {
-      return new Promise((resolve, reject) => {
+  async createNewUser(user: User): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      const userData = sessionData.getUserData();
+      if (userData) {
+        api
+          .createNewUser(userData, user)
+          .then(response => resolve(response))
+          .catch(error => {
+            console.error(error);
+            reject(error);
+          });
+      } else {
         reject("No user data found in session.");
-      });
-    }
+      }
+    });
   },
   createPost(
     postTitle: string,
@@ -116,7 +141,7 @@ export default {
     imgUrl: string,
     url: string
   ): Post {
-    const authorId = this.getUser()?.userId;
+    const authorId = sessionData.getUser()?.userId;
     if (authorId !== undefined) {
       return {
         title: postTitle,
@@ -131,6 +156,14 @@ export default {
     throw new Error("No author could be found in the session");
   },
   async deletePost(urlName: string): Promise<any> {
-    return api.deletePost(urlName);
+    return new Promise<any>((resolve, reject) => {
+      api
+        .deletePost(urlName)
+        .then(response => resolve(response))
+        .catch(error => {
+          console.error(error);
+          reject(error);
+        });
+    });
   }
 };

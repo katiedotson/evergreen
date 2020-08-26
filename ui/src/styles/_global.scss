@@ -3,7 +3,7 @@ button {
   text-align: center;
   text-decoration: none;
   padding: 16px;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Barlow", sans-serif;
   font-size: smaller;
   text-transform: uppercase;
   border: none;
@@ -24,7 +24,7 @@ a.button {
   color: $dark-blue-grey;
   margin-bottom: 8px;
   padding: 6px;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Barlow", sans-serif;
   font-size: smaller;
   text-transform: uppercase;
   text-align: center;
@@ -50,7 +50,7 @@ div.button {
   background-color: $dark-blue-grey;
   margin-bottom: 8px;
   padding: 16px;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Barlow", sans-serif;
   font-size: smaller;
   text-transform: uppercase;
   text-align: center;
@@ -68,4 +68,9 @@ div.button {
     opacity: 70%;
   }
   transition: 0.5s;
+}
+
+hr {
+  border-top: 1px solid $dirty-snow;
+  border-bottom: none;
 }
