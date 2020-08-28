@@ -39,14 +39,23 @@ export default {
     return this.getSessionItem(this.userKey);
   },
   storeTempFile(publicId: string, type: string) {
-    const storedFiles: string[] = sessionStorage.getItem(`${this.tempImgFileKey}_${type}`)
-      ? JSON.parse(String(sessionStorage.getItem(`${this.tempImgFileKey}_${type}`)))
+    const storedFiles: string[] = sessionStorage.getItem(
+      `${this.tempImgFileKey}_${type}`
+    )
+      ? JSON.parse(
+          String(sessionStorage.getItem(`${this.tempImgFileKey}_${type}`))
+        )
       : [];
     storedFiles.push(publicId);
-    sessionStorage.setItem(`${this.tempImgFileKey}_${type}`, JSON.stringify(storedFiles));
+    sessionStorage.setItem(
+      `${this.tempImgFileKey}_${type}`,
+      JSON.stringify(storedFiles)
+    );
   },
   getTempFiles(type: string) {
-    return JSON.parse(String(sessionStorage.getItem(`${this.tempImgFileKey}_${type}`)));
+    return JSON.parse(
+      String(sessionStorage.getItem(`${this.tempImgFileKey}_${type}`))
+    );
   },
   clearTempFiles(type: string) {
     sessionStorage.removeItem(`${this.tempImgFileKey}_${type}`);
@@ -58,5 +67,5 @@ export default {
     return sessionStorage.getItem(this.initialPostKey)
       ? JSON.parse(String(sessionStorage.getItem(this.initialPostKey)))
       : ({} as Post);
-  }
+  },
 };

@@ -11,7 +11,7 @@ export class BaseAuth {
   signIn(platform: string): Promise<boolean> {
     switch (platform) {
       case "facebook": {
-        return facebookAuth.signIn().then(userData => {
+        return facebookAuth.signIn().then((userData) => {
           if (userData) {
             return session.loadUserData(userData, platform);
           } else {

@@ -3,10 +3,16 @@
     <ErrorCard :show="showError" :message="errorMessage" />
     <ul>
       <li>
-        <a href="#information" :class="{ selected: selectedItem == 'information' }">Information</a>
+        <a
+          href="#information"
+          :class="{ selected: selectedItem == 'information' }"
+          >Information</a
+        >
       </li>
       <li>
-        <a href="#posts" :class="{ selected: selectedItem == 'posts' }">Posts</a>
+        <a href="#posts" :class="{ selected: selectedItem == 'posts' }"
+          >Posts</a
+        >
       </li>
     </ul>
     <div class="account-block">
@@ -25,7 +31,7 @@ import ErrorCard from "./ErrorCard.vue";
 import sessionData from "../session/sessionData";
 
 export default Vue.extend({
-  data: function () {
+  data: function() {
     return {
       userData: {} as User,
       selectedItem: "information",

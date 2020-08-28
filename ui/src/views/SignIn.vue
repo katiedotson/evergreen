@@ -13,8 +13,8 @@ import LoginComponent from "../components/LoginComponent.vue";
 export default Vue.extend({
   components: {
     SearchComponent,
-    LoginComponent
-  }
+    LoginComponent,
+  },
 });
 </script>
 

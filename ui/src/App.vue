@@ -19,13 +19,13 @@ export default {
   components: {
     Navigation,
     PageTitle,
-    LoginCard
+    LoginCard,
   },
   methods: {
     getTitle() {
       return this.$route.name;
-    }
-  }
+    },
+  },
 };
 </script>
 

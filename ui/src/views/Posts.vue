@@ -8,8 +8,8 @@ import PostsComponent from "../components/PostsComponent.vue";
 
 export default Vue.extend({
   components: {
-    PostsComponent
-  }
+    PostsComponent,
+  },
 });
 </script>
 

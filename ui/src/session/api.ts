@@ -15,7 +15,7 @@ export default {
     return new Promise((resolve, reject) => {
       axios
         .get(`getUserPosts?userId=${id}`)
-        .then(res => {
+        .then((res) => {
           if (res.status == 200) {
             resolve(res.data);
           } else reject([]);
@@ -32,7 +32,7 @@ export default {
     return new Promise((resolve, reject) => {
       axios
         .get(`getPost?urlName=${urlName}`)
-        .then(res => {
+        .then((res) => {
           if (res.status == 200) {
             resolve(res.data);
           } else reject(undefined);
@@ -53,7 +53,7 @@ export default {
     return new Promise((resolve, reject) => {
       axios
         .get(`getAuthor?authorId=${userId}`)
-        .then(res => {
+        .then((res) => {
           if (res.status == 200) {
             return resolve(res.data);
           } else reject(undefined);
@@ -75,7 +75,7 @@ export default {
     return new Promise((resolve, reject) => {
       axios
         .get(`getUser?userId=${userData.id}&platform=${platform}`)
-        .then(res => {
+        .then((res) => {
           if (res.status == 200) {
             resolve(res.data);
           } else reject(undefined);
@@ -92,14 +92,14 @@ export default {
     return new Promise((resolve, reject) => {
       axios
         .get(`getPosts`)
-        .then(res => {
+        .then((res) => {
           if (res.status == 200) {
             resolve(res.data);
           } else {
             throw new Error("Non-200 status returned.");
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.error(err);
           reject([]);
         });
@@ -111,9 +111,9 @@ export default {
         .request({
           method: "POST",
           url: "savePost",
-          data: post
+          data: post,
         })
-        .then(res => {
+        .then((res) => {
           if (res.status == 200) {
             resolve(res.data);
           } else {
@@ -132,10 +132,10 @@ export default {
           method: "DELETE",
           url: `deletePost`,
           data: {
-            post
-          }
+            post,
+          },
         })
-        .then(res => {
+        .then((res) => {
           if (res.status == 200) {
             resolve(res.data);
           } else {
@@ -151,9 +151,9 @@ export default {
         .request({
           method: "POST",
           url: "updateUser",
-          data: { userData, user }
+          data: { userData, user },
         })
-        .then(res => {
+        .then((res) => {
           if (res.status == 200) {
             resolve(res.data);
           } else {
@@ -168,9 +168,9 @@ export default {
         .request({
           method: "POST",
           url: "createNewUser",
-          data: { userData, user }
+          data: { userData, user },
         })
-        .then(res => {
+        .then((res) => {
           if (res.status == 200) {
             resolve(res.data);
           } else {
@@ -183,14 +183,14 @@ export default {
     return new Promise<any>((resolve, reject) => {
       publitio
         .uploadFile(file, "file")
-        .then(data => {
+        .then((data) => {
           resolve(data);
         })
-        .catch(error => reject(error));
+        .catch((error) => reject(error));
     });
   },
   deleteImages(ids: string[]) {
-    ids.forEach(id => {
+    ids.forEach((id) => {
       publitio.call(`/files/delete/${id}`, "DELETE");
     });
   },
@@ -198,8 +198,8 @@ export default {
     return new Promise<Post>((resolve, reject) => {
       axios
         .get(`newPost?authorId=${userId}`)
-        .then(res => resolve(res.data))
-        .catch(error => reject(error));
+        .then((res) => resolve(res.data))
+        .catch((error) => reject(error));
     });
   },
   updatePostBanner(img: string, postId: string | undefined): Promise<any> {
@@ -208,9 +208,9 @@ export default {
         .request({
           method: "POST",
           url: "updatePostBanner",
-          data: { img, postId }
+          data: { img, postId },
         })
-        .then(res => {
+        .then((res) => {
           if (res.status == 200) {
             resolve(res.data);
           } else {
@@ -218,5 +218,5 @@ export default {
           }
         });
     });
-  }
+  },
 };

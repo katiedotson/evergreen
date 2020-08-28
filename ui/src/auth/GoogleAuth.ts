@@ -17,7 +17,7 @@ class GoogleAuth implements PluginObject<any> {
   gauthOption = {
     clientId: config.google.client_id,
     scope: "email",
-    prompt: "select_account"
+    prompt: "select_account",
   };
 
   install = () => {
@@ -25,8 +25,8 @@ class GoogleAuth implements PluginObject<any> {
       $gAuth: {
         get: () => {
           return this;
-        }
-      }
+        },
+      },
     });
     this.load();
   };
@@ -86,7 +86,7 @@ class GoogleAuth implements PluginObject<any> {
     return {
       id: googleUser.Da,
       platform: "google",
-      expiration: googleUser.wc.expires_at
+      expiration: googleUser.wc.expires_at,
     };
   };
 

@@ -10,7 +10,7 @@ import UserInformationComponent from "../components/UserInformationComponent.vue
 
 export default Vue.extend({
   components: {
-    UserInformationComponent
-  }
+    UserInformationComponent,
+  },
 });
 </script>

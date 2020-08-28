@@ -8,8 +8,8 @@ import AccountComponent from "../components/AccountComponent.vue";
 
 export default Vue.extend({
   components: {
-    AccountComponent
-  }
+    AccountComponent,
+  },
 });
 </script>
 

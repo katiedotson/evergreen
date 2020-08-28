@@ -18,8 +18,8 @@ class FacebookAuth implements PluginObject<any> {
       $fbAuth: {
         get: () => {
           return this;
-        }
-      }
+        },
+      },
     });
     this.load();
   };
@@ -31,13 +31,13 @@ class FacebookAuth implements PluginObject<any> {
         appId: config.facebook.appId,
         autoLogAppEvents: true,
         xfbml: true,
-        version: "v8.0"
+        version: "v8.0",
       });
     }, 300);
   };
 
   isAuth = () => {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       window.FB.getLoginStatus((response: any) => {
         this.isAuthorized = response.status == "connected";
         resolve(response.status == "connected");
@@ -70,7 +70,7 @@ class FacebookAuth implements PluginObject<any> {
     return {
       id: res.authResponse.userID,
       platform: "facebook",
-      expiration: res.authResponse.data_access_expiration_time
+      expiration: res.authResponse.data_access_expiration_time,
     };
   };
 
@@ -78,7 +78,7 @@ class FacebookAuth implements PluginObject<any> {
    * returns Promise with false value is user is not logged in
    */
   signOut = (): Promise<boolean> => {
-    return this.isAuth().then(isConnected => {
+    return this.isAuth().then((isConnected) => {
       if (isConnected) {
         return new Promise((resolve, reject) => {
           window.FB.logout((res: any) => {

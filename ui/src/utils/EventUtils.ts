@@ -5,5 +5,5 @@ export default {
       cb.bind(element);
       cb();
     }
-  }
+  },
 };

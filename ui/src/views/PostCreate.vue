@@ -9,9 +9,9 @@ import PostEditor from "../components/PostEditorComponent.vue";
 export default Vue.extend({
   props: {
     urlName: {
-      type: String
-    }
+      type: String,
+    },
   },
-  components: { PostEditor }
+  components: { PostEditor },
 });
 </script>

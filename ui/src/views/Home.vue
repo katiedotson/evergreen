@@ -10,8 +10,8 @@ import SearchComponent from "../components/SearchComponent.vue";
 export default Vue.extend({
   components: {
     PostsComponent,
-    SearchComponent
-  }
+    SearchComponent,
+  },
 });
 </script>
 

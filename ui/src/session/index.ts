@@ -9,28 +9,32 @@ export default {
       return new Promise<string>((resolve, reject) => {
         api
           .uploadImage(file)
-          .then(response => {
+          .then((response) => {
             sessionData.storeTempFile(response.id, type);
             if (type == "banner" || type == "profile") {
               const prevPostBanner = sessionData.getInitialPost()?.img;
               const prevPostBannerId = this.cleanImgSrc(prevPostBanner);
-              if (prevPostBannerId.length) this.deleteUnusedImageFile(prevPostBannerId);
+              if (prevPostBannerId.length)
+                this.deleteUnusedImageFile(prevPostBannerId);
             }
             resolve(`https://media.publit.io/file/${response.id}.jpg`);
           })
-          .catch(error => {
+          .catch((error) => {
             console.error(error);
             reject(error);
           });
       });
-    } else throw new Error("Image is not either PNG or JPEG, or user could not be found.");
+    } else
+      throw new Error(
+        "Image is not either PNG or JPEG, or user could not be found."
+      );
   },
   async getAuthor(userId: string): Promise<User> {
     return new Promise<User>((resolve, reject) => {
       api
         .getAuthor(userId)
-        .then(user => resolve(user))
-        .catch(error => {
+        .then((user) => resolve(user))
+        .catch((error) => {
           console.error(error);
           reject(error);
         });
@@ -40,8 +44,8 @@ export default {
     return new Promise<Post[]>((resolve, reject) => {
       api
         .getPosts()
-        .then(posts => resolve(posts))
-        .catch(error => {
+        .then((posts) => resolve(posts))
+        .catch((error) => {
           console.error(error);
           reject(error);
         });
@@ -51,7 +55,7 @@ export default {
     return new Promise((resolve, reject) => {
       api
         .getUser(userData, platform)
-        .then(user => {
+        .then((user) => {
           if (userData && user) {
             sessionData.storeUserData(userData);
             sessionData.storeUser(user);
@@ -73,8 +77,8 @@ export default {
     return new Promise<Post[]>((resolve, reject) => {
       api
         .getUserPosts(id)
-        .then(postArray => resolve(postArray))
-        .catch(error => {
+        .then((postArray) => resolve(postArray))
+        .catch((error) => {
           console.error(error);
           reject(error);
         });
@@ -84,8 +88,8 @@ export default {
     return new Promise<Post>((resolve, reject) => {
       api
         .getPost(urlName)
-        .then(post => resolve(post))
-        .catch(error => {
+        .then((post) => resolve(post))
+        .catch((error) => {
           console.error(error);
           reject(error);
         });
@@ -97,7 +101,7 @@ export default {
     return new Promise<Post>((resolve, reject) => {
       api
         .savePost(post)
-        .then(post => {
+        .then((post) => {
           if (post) {
             this.deleteUnusedImageFiles(post);
             sessionData.clearTempFiles("post");
@@ -105,7 +109,7 @@ export default {
             resolve(post);
           }
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
           reject(error);
         });
@@ -117,10 +121,10 @@ export default {
       if (postId === undefined) reject("No Post id");
       api
         .updatePostBanner(img, postId)
-        .then(result => {
+        .then((result) => {
           resolve(result);
         })
-        .catch(error => {
+        .catch((error) => {
           reject(error);
         });
     });
@@ -131,8 +135,8 @@ export default {
       if (userData) {
         api
           .updateUser(userData, user)
-          .then(response => resolve(response))
-          .catch(error => {
+          .then((response) => resolve(response))
+          .catch((error) => {
             console.error(error);
             reject(error);
           });
@@ -147,8 +151,8 @@ export default {
       if (userData) {
         api
           .createNewUser(userData, user)
-          .then(response => resolve(response))
-          .catch(error => {
+          .then((response) => resolve(response))
+          .catch((error) => {
             console.error(error);
             reject(error);
           });
@@ -161,11 +165,11 @@ export default {
     return new Promise<any>((resolve, reject) => {
       api
         .deletePost(post)
-        .then(response => {
+        .then((response) => {
           this.deleteAllImageFiles(post);
           resolve(response);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
           reject(error);
         });
@@ -192,13 +196,17 @@ export default {
     if (initialPost && initialPost.body !== "") {
       const imagesInInitialPost = this.findImagesInPost(initialPost.body);
       if (imagesInInitialPost.length) {
-        const imagesNotUsed = imagesInInitialPost.filter(src => !imgsInPost.includes(src));
+        const imagesNotUsed = imagesInInitialPost.filter(
+          (src) => !imgsInPost.includes(src)
+        );
         api.deleteImages(imagesNotUsed);
       }
     }
 
     if (imagesUploaded) {
-      const imagesNotUsed = imagesUploaded.filter(src => !imgsInPost.includes(src));
+      const imagesNotUsed = imagesUploaded.filter(
+        (src) => !imgsInPost.includes(src)
+      );
       api.deleteImages(imagesNotUsed);
     }
   },
@@ -229,14 +237,14 @@ export default {
       const userId = sessionData.getUser()?.userId;
       api
         .getBlankPost(userId)
-        .then(post => {
+        .then((post) => {
           resolve(post);
         })
-        .catch(error => {
+        .catch((error) => {
           reject(error);
         });
     });
-  }
+  },
 };
 
 /**

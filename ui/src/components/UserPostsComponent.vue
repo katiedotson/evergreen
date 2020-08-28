@@ -7,10 +7,14 @@
       <a href="../create" class="new-post-button button">New Post</a>
       <div class="user-post" v-for="post in posts" v-bind:key="post.title">
         <div class="title">{{ post.title }}</div>
-        <a class="url-name" :href="'../post/' + post.urlName">{{ post.urlName }}</a>
+        <a class="url-name" :href="'../post/' + post.urlName">{{
+          post.urlName
+        }}</a>
         <div class="edit-button-wrapper">
           <a class="button edit" :href="'../edit-post/' + post.urlName">Edit</a>
-          <a class="button delete" :href="'../delete-post/' + post.urlName">Delete</a>
+          <a class="button delete" :href="'../delete-post/' + post.urlName"
+            >Delete</a
+          >
         </div>
       </div>
     </div>
@@ -40,6 +44,7 @@ export default Vue.extend({
         this.isLoading = false;
       })
       .catch(() => {
+        this.isLoading = false;
         this.showError = true;
         this.errorMessage = "Could  not load posts.";
       });
