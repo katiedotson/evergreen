@@ -8,32 +8,26 @@
       <div class="field-wrapper" :class="{ 'form-group--error': $v.user.email.$error }">
         <label for="email">Email</label>
         <input id="email" v-model.trim="$v.user.email.$model" />
-        <div class="error" v-if="!$v.user.email.required">
-          Field is required
-        </div>
-        <div class="error" v-if="!$v.user.email.email">
-          Please enter a valid email address
-        </div>
+        <div class="error" v-if="!$v.user.email.required">Field is required</div>
+        <div class="error" v-if="!$v.user.email.email">Please enter a valid email address</div>
       </div>
       <div class="field-wrapper" :class="{ 'form-group--error': $v.user.firstName.$error }">
         <label for="firstName">First Name</label>
         <input id="firstName" v-model.trim="$v.user.firstName.$model" />
-        <div class="error" v-if="!$v.user.firstName.required">
-          Field is required
-        </div>
-        <div class="error" v-if="!$v.user.firstName.minLength">
-          Minimum length: {{ $v.user.firstName.$params.minLength.min }} characters
-        </div>
+        <div class="error" v-if="!$v.user.firstName.required">Field is required</div>
+        <div
+          class="error"
+          v-if="!$v.user.firstName.minLength"
+        >Minimum length: {{ $v.user.firstName.$params.minLength.min }} characters</div>
       </div>
       <div class="field-wrapper" :class="{ 'form-group--error': $v.user.lastName.$error }">
         <label for="lastName">Last Name</label>
         <input id="lastName" v-model.trim="$v.user.lastName.$model" />
-        <div class="error" v-if="!$v.user.lastName.required">
-          Field is required
-        </div>
-        <div class="error" v-if="!$v.user.lastName.minLength">
-          Minimum length: {{ $v.user.lastName.$params.minLength.min }} characters
-        </div>
+        <div class="error" v-if="!$v.user.lastName.required">Field is required</div>
+        <div
+          class="error"
+          v-if="!$v.user.lastName.minLength"
+        >Minimum length: {{ $v.user.lastName.$params.minLength.min }} characters</div>
       </div>
       <div class="field-wrapper">
         <label for="location">Location</label>
@@ -52,9 +46,12 @@
         <input type="file" id="img" @change="processFile($event)" />
       </div>
       <div class="button" @click="openUserCard" v-if="!this.firstTime">View User Card</div>
-      <button class="submit" type="submit" @click="submit" :disabled="this.$v.$invalid">
-        {{ getSubmitBtnText }}
-      </button>
+      <button
+        class="submit"
+        type="submit"
+        @click="submit"
+        :disabled="this.$v.$invalid"
+      >{{ getSubmitBtnText }}</button>
     </div>
     <UserCardModal :user="this.user" v-on:close-modal="showUserCard = false" :show="showUserCard" />
   </div>
@@ -67,7 +64,12 @@ import Loader from "./Loader.vue";
 import UserCardModal from "./AuthorCardModal.vue";
 import ErrorCard from "./ErrorCard.vue";
 import { validationMixin } from "vuelidate";
-import { required, minLength, maxLength, email } from "vuelidate/lib/validators";
+import {
+  required,
+  minLength,
+  maxLength,
+  email,
+} from "vuelidate/lib/validators";
 import { HTMLInputEvent } from "@/types";
 import { User } from "../types";
 import session from "../session";
@@ -76,14 +78,14 @@ import sessionData from "../session/sessionData";
 export default Vue.extend({
   props: {
     firstTime: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   components: {
     AccountHeading,
     UserCardModal,
     Loader,
-    ErrorCard
+    ErrorCard,
   },
   data() {
     return {
@@ -92,7 +94,7 @@ export default Vue.extend({
       isLoading: true,
       showError: false,
       errorMessage: "",
-      submitBtnText: "Submit"
+      submitBtnText: "Submit",
     };
   },
   mounted() {
@@ -103,19 +105,19 @@ export default Vue.extend({
     user: {
       email: {
         required,
-        email
+        email,
       },
       firstName: {
         required,
         minLength: minLength(4),
-        maxLength: maxLength(30)
+        maxLength: maxLength(30),
       },
       lastName: {
         required,
         minLength: minLength(4),
-        maxLength: maxLength(30)
-      }
-    }
+        maxLength: maxLength(30),
+      },
+    },
   },
   methods: {
     getName(): string {
@@ -139,7 +141,7 @@ export default Vue.extend({
           bio: "",
           img: "",
           location: "",
-          occupation: ""
+          occupation: "",
         } as User;
         this.isLoading = false;
       }
@@ -182,10 +184,10 @@ export default Vue.extend({
             this.showError = true;
           });
       }
-    }
+    },
   },
   computed: {
-    getSubmitBtnText: function(): string {
+    getSubmitBtnText: function (): string {
       if (this.$v.$invalid) {
         return "Invalid";
       } else {
@@ -195,8 +197,8 @@ export default Vue.extend({
           return "Update";
         }
       }
-    }
-  }
+    },
+  },
 });
 </script>
 

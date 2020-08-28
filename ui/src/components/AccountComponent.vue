@@ -5,7 +5,9 @@
       <li>
         <a href="#information" :class="{ selected: selectedItem == 'information' }">Information</a>
       </li>
-      <li><a href="#posts" :class="{ selected: selectedItem == 'posts' }">Posts</a></li>
+      <li>
+        <a href="#posts" :class="{ selected: selectedItem == 'posts' }">Posts</a>
+      </li>
     </ul>
     <div class="account-block">
       <UserInformationComponent v-if="selectedItem == 'information'" />
@@ -23,12 +25,12 @@ import ErrorCard from "./ErrorCard.vue";
 import sessionData from "../session/sessionData";
 
 export default Vue.extend({
-  data: function() {
+  data: function () {
     return {
       userData: {} as User,
       selectedItem: "information",
       errorMessage: "Hmm. Something went wrong.",
-      showError: false
+      showError: false,
     };
   },
   mounted() {
@@ -41,18 +43,18 @@ export default Vue.extend({
   methods: {
     getSelection() {
       return window.location.hash.replace("#", "") || "information";
-    }
+    },
   },
   watch: {
     $route() {
       this.selectedItem = this.getSelection();
-    }
+    },
   },
   components: {
     UserInformationComponent,
     UserPostsComponent,
-    ErrorCard
-  }
+    ErrorCard,
+  },
 });
 </script>
 

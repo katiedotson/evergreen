@@ -6,6 +6,7 @@ export interface Post {
   img: string;
   urlName: string;
   authorId: string;
+  _id?: string;
 }
 
 export interface User {

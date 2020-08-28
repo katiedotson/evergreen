@@ -10,14 +10,14 @@
 <script lang="ts">
 import Vue from "vue";
 export default Vue.extend({
-  data: function() {
+  data: function () {
     return { search: "" };
   },
   methods: {
     submit() {
       console.log(this.search);
-    }
-  }
+    },
+  },
 });
 </script>
 

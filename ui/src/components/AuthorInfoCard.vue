@@ -14,9 +14,9 @@ import Vue from "vue";
 export default Vue.extend({
   props: {
     author: {
-      type: Object
-    }
-  }
+      type: Object,
+    },
+  },
 });
 </script>
 

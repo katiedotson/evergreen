@@ -13,16 +13,16 @@ import AuthorInfoCard from "./AuthorInfoCard.vue";
 export default Vue.extend({
   props: {
     user: {
-      type: Object
+      type: Object,
     },
     show: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   components: {
-    AuthorInfoCard
+    AuthorInfoCard,
   },
-  methods: {}
+  methods: {},
 });
 </script>
 

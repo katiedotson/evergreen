@@ -19,15 +19,15 @@ import AuthorInfoCard from "./AuthorInfoCard.vue";
 export default Vue.extend({
   props: {
     post: {
-      type: Object
+      type: Object,
     },
     author: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   components: {
-    AuthorInfoCard
-  }
+    AuthorInfoCard,
+  },
 });
 </script>
 

@@ -5,7 +5,7 @@ import {
   ExecutableMongoFindCallback,
   ExecutableMongoInsertCallback,
 } from "../types";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectID } from "mongodb";
 import config from "../config/index";
 const mongoConfig = config.mongo;
 
@@ -54,21 +54,14 @@ export default {
     };
     return this.executeFind(getPosts);
   },
-  async saveNewPost(post: Post): Promise<any> {
-    const save = async (client: MongoClient, post: Post) => {
-      await client.db("evergreen").collection("posts").insertOne(post);
-      return post;
-    };
-    return this.executeInsert(save, post);
-  },
-  async updatePost(post: Post, wouldBeUrlName: string): Promise<any> {
+  async updatePost(post: Post): Promise<any> {
     const update = async (client: MongoClient, post: Post) => {
       const newValues = {
         $set: {
           title: post.title,
           tagline: post.tagline,
           body: post.body,
-          urlName: wouldBeUrlName,
+          urlName: post.urlName,
           img: post.img,
           relevance: post.relevance,
         },
@@ -76,8 +69,7 @@ export default {
       await client
         .db("evergreen")
         .collection("posts")
-        .updateOne({ urlName: post.urlName }, newValues);
-      post.urlName = wouldBeUrlName;
+        .updateOne({ _id: new ObjectID(post._id) }, newValues);
       return post;
     };
     return this.executeInsert(update, post);
@@ -120,6 +112,31 @@ export default {
       return user;
     };
     return this.executeInsert(insertUser, user);
+  },
+  async newPost(post: Post): Promise<any> {
+    const newPost = async (client: MongoClient, post: Post) => {
+      const _id = await (
+        await client.db("evergreen").collection("posts").insertOne(post)
+      ).insertedId;
+      post._id = _id;
+      return post;
+    };
+    return this.executeInsert(newPost, post);
+  },
+  async updatePostBanner(img: string, postId: string): Promise<any> {
+    const updatePostBanner = async (client: MongoClient, params: any) => {
+      const newValues = {
+        $set: {
+          img: params.img,
+        },
+      };
+      return await client
+        .db("evergreen")
+        .collection("posts")
+        .updateOne({ _id: new ObjectID(params.postId) }, newValues);
+    };
+
+    return this.executeInsert(updatePostBanner, { img, postId });
   },
   async executeInsert(
     cb: ExecutableMongoInsertCallback,

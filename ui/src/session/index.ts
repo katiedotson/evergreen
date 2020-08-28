@@ -14,7 +14,7 @@ export default {
             if (type == "banner" || type == "profile") {
               const prevPostBanner = sessionData.getInitialPost()?.img;
               const prevPostBannerId = this.cleanImgSrc(prevPostBanner);
-              this.deleteUnusedImageFile(prevPostBannerId);
+              if (prevPostBannerId.length) this.deleteUnusedImageFile(prevPostBannerId);
             }
             resolve(`https://media.publit.io/file/${response.id}.jpg`);
           })
@@ -113,7 +113,16 @@ export default {
   },
   async updatePostBanner(img: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      // api.updatePostBanner()
+      const postId = sessionData.getInitialPost()?._id;
+      if (postId === undefined) reject("No Post id");
+      api
+        .updatePostBanner(img, postId)
+        .then(result => {
+          resolve(result);
+        })
+        .catch(error => {
+          reject(error);
+        });
     });
   },
   async updateUser(user: User): Promise<any> {
@@ -148,16 +157,27 @@ export default {
       }
     });
   },
-  async deletePost(urlName: string): Promise<any> {
+  async deletePost(post: Post): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       api
-        .deletePost(urlName)
-        .then(response => resolve(response))
+        .deletePost(post)
+        .then(response => {
+          this.deleteAllImageFiles(post);
+          resolve(response);
+        })
         .catch(error => {
           console.error(error);
           reject(error);
         });
     });
+  },
+  deleteAllImageFiles(post: Post) {
+    const imgsInPost = this.findImagesInPost(post.body);
+    const imgBanner = this.cleanImgSrc(post.img);
+
+    imgsInPost.push(imgBanner);
+
+    api.deleteImages(imgsInPost);
   },
   deleteUnusedImageFile(imgId: string) {
     api.deleteImages([imgId]);
@@ -203,5 +223,29 @@ export default {
       return imgSrc.substr(lastSlash + 1, lastDot - lastSlash - 1);
     }
     return imgSrc;
+  },
+  getBlankPost(): Promise<Post> {
+    return new Promise<Post>((resolve, reject) => {
+      const userId = sessionData.getUser()?.userId;
+      api
+        .getBlankPost(userId)
+        .then(post => {
+          resolve(post);
+        })
+        .catch(error => {
+          reject(error);
+        });
+    });
   }
 };
+
+/**
+ * Test paths for image deletion
+ *
+ * 1. new & old post - add, delete, save
+ * 2. new & old post - add, save, delete
+ * 3. new & old post - banner, change banner, save
+ * 4. new & old post - banner, save, change banner
+ * 5. user - add new avatar & save
+ * 6. user - add new avatar without saving
+ */

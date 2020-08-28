@@ -21,14 +21,14 @@ export default Vue.extend({
       posts: {} as Post[],
       isLoading: true,
       errorMessage: "",
-      showError: false
+      showError: false,
     };
   },
   methods: {
     loadPosts() {
       session
         .getPosts()
-        .then(posts => {
+        .then((posts) => {
           this.posts = posts;
           this.isLoading = false;
         })
@@ -37,7 +37,7 @@ export default Vue.extend({
           this.isLoading = false;
           this.showError = true;
         });
-    }
+    },
   },
   mounted() {
     this.loadPosts();
@@ -45,8 +45,8 @@ export default Vue.extend({
   components: {
     PostCard,
     Loader,
-    ErrorCard
-  }
+    ErrorCard,
+  },
 });
 </script>
 

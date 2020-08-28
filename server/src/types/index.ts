@@ -15,7 +15,8 @@ export interface Post {
   tagline: string;
   img: string;
   urlName: string;
-  authorId: number;
+  authorId: string;
+  _id?: string;
 }
 
 export interface User {

@@ -4,16 +4,22 @@
     <Loader :isLoading="isLoading" />
     <div class="field-wrapper" :class="{ 'form-group--error': $v.post.title.$error }">
       <label for="titleData">Title</label>
-      <input class="edit-title" type="text" v-model.trim="$v.post.title.$model" id="titleData" />
-      <div class="error" v-if="!$v.post.title.required">
-        Field is required
-      </div>
-      <div class="error" v-if="!$v.post.title.minLength">
-        Minimum length: {{ $v.post.title.$params.minLength.min }} characters
-      </div>
-      <div class="error" v-if="!$v.post.title.maxLength">
-        Maximum length: {{ $v.post.title.$params.maxLength.max }} characters
-      </div>
+      <input
+        class="edit-title"
+        type="text"
+        v-model.trim="$v.post.title.$model"
+        id="titleData"
+        @change="isChangedSinceUpdate = true"
+      />
+      <div class="error" v-if="!$v.post.title.required">Field is required</div>
+      <div
+        class="error"
+        v-if="!$v.post.title.minLength"
+      >Minimum length: {{ $v.post.title.$params.minLength.min }} characters</div>
+      <div
+        class="error"
+        v-if="!$v.post.title.maxLength"
+      >Maximum length: {{ $v.post.title.$params.maxLength.max }} characters</div>
     </div>
     <div class="field-wrapper" :class="{ 'form-group--error': $v.post.tagline.$error }">
       <label for="taglineData">Tagline</label>
@@ -22,16 +28,17 @@
         type="text"
         v-model.trim="$v.post.tagline.$model"
         id="taglineData"
+        @change="isChangedSinceUpdate = true"
       />
-      <div class="error" v-if="!$v.post.tagline.required">
-        Field is required
-      </div>
-      <div class="error" v-if="!$v.post.tagline.minLength">
-        Minimum length: {{ $v.post.tagline.$params.minLength.min }} characters
-      </div>
-      <div class="error" v-if="!$v.post.tagline.maxLength">
-        Maximum length: {{ $v.post.tagline.$params.maxLength.min }} characters
-      </div>
+      <div class="error" v-if="!$v.post.tagline.required">Field is required</div>
+      <div
+        class="error"
+        v-if="!$v.post.tagline.minLength"
+      >Minimum length: {{ $v.post.tagline.$params.minLength.min }} characters</div>
+      <div
+        class="error"
+        v-if="!$v.post.tagline.maxLength"
+      >Maximum length: {{ $v.post.tagline.$params.maxLength.min }} characters</div>
     </div>
     <div class="field-wrapper">
       <label for="imgUrl">Banner</label>
@@ -40,9 +47,7 @@
     </div>
     <editor :value="postBody" v-on:value-input="inputEvent" v-on:img-error="imgErrorEvent"></editor>
     <div class="button-wrapper">
-      <button type="submit" @click="save" :class="{ active: isChangedSinceUpdate }">
-        Submit
-      </button>
+      <button type="submit" @click="save" :class="{ active: isChangedSinceUpdate }">Submit</button>
     </div>
   </div>
 </template>
@@ -67,9 +72,9 @@ export default Vue.extend({
       tagline: {
         required,
         minLength: minLength(10),
-        maxLength: maxLength(100)
-      }
-    }
+        maxLength: maxLength(100),
+      },
+    },
   },
   data() {
     return {
@@ -79,33 +84,40 @@ export default Vue.extend({
       isChangedSinceUpdate: false,
       isLoading: true,
       newImageLoading: false,
-      postBody: ""
+      postBody: "",
     };
   },
   props: {
     urlName: {
-      type: String
+      type: String,
     },
     isNew: {
-      type: Boolean
-    }
+      type: Boolean,
+    },
   },
   mounted() {
     if (!this.isNew) {
       this.loadPost();
+    } else if (this.isNew && !sessionData.getInitialPost()?._id) {
+      this.initialize();
+    } else if (sessionData.getInitialPost()?._id) {
+      this.loadSessionPost();
     } else {
-      this.isLoading = false;
-      this.storeInitialPost();
+      this.showError = true;
+      this.errorMessage = "Could not load post at this time.";
     }
   },
   methods: {
     storeInitialPost() {
       sessionData.storeInitialPost(this.post);
     },
+    loadSessionPost() {
+      this.post = sessionData.getInitialPost();
+    },
     save() {
       session
         .savePost(this.post)
-        .then(post => {
+        .then((post) => {
           this.post.urlName = post.urlName;
           this.isChangedSinceUpdate = false;
           this.storeInitialPost();
@@ -116,14 +128,16 @@ export default Vue.extend({
         });
     },
     loadPost() {
-      session.getPost(this.urlName).then(post => {
+      session.getPost(this.urlName).then((post) => {
         if (post) {
           this.post = post;
           this.postBody = post.body;
           this.isLoading = false;
           this.storeInitialPost();
         } else {
-          throw new Error("No post was found");
+          this.isLoading = false;
+          this.showError = true;
+          this.errorMessage = "Could not load post at this time.";
         }
       });
     },
@@ -134,9 +148,11 @@ export default Vue.extend({
         session
           .storeImage(file, "banner")
           .then((location: string) => {
-            this.post.img = location;
-            this.isChangedSinceUpdate = true;
-            this.newImageLoading = false;
+            session.updatePostBanner(location).then(() => {
+              this.post.img = location;
+              this.newImageLoading = false;
+              this.storeInitialPost();
+            });
           })
           .catch(() => {
             this.imgErrorEvent();
@@ -154,13 +170,27 @@ export default Vue.extend({
     inputEvent(value: string) {
       this.isChangedSinceUpdate = true;
       this.post.body = value;
-    }
+    },
+    initialize() {
+      session
+        .getBlankPost()
+        .then((post) => {
+          this.post = post;
+          this.isLoading = false;
+          this.storeInitialPost();
+        })
+        .catch(() => {
+          this.isLoading = false;
+          this.showError = true;
+          this.errorMessage = "Unable to initialize post.";
+        });
+    },
   },
   components: {
     Editor,
     ErrorCard,
-    Loader
-  }
+    Loader,
+  },
 });
 </script>
 

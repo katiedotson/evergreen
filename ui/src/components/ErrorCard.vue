@@ -12,22 +12,22 @@ import Vue from "vue";
 export default Vue.extend({
   data() {
     return {
-      closed: false
+      closed: false,
     };
   },
   props: {
     show: {
-      type: Boolean
+      type: Boolean,
     },
     message: {
-      type: String
-    }
+      type: String,
+    },
   },
   methods: {
     hide() {
       this.closed = true;
-    }
-  }
+    },
+  },
 });
 </script>
 

@@ -29,13 +29,13 @@ export default Vue.extend({
       posts: {},
       isLoading: true,
       showError: false,
-      errorMessage: ""
+      errorMessage: "",
     };
   },
   mounted() {
     session
       .getUserPosts()
-      .then(posts => {
+      .then((posts) => {
         this.posts = posts;
         this.isLoading = false;
       })
@@ -47,8 +47,8 @@ export default Vue.extend({
   components: {
     AccountHeading,
     Loader,
-    ErrorCard
-  }
+    ErrorCard,
+  },
 });
 </script>
 

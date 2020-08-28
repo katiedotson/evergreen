@@ -4,6 +4,8 @@ import services from "./service";
 import bodyParser from "body-parser";
 import util from "./util";
 
+import { Post } from "./types";
+
 const jsonParser = bodyParser.json();
 const app = express();
 const port = 5000;
@@ -105,7 +107,7 @@ app.get("/getPosts", (req, res) => {
 });
 
 app.delete("/deletePost", (req, res) => {
-  const urlName = String(req.query.urlName);
+  const urlName = String(req.body.post.urlName);
   services
     .deletePost(urlName)
     .then(() => {
@@ -119,31 +121,48 @@ app.delete("/deletePost", (req, res) => {
 
 app.post("/savePost", (req, res) => {
   const post = req.body;
-  const currentUrlName = post.urlName;
-  const wouldBeUrlName = util.createUrlNameFromTitle(post.title);
+  post.urlName = util.createUrlNameFromTitle(post.title);
+  services
+    .updatePost(post)
+    .then((result) => {
+      res.status(200).send(result);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send(error);
+    });
+});
 
-  if (currentUrlName == "" || currentUrlName == undefined) {
-    post.urlName = wouldBeUrlName;
-    services
-      .saveNewPost(post)
-      .then((result) => {
-        res.status(200).send(result);
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send(error);
-      });
-  } else {
-    services
-      .updatePost(post, wouldBeUrlName)
-      .then((result) => {
-        res.status(200).send(result);
-      })
-      .catch((error) => {
-        console.error(error);
-        res.status(500).send(error);
-      });
-  }
+app.get("/newPost", (req, res) => {
+  const authorId = String(req.query.authorId);
+  const post: Post = {
+    title: "",
+    tagline: "",
+    img: "",
+    body: "",
+    authorId,
+    relevance: 0,
+    urlName: "",
+  };
+  services
+    .newPost(post)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((error) => res.status(500).send(error));
+});
+
+app.post("/updatePostBanner", (req, res) => {
+  const img = String(req.body.img);
+  const postId = String(req.body.postId);
+  services
+    .updatePostBanner(img, postId)
+    .then((result) => {
+      res.send(result);
+    })
+    .catch((error) => {
+      res.status(500).send(error);
+    });
 });
 
 app.listen(port, () => {
