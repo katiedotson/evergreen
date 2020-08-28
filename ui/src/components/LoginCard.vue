@@ -7,19 +7,22 @@ import Vue from "vue";
 import baseAuth from "../auth/BaseAuth";
 
 export default Vue.extend({
-  data: function() {
+  data: function () {
     return {
-      isLoggedOut: true
+      isLoggedOut: true,
     };
   },
   computed: {
     isLoginPage() {
-      return window.location.pathname == "/sign-in" || window.location.pathname == "/account";
-    }
+      return (
+        window.location.pathname == "/sign-in" ||
+        window.location.pathname == "/account"
+      );
+    },
   },
   mounted() {
     this.isLoggedOut = !baseAuth.userIsAuth();
-  }
+  },
 });
 </script>
 

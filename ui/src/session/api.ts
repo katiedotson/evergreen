@@ -125,12 +125,15 @@ export default {
         });
     });
   },
-  deletePost(urlName: string): Promise<any> {
+  deletePost(post: Post): Promise<any> {
     return new Promise((resolve, reject) => {
       axios
         .request({
           method: "DELETE",
-          url: `deletePost?urlName=${urlName}`
+          url: `deletePost`,
+          data: {
+            post
+          }
         })
         .then(res => {
           if (res.status == 200) {
@@ -188,8 +191,32 @@ export default {
   },
   deleteImages(ids: string[]) {
     ids.forEach(id => {
-      console.log(id);
       publitio.call(`/files/delete/${id}`, "DELETE");
+    });
+  },
+  getBlankPost(userId: string): Promise<Post> {
+    return new Promise<Post>((resolve, reject) => {
+      axios
+        .get(`newPost?authorId=${userId}`)
+        .then(res => resolve(res.data))
+        .catch(error => reject(error));
+    });
+  },
+  updatePostBanner(img: string, postId: string | undefined): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      axios
+        .request({
+          method: "POST",
+          url: "updatePostBanner",
+          data: { img, postId }
+        })
+        .then(res => {
+          if (res.status == 200) {
+            resolve(res.data);
+          } else {
+            reject(undefined);
+          }
+        });
     });
   }
 };

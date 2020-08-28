@@ -6,17 +6,16 @@
       v-on:keyup="keyboardEvent"
       class="material-icons menu-icon menu"
       tabindex="200"
-      >menu</i
-    >
+    >menu</i>
     <div class="nav-links" :class="!shown ? 'hide' : ''" @click="toggleShown">
-      <router-link to="/"><i class="material-icons menu-icon menu-item">home</i></router-link>
+      <router-link to="/">
+        <i class="material-icons menu-icon menu-item">home</i>
+      </router-link>
       <router-link to="/about">About</router-link>
       <router-link to="/posts">Posts</router-link>
       <router-link to="/account" v-if="userIsAuth">Account</router-link>
       <router-link to="/sign-in" v-if="!userIsAuth">Sign&nbsp;In</router-link>
-      <div v-if="userIsAuth" v-on:click="logOut" tabindex="1">
-        Log&nbsp;Out
-      </div>
+      <div v-if="userIsAuth" v-on:click="logOut" tabindex="1">Log&nbsp;Out</div>
     </div>
   </nav>
 </template>
@@ -27,7 +26,7 @@ import EventUtils from "../utils/EventUtils";
 import baseAuth from "../auth/BaseAuth";
 
 export default Vue.extend({
-  data: function() {
+  data: function () {
     return { shown: false, userIsAuth: false };
   },
   methods: {
@@ -54,11 +53,11 @@ export default Vue.extend({
         .then(() => {
           this.processLogOut();
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
           this.processLogOut();
         });
-    }
+    },
   },
   mounted() {
     this.userIsAuth = this.getIsUserAuthenticated();
@@ -69,7 +68,7 @@ export default Vue.extend({
     //   // const reload = to.path == from.path;
     //   // if (notPostsToPost && !reload) this.toggleShown();
     // }
-  }
+  },
 });
 </script>
 
@@ -85,7 +84,11 @@ nav {
     width: 100%;
     font-size: x-large;
     transition: width 0.6s ease-in-out;
-    background-image: linear-gradient(to top, $seafoam-green 10%, $forestgreen 90%);
+    background-image: linear-gradient(
+      to top,
+      $seafoam-green 10%,
+      $forestgreen 90%
+    );
     overflow: hidden;
     height: 100%;
     z-index: 1;

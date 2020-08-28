@@ -15,8 +15,8 @@ import Vue from "vue";
 export default Vue.extend({
   props: {
     post: {
-      type: Object
-    }
+      type: Object,
+    },
   },
   methods: {
     redirectToPost(urlName: string) {
@@ -24,8 +24,8 @@ export default Vue.extend({
     },
     abbreviate(postBody: string) {
       return postBody.substring(0, 200).concat("...");
-    }
-  }
+    },
+  },
 });
 </script>
 

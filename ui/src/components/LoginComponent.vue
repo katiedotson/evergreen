@@ -5,12 +5,10 @@
       <div class="wrapper" v-if="!isAuth">
         <div id="login-logo"></div>
         <div id="google" class="login-button" v-on:click="authenticateGmail">
-          <div class="login-icon g-icon"></div>
-          Sign in with Google
+          <div class="login-icon g-icon"></div>Sign in with Google
         </div>
         <div id="facebook" class="login-button" v-on:click="authenticateFacebook">
-          <div class="login-icon fb-icon"></div>
-          Sign in with Facebook
+          <div class="login-icon fb-icon"></div>Sign in with Facebook
         </div>
       </div>
       <br />
@@ -28,13 +26,13 @@ import baseAuth from "../auth/BaseAuth";
 import ErrorCard from "./ErrorCard.vue";
 
 export default Vue.extend({
-  data: function() {
+  data: function () {
     return {
       isAuth: false,
       baseAuth: baseAuth,
       showError: false,
       errorMessage: "",
-      platform: ""
+      platform: "",
     };
   },
   mounted() {
@@ -75,15 +73,15 @@ export default Vue.extend({
         .then(() => {
           this.processLogOut();
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error);
           this.processLogOut();
         });
-    }
+    },
   },
   components: {
-    ErrorCard
-  }
+    ErrorCard,
+  },
 });
 </script>
 

@@ -17,24 +17,24 @@ import { Post } from "../types";
 import session from "../session";
 
 export default Vue.extend({
-  data: function() {
+  data: function () {
     return { post: {} as Post, isLoading: true };
   },
   props: {
     urlName: {
-      type: String
-    }
+      type: String,
+    },
   },
   components: {
     PostView,
-    Loader
+    Loader,
   },
   mounted() {
     this.loadPost();
   },
   methods: {
     loadPost() {
-      session.getPost(this.urlName).then(post => {
+      session.getPost(this.urlName).then((post) => {
         if (post) {
           this.post = post;
           this.isLoading = false;
@@ -42,14 +42,14 @@ export default Vue.extend({
       });
     },
     deletePost() {
-      session.deletePost(this.urlName).then(res => {
+      session.deletePost(this.post).then((res) => {
         if (res) {
           router.push("/account#posts");
         }
       });
-    }
+    },
   },
-  router
+  router,
 });
 </script>
 

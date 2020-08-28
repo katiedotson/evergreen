@@ -10,8 +10,8 @@ export default {
   props: {
     value: {
       type: String,
-      default: ""
-    }
+      default: "",
+    },
   },
   mounted() {
     setTimeout(() => {
@@ -23,20 +23,23 @@ export default {
   },
   methods: {
     update() {
-      this.$emit("value-input", this.$refs.editor.querySelector(".ql-editor").innerHTML);
+      this.$emit(
+        "value-input",
+        this.$refs.editor.querySelector(".ql-editor").innerHTML
+      );
     },
     imageUpload() {
       const input = document.createElement("input");
       input.setAttribute("type", "file");
       input.setAttribute("accept", "image/*");
       input.click();
-      const handleUpload = async input => {
+      const handleUpload = async (input) => {
         if (input !== null) {
           const file = input.files.item(0);
           if (file) {
             session
               .storeImage(file, "postBody")
-              .then(fileLocation => {
+              .then((fileLocation) => {
                 const range = this.editor.getSelection();
                 this.editor.insertEmbed(range.index, "image", fileLocation);
               })
@@ -50,7 +53,7 @@ export default {
       input.onchange = () => {
         handleUpload(input);
       };
-    }
+    },
   },
   data() {
     return {
@@ -66,13 +69,13 @@ export default {
             ["blockquote", "code-block"],
             [{ list: "ordered" }, { list: "bullet" }, { align: [] }],
             ["link", "image"],
-            [{ direction: "rtl" }]
-          ]
+            [{ direction: "rtl" }],
+          ],
         },
-        theme: "snow"
-      }
+        theme: "snow",
+      },
     };
-  }
+  },
 };
 </script>
 
