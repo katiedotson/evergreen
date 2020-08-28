@@ -56,6 +56,7 @@ import { validationMixin } from "vuelidate";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 import { HTMLInputEvent } from "@/types";
 import session from "../session";
+import sessionData from "../session/sessionData";
 import { Post } from "../types";
 
 export default Vue.extend({
@@ -94,15 +95,20 @@ export default Vue.extend({
       this.loadPost();
     } else {
       this.isLoading = false;
+      this.storeInitialPost();
     }
   },
   methods: {
+    storeInitialPost() {
+      sessionData.storeInitialPost(this.post);
+    },
     save() {
       session
         .savePost(this.post)
-        .then(res => {
-          if (!res) throw new Error("No response ");
+        .then(post => {
+          this.post.urlName = post.urlName;
           this.isChangedSinceUpdate = false;
+          this.storeInitialPost();
         })
         .catch(() => {
           this.showError = true;
@@ -115,6 +121,7 @@ export default Vue.extend({
           this.post = post;
           this.postBody = post.body;
           this.isLoading = false;
+          this.storeInitialPost();
         } else {
           throw new Error("No post was found");
         }
@@ -125,7 +132,7 @@ export default Vue.extend({
         const file = event.target.files[0];
         this.newImageLoading = true;
         session
-          .storeImage(file)
+          .storeImage(file, "banner")
           .then((location: string) => {
             this.post.img = location;
             this.isChangedSinceUpdate = true;

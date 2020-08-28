@@ -148,7 +148,7 @@ export default Vue.extend({
       if (event && event.target && event.target.files) {
         const file = event.target.files[0];
         session
-          .storeImage(file)
+          .storeImage(file, "profile")
           .then((location: string) => {
             this.user.img = location;
           })

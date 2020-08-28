@@ -3,18 +3,20 @@ import api from "./api";
 import sessionData from "./sessionData";
 
 export default {
-  async storeImage(file: File): Promise<string> {
+  async storeImage(file: File, type: string): Promise<string> {
     const fileType = file.type.toLowerCase();
-    const userId = sessionData.getUser()?.userId;
-    if (fileType.includes("png") || (fileType.includes("jpeg") && userId)) {
-      const timestamp = new Date().getTime();
+    if (fileType.includes("png") || fileType.includes("jpeg")) {
       return new Promise<string>((resolve, reject) => {
-        const publicId = `${userId}-${timestamp}`;
         api
-          .uploadImage(file, publicId)
-          .then(imgUrl => {
-            sessionData.storeTempFile(publicId);
-            resolve(imgUrl);
+          .uploadImage(file)
+          .then(response => {
+            sessionData.storeTempFile(response.id, type);
+            if (type == "banner" || type == "profile") {
+              const prevPostBanner = sessionData.getInitialPost()?.img;
+              const prevPostBannerId = this.cleanImgSrc(prevPostBanner);
+              this.deleteUnusedImageFile(prevPostBannerId);
+            }
+            resolve(`https://media.publit.io/file/${response.id}.jpg`);
           })
           .catch(error => {
             console.error(error);
@@ -95,11 +97,23 @@ export default {
     return new Promise<Post>((resolve, reject) => {
       api
         .savePost(post)
-        .then(post => resolve(post))
+        .then(post => {
+          if (post) {
+            this.deleteUnusedImageFiles(post);
+            sessionData.clearTempFiles("post");
+            sessionData.storeInitialPost(post);
+            resolve(post);
+          }
+        })
         .catch(error => {
           console.error(error);
           reject(error);
         });
+    });
+  },
+  async updatePostBanner(img: string): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      // api.updatePostBanner()
     });
   },
   async updateUser(user: User): Promise<any> {
@@ -134,27 +148,6 @@ export default {
       }
     });
   },
-  createPost(
-    postTitle: string,
-    postBody: string,
-    postTagline: string,
-    imgUrl: string,
-    url: string
-  ): Post {
-    const authorId = sessionData.getUser()?.userId;
-    if (authorId !== undefined) {
-      return {
-        title: postTitle,
-        body: postBody,
-        relevance: 0,
-        tagline: postTagline,
-        img: imgUrl,
-        urlName: url,
-        authorId
-      };
-    }
-    throw new Error("No author could be found in the session");
-  },
   async deletePost(urlName: string): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       api
@@ -165,5 +158,50 @@ export default {
           reject(error);
         });
     });
+  },
+  deleteUnusedImageFile(imgId: string) {
+    api.deleteImages([imgId]);
+  },
+  deleteUnusedImageFiles(post: Post) {
+    const imgsInPost: string[] = this.findImagesInPost(post.body);
+
+    const imagesUploaded: string[] = sessionData.getTempFiles("post");
+
+    //always check if images were deleted
+    const initialPost = sessionData.getInitialPost();
+    if (initialPost && initialPost.body !== "") {
+      const imagesInInitialPost = this.findImagesInPost(initialPost.body);
+      if (imagesInInitialPost.length) {
+        const imagesNotUsed = imagesInInitialPost.filter(src => !imgsInPost.includes(src));
+        api.deleteImages(imagesNotUsed);
+      }
+    }
+
+    if (imagesUploaded) {
+      const imagesNotUsed = imagesUploaded.filter(src => !imgsInPost.includes(src));
+      api.deleteImages(imagesNotUsed);
+    }
+  },
+  findImagesInPost(postBody: string): string[] {
+    const elem = document.createElement("div");
+    elem.innerHTML = postBody;
+
+    const images: any = elem.getElementsByTagName("img");
+
+    const srcs: string[] = [];
+    images.forEach((img: HTMLImageElement) => {
+      const imgSrc = this.cleanImgSrc(img.src);
+      srcs.push(imgSrc);
+    });
+
+    return srcs;
+  },
+  cleanImgSrc(imgSrc: string): string {
+    if (imgSrc.includes("http")) {
+      const lastSlash = imgSrc.lastIndexOf("/");
+      const lastDot = imgSrc.lastIndexOf(".");
+      return imgSrc.substr(lastSlash + 1, lastDot - lastSlash - 1);
+    }
+    return imgSrc;
   }
 };
