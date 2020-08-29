@@ -79,9 +79,6 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  console.log("BEFORE");
-  console.log(to);
-  console.log(from);
   if (to.matched.some((route) => route.meta.requiresAuth)) {
     if (baseAuth.userIsAuth()) {
       if (from.path.includes("create") || from.path.includes("edit")) {

@@ -4,16 +4,24 @@
     <Loader :show="isLoading" />
     <ErrorCard :show="showError" :message="errorMessage" />
     <div v-if="!isLoading">
-      <a href="/create" class="new-post-button button">New Post</a>
+      <router-link to="/create" class="new-post-button button"
+        >New Post</router-link
+      >
       <div class="user-post" v-for="post in posts" v-bind:key="post.title">
         <div class="title">{{ post.title }}</div>
         <a class="url-name" :href="'../post/' + post.urlName">{{
           post.urlName
         }}</a>
         <div class="edit-button-wrapper">
-          <a class="button edit" :href="'../edit-post/' + post.urlName">Edit</a>
-          <a class="button delete" :href="'../delete-post/' + post.urlName"
-            >Delete</a
+          <router-link
+            class="button edit  "
+            :to="`../edit-post/${post.urlName}`"
+            >Edit</router-link
+          >
+          <router-link
+            class="button delete"
+            :to="`../delete-post/${post.urlName}`"
+            >Delete</router-link
           >
         </div>
       </div>
@@ -27,6 +35,7 @@ import AccountHeading from "./AccountHeading.vue";
 import ErrorCard from "./ErrorCard.vue";
 import Loader from "./Loader.vue";
 import session from "../session";
+
 export default Vue.extend({
   data() {
     return {
