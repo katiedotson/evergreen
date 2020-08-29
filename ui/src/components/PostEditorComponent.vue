@@ -275,9 +275,6 @@ div.editor-wrapper.form {
       background-color: $forestgreen;
       color: $smoke;
     }
-    // &:disabled {
-    //   background-color: $firetruck;
-    // }
   }
 }
 </style>

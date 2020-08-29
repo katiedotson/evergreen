@@ -2,8 +2,13 @@
   <div>
     <ErrorCard :show="showError" :message="errorMessage" />
     <Loader :show="isLoading" />
-    <PostView v-bind:post="post" v-bind:author="author" v-if="!isLoading" />
-    <PostNotFound v-if="postNotFound" />
+    <div v-if="!isLoading">
+      <PostView v-bind:post="post" v-bind:author="undefined" />
+      <div class="button-wrapper">
+        <button class="unpublish" @click="unpublishPost">unpublish</button>
+        <button class="cancel" @click="cancel">Cancel</button>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -13,19 +18,16 @@ import router from "../router";
 import PostView from "../components/PostViewComponent.vue";
 import Loader from "../components/Loader.vue";
 import ErrorCard from "../components/ErrorCard.vue";
-import PostNotFound from "../components/PostNotFoundComponent.vue";
-import { Post, User } from "../types";
+import { Post } from "../types";
 import session from "../session";
 
 export default Vue.extend({
-  data() {
+  data: function() {
     return {
       post: {} as Post,
-      author: {} as User,
       isLoading: true,
       showError: false,
       errorMessage: "",
-      postNotFound: false,
     };
   },
   props: {
@@ -37,7 +39,6 @@ export default Vue.extend({
     PostView,
     Loader,
     ErrorCard,
-    PostNotFound,
   },
   mounted() {
     this.loadPost();
@@ -49,7 +50,7 @@ export default Vue.extend({
         .then((post) => {
           if (post) {
             this.post = post;
-            this.loadAuthor();
+            this.isLoading = false;
           } else {
             this.postLoadError();
           }
@@ -62,29 +63,45 @@ export default Vue.extend({
       this.isLoading = false;
       this.showError = true;
       this.errorMessage = "Could not load post.";
-      this.postNotFound = true;
     },
-    loadAuthor() {
+    unpublishPost() {
       session
-        .getAuthor(this.post.authorId)
-        .then((author) => {
-          if (author) {
-            this.author = author;
-            this.isLoading = false;
+        .unpublishPost(this.post)
+        .then((res) => {
+          if (res) {
+            router.push("/account#posts");
           } else {
-            this.authorLoadError();
+            this.unpublishError();
           }
         })
         .catch(() => {
-          this.authorLoadError();
+          this.unpublishError();
         });
     },
-    authorLoadError() {
-      this.isLoading = false;
+    cancel() {
+      this.$router.push("/account#posts");
+    },
+    unpublishError() {
       this.showError = true;
-      this.errorMessage = "Could not load author.";
+      this.errorMessage = "Could not unpublish post at this time.";
     },
   },
   router,
 });
 </script>
+
+<style lang="scss" scoped>
+@import "../styles/global.scss";
+
+div.button-wrapper {
+  margin-top: 20px;
+  width: 100%;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: right;
+  button.unpublish {
+    background-color: $light-blue;
+  }
+}
+</style>

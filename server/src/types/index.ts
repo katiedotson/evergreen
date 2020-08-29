@@ -16,6 +16,7 @@ export interface Post {
   img: string;
   urlName: string;
   authorId: string;
+  published: boolean;
   _id?: string;
 }
 

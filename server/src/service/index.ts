@@ -20,7 +20,17 @@ export default {
     };
     return this.executeFind(findByUserId);
   },
-  async getPostByUrlName(urlName: string): Promise<Post> {
+  async getPostByUrlName(urlName: string, published: boolean): Promise<Post> {
+    const findByUrlName = (client: MongoClient): Promise<Post> => {
+      const result = client
+        .db("evergreen")
+        .collection("posts")
+        .findOne({ urlName, published });
+      return result;
+    };
+    return this.executeFind(findByUrlName);
+  },
+  async getPostByUrlNameRegardless(urlName: string): Promise<Post> {
     const findByUrlName = (client: MongoClient): Promise<Post> => {
       const result = client
         .db("evergreen")
@@ -50,7 +60,11 @@ export default {
   },
   async getRelevantPosts(): Promise<Post[]> {
     const getPosts = (client: MongoClient): Promise<Post[]> => {
-      return client.db("evergreen").collection("posts").find({}).toArray();
+      return client
+        .db("evergreen")
+        .collection("posts")
+        .find({ published: true })
+        .toArray();
     };
     return this.executeFind(getPosts);
   },
@@ -64,6 +78,7 @@ export default {
           urlName: post.urlName,
           img: post.img,
           relevance: post.relevance,
+          published: post.published,
         },
       };
       await client
@@ -137,6 +152,23 @@ export default {
     };
 
     return this.executeInsert(updatePostBanner, { img, postId });
+  },
+  async updatePostPublished(
+    isPublished: boolean,
+    postId: string
+  ): Promise<any> {
+    const updatePostPublished = async (client: MongoClient, params: any) => {
+      const newValues = {
+        $set: {
+          published: params.isPublished,
+        },
+      };
+      return await client
+        .db("evergreen")
+        .collection("posts")
+        .updateOne({ _id: new ObjectID(params.postId) }, newValues);
+    };
+    return this.executeInsert(updatePostPublished, { isPublished, postId });
   },
   async executeInsert(
     cb: ExecutableMongoInsertCallback,

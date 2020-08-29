@@ -82,8 +82,8 @@ nav {
     transition: width 0.6s ease-in-out;
     background-image: linear-gradient(
       to top,
-      $seafoam-green 10%,
-      $forestgreen 90%
+      $x-dark-blue-grey 10%,
+      $dark-blue-grey 90%
     );
     overflow: hidden;
     height: 100%;
@@ -102,7 +102,7 @@ nav {
       cursor: pointer;
       transition: background-color 0.3s, width 0.3s;
       background-color: $smoke;
-      color: $forestgreen;
+      color: $dark-blue-grey;
       padding: 4px;
       width: 75%;
       text-decoration: none;

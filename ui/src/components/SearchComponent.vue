@@ -29,6 +29,8 @@ div.search {
   margin-bottom: 20px;
   .wrapper {
     float: right;
+    height: 20px;
+    line-height: 20px;
     input[type="text"] {
       padding: 8px;
       font-family: "Playfair Display", serif;
@@ -37,8 +39,11 @@ div.search {
       background-color: $smoke;
     }
     button {
-      padding: 8px;
-      opacity: 70%;
+      padding-top: 10px;
+      padding-left: 8px;
+      padding-right: 8px;
+      padding-bottom: 9px;
+      background-color: $dark-blue-grey;
     }
   }
 }

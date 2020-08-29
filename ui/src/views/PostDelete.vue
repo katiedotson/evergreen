@@ -4,7 +4,8 @@
     <Loader :show="isLoading" />
     <div v-if="!isLoading">
       <PostView v-bind:post="post" v-bind:author="undefined" />
-      <button class="deletePost" @click="deletePost">Delete</button>
+      <button class="delete" @click="deletePost">Delete</button>
+      <button class="cancel" @click="cancel">Cancel</button>
     </div>
   </div>
 </template>
@@ -43,7 +44,7 @@ export default Vue.extend({
   methods: {
     loadPost() {
       session
-        .getPost(this.urlName)
+        .getPost(this.urlName, false)
         .then((post) => {
           if (post) {
             this.post = post;
@@ -75,6 +76,9 @@ export default Vue.extend({
           this.deleteError();
         });
     },
+    cancel() {
+      this.$router.push("/account#posts");
+    },
     deleteError() {
       this.showError = true;
       this.errorMessage = "Could not delete post at this time.";
@@ -85,10 +89,11 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-button.deletePost {
+@import "../styles/global.scss";
+
+div.button-wrapper {
   position: sticky;
   bottom: 8px;
   right: 0;
-  background-color: $light-gray;
 }
 </style>

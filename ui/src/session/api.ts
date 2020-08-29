@@ -28,10 +28,24 @@ export default {
    *
    * @param urlName -> returns a post with the given url name
    */
-  getPost(urlName: string): Promise<Post> {
+  getPost(urlName: string, isPublished: boolean | true): Promise<Post> {
     return new Promise((resolve, reject) => {
       axios
-        .get(`getPost?urlName=${urlName}`)
+        .get(`getPost?urlName=${urlName}&published=${isPublished}`)
+        .then((res) => {
+          if (res.status == 200) {
+            resolve(res.data);
+          } else reject(undefined);
+        })
+        .catch(() => {
+          reject(undefined);
+        });
+    });
+  },
+  getPostRegardless(urlName: string): Promise<Post> {
+    return new Promise((resolve, reject) => {
+      axios
+        .get(`getPostRegardless?urlName=${urlName}`)
         .then((res) => {
           if (res.status == 200) {
             resolve(res.data);
@@ -131,6 +145,46 @@ export default {
         .request({
           method: "DELETE",
           url: `deletePost`,
+          data: {
+            post,
+          },
+        })
+        .then((res) => {
+          if (res.status == 200) {
+            resolve(res.data);
+          } else {
+            reject(undefined);
+          }
+        })
+        .catch(() => reject(undefined));
+    });
+  },
+  publishPost(post: Post): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      axios
+        .request({
+          method: "POST",
+          url: `publishPost`,
+          data: {
+            post,
+          },
+        })
+        .then((res) => {
+          if (res.status == 200) {
+            resolve(res.data);
+          } else {
+            reject(undefined);
+          }
+        })
+        .catch(() => reject(undefined));
+    });
+  },
+  unpublishPost(post: Post): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      axios
+        .request({
+          method: "POST",
+          url: `unpublishPost`,
           data: {
             post,
           },

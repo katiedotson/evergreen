@@ -1,5 +1,5 @@
 import Vue from "vue";
-import VueRouter, { RouteConfig, Route } from "vue-router";
+import VueRouter, { RouteConfig } from "vue-router";
 
 import Home from "../views/Home.vue";
 import About from "../views/About.vue";
@@ -11,6 +11,8 @@ import Account from "../views/Account.vue";
 import PostEdit from "../views/PostEdit.vue";
 import PostCreate from "../views/PostCreate.vue";
 import PostDelete from "../views/PostDelete.vue";
+import PostPublish from "../views/PostPublish.vue";
+import PostUnpublish from "../views/PostUnpublish.vue";
 import session from "../session";
 import baseAuth from "../auth/BaseAuth";
 
@@ -66,6 +68,22 @@ const routes: Array<RouteConfig> = [
     path: "/delete-post/:urlName",
     props: true,
     component: PostDelete,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/publish-post/:urlName",
+    props: true,
+    component: PostPublish,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/unpublish-post/:urlName",
+    props: true,
+    component: PostUnpublish,
     meta: {
       requiresAuth: true,
     },

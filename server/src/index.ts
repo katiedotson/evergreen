@@ -28,8 +28,50 @@ app.get("/getUserPosts", (req, res) => {
 
 app.get("/getPost", (req, res) => {
   const urlName = String(req.query.urlName);
+  const isPublished = req.query.published === "true";
   services
-    .getPostByUrlName(urlName)
+    .getPostByUrlName(urlName, isPublished)
+    .then((post) => {
+      res.json(post);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send(error);
+    });
+});
+
+app.get("/getPostRegardless", (req, res) => {
+  const urlName = String(req.query.urlName);
+  services
+    .getPostByUrlNameRegardless(urlName)
+    .then((post) => {
+      res.json(post);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send(error);
+    });
+});
+
+app.post("/publishPost", (req, res) => {
+  const post: Post = req.body.post;
+  post.published = true;
+  services
+    .updatePost(post)
+    .then((post) => {
+      res.json(post);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send(error);
+    });
+});
+
+app.post("/unpublishPost", (req, res) => {
+  const post: Post = req.body.post;
+  post.published = false;
+  services
+    .updatePost(post)
     .then((post) => {
       res.json(post);
     })
@@ -143,6 +185,7 @@ app.get("/newPost", (req, res) => {
     authorId,
     relevance: 0,
     urlName: "",
+    published: false,
   };
   services
     .newPost(post)

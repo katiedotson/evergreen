@@ -1,7 +1,6 @@
 import { Post, User, UserData } from "../types";
 import api from "./api";
 import sessionData from "./sessionData";
-import { Route } from "vue-router";
 
 export default {
   async storeImage(file: File, type: string): Promise<string> {
@@ -85,16 +84,32 @@ export default {
         });
     });
   },
-  async getPost(urlName: string): Promise<Post | undefined> {
-    return new Promise<Post>((resolve, reject) => {
-      api
-        .getPost(urlName)
-        .then((post) => resolve(post))
-        .catch((error) => {
-          console.error(error);
-          reject(error);
-        });
-    });
+  async getPost(
+    urlName: string,
+    published?: boolean
+  ): Promise<Post | undefined> {
+    console.log(published);
+    if (published !== null && published !== undefined) {
+      return new Promise<Post>((resolve, reject) => {
+        api
+          .getPost(urlName, published)
+          .then((post) => resolve(post))
+          .catch((error) => {
+            console.error(error);
+            reject(error);
+          });
+      });
+    } else {
+      return new Promise<Post>((resolve, reject) => {
+        api
+          .getPostRegardless(urlName)
+          .then((post) => resolve(post))
+          .catch((error) => {
+            console.error(error);
+            reject(error);
+          });
+      });
+    }
   },
   async savePost(post: Post): Promise<Post> {
     const userId = sessionData.getUser()?.userId;
@@ -168,6 +183,32 @@ export default {
         .deletePost(post)
         .then((response) => {
           this.deleteAllImageFiles(post);
+          resolve(response);
+        })
+        .catch((error) => {
+          console.error(error);
+          reject(error);
+        });
+    });
+  },
+  publishPost(post: Post): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      api
+        .publishPost(post)
+        .then((response) => {
+          resolve(response);
+        })
+        .catch((error) => {
+          console.error(error);
+          reject(error);
+        });
+    });
+  },
+  unpublishPost(post: Post): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      api
+        .unpublishPost(post)
+        .then((response) => {
           resolve(response);
         })
         .catch((error) => {
