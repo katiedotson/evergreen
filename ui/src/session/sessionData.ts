@@ -68,4 +68,7 @@ export default {
       ? JSON.parse(String(sessionStorage.getItem(this.initialPostKey)))
       : ({} as Post);
   },
+  clearInitialPost(): void {
+    sessionStorage.removeItem(this.initialPostKey);
+  },
 };

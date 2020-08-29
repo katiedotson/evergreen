@@ -1,6 +1,7 @@
 import { Post, User, UserData } from "../types";
 import api from "./api";
 import sessionData from "./sessionData";
+import { Route } from "vue-router";
 
 export default {
   async storeImage(file: File, type: string): Promise<string> {
@@ -244,6 +245,15 @@ export default {
           reject(error);
         });
     });
+  },
+  clearPostData() {
+    const post = sessionData.getInitialPost();
+    if (!post.title) {
+      api.deletePost(post);
+    }
+    sessionData.clearTempFiles("post");
+    sessionData.clearTempFiles("banner");
+    sessionData.clearInitialPost();
   },
 };
 

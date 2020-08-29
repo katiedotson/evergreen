@@ -16,7 +16,8 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "../styles/_global.scss";
 h3 {
   padding-top: 10px;
 }

@@ -31,7 +31,9 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "../styles/global.scss";
+
 div.error-card {
   z-index: 2;
   background-color: $firetruck;

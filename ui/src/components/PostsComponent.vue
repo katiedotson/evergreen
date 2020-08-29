@@ -29,7 +29,7 @@ export default Vue.extend({
       session
         .getPosts()
         .then((posts) => {
-          this.posts = posts;
+          this.posts = posts.filter((post) => post.title.length);
           this.isLoading = false;
         })
         .catch(() => {
@@ -50,7 +50,7 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .posts {
   @include xl {
     grid-template-columns: auto auto auto auto auto;

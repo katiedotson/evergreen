@@ -3,31 +3,50 @@
     <AccountHeading :name="getName()" />
     <Loader :show="isLoading" />
     <ErrorCard :show="showError" :message="errorMessage" />
-    <p v-if="firstTime">Please provide some information for the best experience.</p>
+    <p v-if="firstTime">
+      Please provide some information for the best experience.
+    </p>
     <div class="form" v-if="!isLoading">
-      <div class="field-wrapper" :class="{ 'form-group--error': $v.user.email.$error }">
+      <div
+        class="field-wrapper"
+        :class="{ 'form-group--error': $v.user.email.$error }"
+      >
         <label for="email">Email</label>
         <input id="email" v-model.trim="$v.user.email.$model" />
-        <div class="error" v-if="!$v.user.email.required">Field is required</div>
-        <div class="error" v-if="!$v.user.email.email">Please enter a valid email address</div>
+        <div class="error" v-if="!$v.user.email.required">
+          Field is required
+        </div>
+        <div class="error" v-if="!$v.user.email.email">
+          Please enter a valid email address
+        </div>
       </div>
-      <div class="field-wrapper" :class="{ 'form-group--error': $v.user.firstName.$error }">
+      <div
+        class="field-wrapper"
+        :class="{ 'form-group--error': $v.user.firstName.$error }"
+      >
         <label for="firstName">First Name</label>
         <input id="firstName" v-model.trim="$v.user.firstName.$model" />
-        <div class="error" v-if="!$v.user.firstName.required">Field is required</div>
-        <div
-          class="error"
-          v-if="!$v.user.firstName.minLength"
-        >Minimum length: {{ $v.user.firstName.$params.minLength.min }} characters</div>
+        <div class="error" v-if="!$v.user.firstName.required">
+          Field is required
+        </div>
+        <div class="error" v-if="!$v.user.firstName.minLength">
+          Minimum length:
+          {{ $v.user.firstName.$params.minLength.min }} characters
+        </div>
       </div>
-      <div class="field-wrapper" :class="{ 'form-group--error': $v.user.lastName.$error }">
+      <div
+        class="field-wrapper"
+        :class="{ 'form-group--error': $v.user.lastName.$error }"
+      >
         <label for="lastName">Last Name</label>
         <input id="lastName" v-model.trim="$v.user.lastName.$model" />
-        <div class="error" v-if="!$v.user.lastName.required">Field is required</div>
-        <div
-          class="error"
-          v-if="!$v.user.lastName.minLength"
-        >Minimum length: {{ $v.user.lastName.$params.minLength.min }} characters</div>
+        <div class="error" v-if="!$v.user.lastName.required">
+          Field is required
+        </div>
+        <div class="error" v-if="!$v.user.lastName.minLength">
+          Minimum length:
+          {{ $v.user.lastName.$params.minLength.min }} characters
+        </div>
       </div>
       <div class="field-wrapper">
         <label for="location">Location</label>
@@ -45,15 +64,23 @@
         <label for="img">Avatar</label>
         <input type="file" id="img" @change="processFile($event)" />
       </div>
-      <div class="button" @click="openUserCard" v-if="!this.firstTime">View User Card</div>
+      <div class="button" @click="openUserCard" v-if="!this.firstTime">
+        View User Card
+      </div>
       <button
         class="submit"
         type="submit"
         @click="submit"
         :disabled="this.$v.$invalid"
-      >{{ getSubmitBtnText }}</button>
+      >
+        {{ getSubmitBtnText }}
+      </button>
     </div>
-    <UserCardModal :user="this.user" v-on:close-modal="showUserCard = false" :show="showUserCard" />
+    <UserCardModal
+      :user="this.user"
+      v-on:close-modal="showUserCard = false"
+      :show="showUserCard"
+    />
   </div>
 </template>
 
@@ -70,7 +97,7 @@ import {
   maxLength,
   email,
 } from "vuelidate/lib/validators";
-import { HTMLInputEvent } from "@/types";
+import { HTMLInputEvent } from "../types";
 import { User } from "../types";
 import session from "../session";
 import sessionData from "../session/sessionData";
@@ -187,7 +214,7 @@ export default Vue.extend({
     },
   },
   computed: {
-    getSubmitBtnText: function (): string {
+    getSubmitBtnText: function(): string {
       if (this.$v.$invalid) {
         return "Invalid";
       } else {
@@ -202,7 +229,9 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "../styles/_global.scss";
+
 div.form {
   margin-top: 36px;
   max-width: 560px;

@@ -5,10 +5,16 @@
       <div class="wrapper" v-if="!isAuth">
         <div id="login-logo"></div>
         <div id="google" class="login-button" v-on:click="authenticateGmail">
-          <div class="login-icon g-icon"></div>Sign in with Google
+          <div class="login-icon g-icon"></div>
+          Sign in with Google
         </div>
-        <div id="facebook" class="login-button" v-on:click="authenticateFacebook">
-          <div class="login-icon fb-icon"></div>Sign in with Facebook
+        <div
+          id="facebook"
+          class="login-button"
+          v-on:click="authenticateFacebook"
+        >
+          <div class="login-icon fb-icon"></div>
+          Sign in with Facebook
         </div>
       </div>
       <br />
@@ -26,7 +32,7 @@ import baseAuth from "../auth/BaseAuth";
 import ErrorCard from "./ErrorCard.vue";
 
 export default Vue.extend({
-  data: function () {
+  data: function() {
     return {
       isAuth: false,
       baseAuth: baseAuth,
@@ -85,7 +91,9 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "../styles/global.scss";
+
 div.account-creation {
   max-width: 800px;
   margin: 0 auto;

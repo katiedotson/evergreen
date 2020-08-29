@@ -38,7 +38,7 @@ export default {
           const file = input.files.item(0);
           if (file) {
             session
-              .storeImage(file, "postBody")
+              .storeImage(file, "post")
               .then((fileLocation) => {
                 const range = this.editor.getSelection();
                 this.editor.insertEmbed(range.index, "image", fileLocation);

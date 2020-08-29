@@ -8,6 +8,10 @@ import editor from "./components/Editor.vue";
 Vue.config.productionTip = false;
 Vue.component("editor", editor);
 
+Vue.config.errorHandler = function(err) {
+  console.error(err);
+};
+
 new Vue({
   router,
   gAuth,

@@ -13,7 +13,9 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "../styles/global.scss";
+
 div.loader {
   border: 16px solid $forestgreen;
   border-top: 16px solid $dark-blue-grey;

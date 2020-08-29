@@ -17,7 +17,9 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "../styles/global.scss";
+
 div.title {
   #title-logo {
     float: left;

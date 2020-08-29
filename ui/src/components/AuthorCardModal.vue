@@ -26,7 +26,9 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "../styles/global.scss";
+
 div.modal {
   width: 100vw;
   height: 100vh;

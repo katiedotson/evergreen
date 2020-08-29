@@ -4,7 +4,7 @@
     <Loader :show="isLoading" />
     <ErrorCard :show="showError" :message="errorMessage" />
     <div v-if="!isLoading">
-      <a href="../create" class="new-post-button button">New Post</a>
+      <a href="/create" class="new-post-button button">New Post</a>
       <div class="user-post" v-for="post in posts" v-bind:key="post.title">
         <div class="title">{{ post.title }}</div>
         <a class="url-name" :href="'../post/' + post.urlName">{{
@@ -40,7 +40,7 @@ export default Vue.extend({
     session
       .getUserPosts()
       .then((posts) => {
-        this.posts = posts;
+        this.posts = posts.filter((post) => post.title.length);
         this.isLoading = false;
       })
       .catch(() => {
@@ -57,7 +57,9 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "../styles/global.scss";
+
 div.user-post {
   margin-top: 36px;
   max-width: 560px;

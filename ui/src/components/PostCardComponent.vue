@@ -29,7 +29,9 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "../styles/global.scss";
+
 a.post-card {
   margin-bottom: 10px;
   display: block;

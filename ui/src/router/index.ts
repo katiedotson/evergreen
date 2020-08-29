@@ -1,61 +1,74 @@
 import Vue from "vue";
-import VueRouter, { RouteConfig } from "vue-router";
-import Home from "../views/Home.vue";
+import VueRouter, { RouteConfig, Route } from "vue-router";
 
-Vue.use(VueRouter);
+import Home from "../views/Home.vue";
+import About from "../views/About.vue";
+import Posts from "../views/Posts.vue";
+import Post from "../views/Post.vue";
+import SignIn from "../views/SignIn.vue";
+import NewAccount from "../views/NewAccount.vue";
+import Account from "../views/Account.vue";
+import PostEdit from "../views/PostEdit.vue";
+import PostCreate from "../views/PostCreate.vue";
+import PostDelete from "../views/PostDelete.vue";
+import session from "../session";
+import baseAuth from "../auth/BaseAuth";
 
 const routes: Array<RouteConfig> = [
   {
     path: "/",
-    name: "Evergreen",
     component: Home,
   },
   {
     path: "/about",
-    name: "Evergreen",
-    component: () => import("../views/About.vue"),
+    component: About,
   },
   {
     path: "/posts",
-    name: "Evergreen",
-    component: () => import("../views/Posts.vue"),
+    component: Posts,
   },
   {
     path: "/post/:urlName",
     props: true,
-    component: () => import("../views/Post.vue"),
+    component: Post,
   },
   {
     path: "/sign-in",
-    name: "Sign in",
-    component: () => import("../views/SignIn.vue"),
+    component: SignIn,
   },
   {
     path: "/sign-in/first-time",
-    name: "Create Account",
-    component: () => import("../views/NewAccount.vue"),
+    component: NewAccount,
   },
   {
     path: "/account",
-    name: "Account",
-    component: () => import("../views/Account.vue"),
+    component: Account,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: "/edit-post/:urlName",
     props: true,
-    name: "",
-    component: () => import("../views/PostEdit.vue"),
+    component: PostEdit,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: "/create",
-    name: "Create",
-    component: () => import("../views/PostCreate.vue"),
+    component: PostCreate,
+    meta: {
+      requiresAuth: true,
+    },
   },
   {
     path: "/delete-post/:urlName",
     props: true,
-    name: "Delete",
-    component: () => import("../views/PostDelete.vue"),
+    component: PostDelete,
+    meta: {
+      requiresAuth: true,
+    },
   },
 ];
 
@@ -64,5 +77,27 @@ const router = new VueRouter({
   base: process.env.BASE_URL,
   routes,
 });
+
+router.beforeEach((to, from, next) => {
+  console.log("BEFORE");
+  console.log(to);
+  console.log(from);
+  if (to.matched.some((route) => route.meta.requiresAuth)) {
+    if (baseAuth.userIsAuth()) {
+      if (from.path.includes("create") || from.path.includes("edit")) {
+        session.clearPostData();
+        next();
+      } else next();
+    } else {
+      next({ path: "/sign-in" });
+    }
+  } else {
+    next();
+  }
+});
+
+router.onError((err) => console.error(err));
+
+Vue.use(VueRouter);
 
 export default router;

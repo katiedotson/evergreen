@@ -2,7 +2,10 @@
   <div class="editor-wrapper form">
     <ErrorCard :show="showError" :message="errorMessage" />
     <Loader :isLoading="isLoading" />
-    <div class="field-wrapper" :class="{ 'form-group--error': $v.post.title.$error }">
+    <div
+      class="field-wrapper"
+      :class="{ 'form-group--error': $v.post.title.$error }"
+    >
       <label for="titleData">Title</label>
       <input
         class="edit-title"
@@ -12,16 +15,17 @@
         @change="isChangedSinceUpdate = true"
       />
       <div class="error" v-if="!$v.post.title.required">Field is required</div>
-      <div
-        class="error"
-        v-if="!$v.post.title.minLength"
-      >Minimum length: {{ $v.post.title.$params.minLength.min }} characters</div>
-      <div
-        class="error"
-        v-if="!$v.post.title.maxLength"
-      >Maximum length: {{ $v.post.title.$params.maxLength.max }} characters</div>
+      <div class="error" v-if="!$v.post.title.minLength">
+        Minimum length: {{ $v.post.title.$params.minLength.min }} characters
+      </div>
+      <div class="error" v-if="!$v.post.title.maxLength">
+        Maximum length: {{ $v.post.title.$params.maxLength.max }} characters
+      </div>
     </div>
-    <div class="field-wrapper" :class="{ 'form-group--error': $v.post.tagline.$error }">
+    <div
+      class="field-wrapper"
+      :class="{ 'form-group--error': $v.post.tagline.$error }"
+    >
       <label for="taglineData">Tagline</label>
       <input
         class="edit-tagline"
@@ -30,24 +34,39 @@
         id="taglineData"
         @change="isChangedSinceUpdate = true"
       />
-      <div class="error" v-if="!$v.post.tagline.required">Field is required</div>
-      <div
-        class="error"
-        v-if="!$v.post.tagline.minLength"
-      >Minimum length: {{ $v.post.tagline.$params.minLength.min }} characters</div>
-      <div
-        class="error"
-        v-if="!$v.post.tagline.maxLength"
-      >Maximum length: {{ $v.post.tagline.$params.maxLength.min }} characters</div>
+      <div class="error" v-if="!$v.post.tagline.required">
+        Field is required
+      </div>
+      <div class="error" v-if="!$v.post.tagline.minLength">
+        Minimum length: {{ $v.post.tagline.$params.minLength.min }} characters
+      </div>
+      <div class="error" v-if="!$v.post.tagline.maxLength">
+        Maximum length: {{ $v.post.tagline.$params.maxLength.min }} characters
+      </div>
     </div>
     <div class="field-wrapper">
       <label for="imgUrl">Banner</label>
       <input type="file" class="edit-img" id="imgUrl" @change="processFile" />
-      <img :src="post.img" v-if="post.img && post.img.length" :class="{ fade: newImageLoading }" />
+      <img
+        :src="post.img"
+        v-if="post.img && post.img.length"
+        :class="{ fade: newImageLoading }"
+      />
     </div>
-    <editor :value="postBody" v-on:value-input="inputEvent" v-on:img-error="imgErrorEvent"></editor>
+    <editor
+      :value="postBody"
+      v-on:value-input="inputEvent"
+      v-on:img-error="imgErrorEvent"
+    ></editor>
     <div class="button-wrapper">
-      <button type="submit" @click="save" :class="{ active: isChangedSinceUpdate }">Submit</button>
+      <button
+        type="submit"
+        @click="save"
+        :class="{ active: isChangedSinceUpdate }"
+        :disabled="this.$v.$invalid"
+      >
+        Submit
+      </button>
     </div>
   </div>
 </template>
@@ -59,7 +78,7 @@ import ErrorCard from "./ErrorCard.vue";
 import Loader from "./Loader.vue";
 import { validationMixin } from "vuelidate";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
-import { HTMLInputEvent } from "@/types";
+import { HTMLInputEvent } from "../types";
 import session from "../session";
 import sessionData from "../session/sessionData";
 import { Post } from "../types";
@@ -95,7 +114,7 @@ export default Vue.extend({
       type: Boolean,
     },
   },
-  mounted() {
+  mounted(): void {
     if (!this.isNew) {
       this.loadPost();
     } else if (this.isNew && !sessionData.getInitialPost()?._id) {
@@ -108,13 +127,13 @@ export default Vue.extend({
     }
   },
   methods: {
-    storeInitialPost() {
+    storeInitialPost(): void {
       sessionData.storeInitialPost(this.post);
     },
-    loadSessionPost() {
+    loadSessionPost(): void {
       this.post = sessionData.getInitialPost();
     },
-    save() {
+    save(): void {
       session
         .savePost(this.post)
         .then((post) => {
@@ -127,7 +146,7 @@ export default Vue.extend({
           this.errorMessage = "Unable to save post.";
         });
     },
-    loadPost() {
+    loadPost(): void {
       session.getPost(this.urlName).then((post) => {
         if (post) {
           this.post = post;
@@ -141,7 +160,7 @@ export default Vue.extend({
         }
       });
     },
-    processFile(event: HTMLInputEvent) {
+    processFile(event: HTMLInputEvent): void {
       if (event && event.target && event.target.files) {
         const file = event.target.files[0];
         this.newImageLoading = true;
@@ -161,17 +180,17 @@ export default Vue.extend({
         this.imgErrorEvent();
       }
     },
-    imgErrorEvent() {
+    imgErrorEvent(): void {
       this.showError = true;
       this.errorMessage = "Problem while uploading new image.";
       this.isChangedSinceUpdate = false;
       this.newImageLoading = false;
     },
-    inputEvent(value: string) {
+    inputEvent(value: string): void {
       this.isChangedSinceUpdate = true;
       this.post.body = value;
     },
-    initialize() {
+    initialize(): void {
       session
         .getBlankPost()
         .then((post) => {
@@ -194,7 +213,9 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "../styles/global.scss";
+
 div.editor-wrapper.form {
   max-width: 800px;
   margin-left: auto;
@@ -254,6 +275,9 @@ div.editor-wrapper.form {
       background-color: $forestgreen;
       color: $smoke;
     }
+    // &:disabled {
+    //   background-color: $firetruck;
+    // }
   }
 }
 </style>

@@ -1,5 +1,7 @@
 <template>
-  <a v-if="isLoggedOut && !isLoginPage" class="login-card" href="../sign-in">Sign in</a>
+  <a v-if="isLoggedOut && !isLoginPage" class="login-card" href="../sign-in"
+    >Sign in</a
+  >
 </template>
 
 <script lang="ts">
@@ -7,7 +9,7 @@ import Vue from "vue";
 import baseAuth from "../auth/BaseAuth";
 
 export default Vue.extend({
-  data: function () {
+  data: function() {
     return {
       isLoggedOut: true,
     };
@@ -26,7 +28,9 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "../styles/global.scss";
+
 a.login-card {
   position: fixed;
   bottom: 15px;

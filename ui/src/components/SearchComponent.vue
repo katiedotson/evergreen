@@ -10,7 +10,7 @@
 <script lang="ts">
 import Vue from "vue";
 export default Vue.extend({
-  data: function () {
+  data: function() {
     return { search: "" };
   },
   methods: {
@@ -21,7 +21,9 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "../styles/global.scss";
+
 div.search {
   height: 40px;
   margin-bottom: 20px;

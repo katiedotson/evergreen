@@ -31,7 +31,9 @@ export default Vue.extend({
 });
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+@import "../styles/global.scss";
+
 div.post {
   max-width: 800px;
   margin: 0 auto;
