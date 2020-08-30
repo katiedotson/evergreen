@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import { UserData, User } from "../types";
 import nodemailer from "nodemailer";
+import util from "../util";
 
 export const isAuthorized = (req, res, next): void => {
   if (req.get("User-Token")) {
@@ -31,7 +32,7 @@ export const getUserDataFromHeader = (req): any => {
   return decoded;
 };
 
-export const decodeToken = (token: string) => {
+export const decodeToken = (token: string): any => {
   return jwt.verify(token, process.env.TOKEN_SECRET);
 };
 
@@ -55,8 +56,12 @@ export const sendAuthEmail = (userData: UserData, user: User): void => {
     {
       from: process.env.EMAIL_ADDRESS,
       to: email,
-      subject: "Verify Your Email Address",
-      text: `First Name: ${firstName} \nLast Name: ${lastName} \n${authenticateUrl}`,
+      subject: "Evegreen | Verify Your Email Address",
+      html: util.generateVerificationEmail(
+        firstName,
+        lastName,
+        authenticateUrl
+      ),
     },
     (err, info) => {
       if (err) console.error(err);

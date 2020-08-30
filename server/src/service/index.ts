@@ -61,7 +61,7 @@ export default {
       return client
         .db("evergreen")
         .collection("users")
-        .findOne({ userId, platform, active: true });
+        .findOne({ userId, platform });
     };
     return this.executeFind(findByIdAndPlatform);
   },
@@ -221,6 +221,7 @@ export default {
   ): Promise<any> {
     const client = new MongoClient(process.env.DB_CONNECT, {
       useUnifiedTopology: true,
+      useNewUrlParser: true,
     });
     let result = {};
     try {
@@ -238,6 +239,7 @@ export default {
   ): Promise<User | Post | Post[]> {
     const client = new MongoClient(process.env.DB_CONNECT, {
       useUnifiedTopology: true,
+      useNewUrlParser: true,
     });
     let results: Post[] = [];
     try {

@@ -3,7 +3,7 @@
     <AccountHeading :name="getName()" />
     <Loader :show="isLoading" />
     <ErrorCard :show="showError" :message="errorMessage" />
-    <p v-if="firstTime">
+    <p v-if="firstTime && !isLoading">
       Please provide some information for the best experience.
     </p>
     <div class="form" v-if="!isLoading">
@@ -201,6 +201,7 @@ export default Vue.extend({
             this.showError = true;
           });
       } else if (!this.$v.$invalid) {
+        this.isLoading = true;
         session
           .createNewUser(this.user)
           .then(() => {
@@ -208,6 +209,7 @@ export default Vue.extend({
             sessionData.storeUser(this.user);
           })
           .catch(() => {
+            this.isLoading = false;
             this.errorMessage = "Something went wrong.";
             this.showError = true;
           });
