@@ -36,7 +36,7 @@ export default Vue.extend({
 
 div.error-card {
   z-index: 2;
-  background-color: $firetruck;
+  background-color: $burnt-orange;
   color: $smoke;
   position: fixed;
   bottom: 8px;
@@ -48,7 +48,7 @@ div.error-card {
     display: inline-block;
     max-width: 176px;
     text-transform: uppercase;
-    font-size: x-small;
+    font-size: small;
   }
   i.error-card-close {
     float: right;

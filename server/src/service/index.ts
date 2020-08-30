@@ -28,12 +28,15 @@ export default {
     };
     return this.executeFind(findByUrlName);
   },
-  async getPostByUrlNameRegardless(urlName: string): Promise<Post> {
+  async getPostByUrlNameRegardless(
+    urlName: string,
+    userId: string
+  ): Promise<Post> {
     const findByUrlName = (client: MongoClient): Promise<Post> => {
       const result = client
         .db("evergreen")
         .collection("posts")
-        .findOne({ urlName });
+        .findOne({ urlName, authorId: userId });
       return result;
     };
     return this.executeFind(findByUrlName);
@@ -58,7 +61,7 @@ export default {
       return client
         .db("evergreen")
         .collection("users")
-        .findOne({ userId, platform });
+        .findOne({ userId, platform, active: true });
     };
     return this.executeFind(findByIdAndPlatform);
   },
@@ -72,7 +75,7 @@ export default {
     };
     return this.executeFind(getPosts);
   },
-  async updatePost(post: Post): Promise<any> {
+  async updatePost(post: Post, userId: string): Promise<any> {
     const update = async (client: MongoClient, post: Post) => {
       const newValues = {
         $set: {
@@ -88,17 +91,22 @@ export default {
       await client
         .db("evergreen")
         .collection("posts")
-        .updateOne({ _id: new ObjectID(post._id) }, newValues);
+        .updateOne(
+          { _id: new ObjectID(post._id), authorId: userId },
+          newValues
+        );
       return post;
     };
     return this.executeInsert(update, post);
   },
-  async deletePost(urlName: string): Promise<any> {
-    const deletePost = async (client: MongoClient, post: Post) => {
-      await client.db("evergreen").collection("posts").deleteOne({ urlName });
-      return post;
+  async deletePost(urlName: string, userId: string): Promise<any> {
+    const deletePost = async (client: MongoClient, params: any) => {
+      return await client
+        .db("evergreen")
+        .collection("posts")
+        .deleteOne({ urlName: params.urlName, authorId: params.userId });
     };
-    return this.executeInsert(deletePost, urlName);
+    return this.executeInsert(deletePost, { urlName, userId });
   },
   async insertNewUser(userData: UserData, user: User): Promise<any> {
     user.platform = userData.platform;
@@ -108,6 +116,23 @@ export default {
       return user;
     };
     return this.executeInsert(insertUser, user);
+  },
+  async activateUser(userData: UserData): Promise<any> {
+    const insertUser = async (client: MongoClient, userData: UserData) => {
+      const newValues = {
+        $set: {
+          active: true,
+        },
+      };
+      await client
+        .db("evergreen")
+        .collection("users")
+        .updateOne(
+          { userId: userData.id, platform: userData.platform },
+          newValues
+        );
+    };
+    return this.executeInsert(insertUser, userData);
   },
   async updateUser(userData: UserData, user: User): Promise<any> {
     user.platform = userData.platform;
@@ -127,7 +152,10 @@ export default {
       await client
         .db("evergreen")
         .collection("users")
-        .updateOne({ userId: user.userId, platform: user.platform }, newValues);
+        .updateOne(
+          { userId: userData.id, platform: userData.platform },
+          newValues
+        );
       return user;
     };
     return this.executeInsert(insertUser, user);
@@ -142,8 +170,15 @@ export default {
     };
     return this.executeInsert(newPost, post);
   },
-  async updatePostBanner(img: string, postId: string): Promise<any> {
-    const updatePostBanner = async (client: MongoClient, params: any) => {
+  async updatePostBanner(
+    img: string,
+    postId: string,
+    userId: string
+  ): Promise<any> {
+    const updatePostBanner = async (
+      client: MongoClient,
+      params: Record<string, string>
+    ) => {
       const newValues = {
         $set: {
           img: params.img,
@@ -152,16 +187,22 @@ export default {
       return await client
         .db("evergreen")
         .collection("posts")
-        .updateOne({ _id: new ObjectID(params.postId) }, newValues);
+        .updateOne(
+          { _id: new ObjectID(params.postId), authorId: params.userId },
+          newValues
+        );
     };
 
-    return this.executeInsert(updatePostBanner, { img, postId });
+    return this.executeInsert(updatePostBanner, { img, postId, userId });
   },
   async updatePostPublished(
     isPublished: boolean,
     postId: string
   ): Promise<any> {
-    const updatePostPublished = async (client: MongoClient, params: any) => {
+    const updatePostPublished = async (
+      client: MongoClient,
+      params: Record<string, string>
+    ) => {
       const newValues = {
         $set: {
           published: params.isPublished,
@@ -192,7 +233,9 @@ export default {
     }
     return result;
   },
-  async executeFind(cb: ExecutableMongoFindCallback): Promise<any> {
+  async executeFind(
+    cb: ExecutableMongoFindCallback
+  ): Promise<User | Post | Post[]> {
     const client = new MongoClient(process.env.DB_CONNECT, {
       useUnifiedTopology: true,
     });

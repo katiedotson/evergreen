@@ -31,7 +31,7 @@ export default {
   },
   async getAuthor(userId: string): Promise<User> {
     return new Promise<User>((resolve, reject) => {
-      api
+      api.user
         .getAuthor(userId)
         .then((user) => resolve(user))
         .catch((error) => {
@@ -42,7 +42,7 @@ export default {
   },
   async getPosts(): Promise<Post[]> {
     return new Promise<Post[]>((resolve, reject) => {
-      api
+      api.post
         .getPosts()
         .then((posts) => resolve(posts))
         .catch((error) => {
@@ -53,7 +53,7 @@ export default {
   },
   async loadUserData(userData: UserData, platform: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      api
+      api.user
         .getUser(userData, platform)
         .then((user) => {
           if (userData && user) {
@@ -61,22 +61,23 @@ export default {
             sessionData.storeUser(user);
             window.location.reload();
             resolve(true);
-          } else {
-            if (userData && platform) {
-              sessionData.storeUserData(userData);
-              window.location.replace("/sign-in/first-time");
-            }
-            reject(false);
           }
         })
-        .catch(() => reject(false));
+        .catch((err) => {
+          if (userData && platform) {
+            sessionData.storeUserData(userData);
+            window.location.replace("/sign-in/first-time");
+            resolve(true);
+          }
+          console.error(err);
+          reject(false);
+        });
     });
   },
   async getUserPosts(): Promise<Post[]> {
-    const id = sessionData.getUser()?.userId;
     return new Promise<Post[]>((resolve, reject) => {
-      api
-        .getUserPosts(id)
+      api.post
+        .getUserPosts()
         .then((postArray) => resolve(postArray))
         .catch((error) => {
           console.error(error);
@@ -90,7 +91,7 @@ export default {
   ): Promise<Post | undefined> {
     if (published !== null && published !== undefined) {
       return new Promise<Post>((resolve, reject) => {
-        api
+        api.post
           .getPost(urlName, published)
           .then((post) => resolve(post))
           .catch((error) => {
@@ -100,7 +101,7 @@ export default {
       });
     } else {
       return new Promise<Post>((resolve, reject) => {
-        api
+        api.post
           .getPostRegardless(urlName)
           .then((post) => resolve(post))
           .catch((error) => {
@@ -114,7 +115,7 @@ export default {
     const userId = sessionData.getUser()?.userId;
     post.authorId = userId;
     return new Promise<Post>((resolve, reject) => {
-      api
+      api.post
         .savePost(post)
         .then((post) => {
           if (post) {
@@ -134,7 +135,7 @@ export default {
     return new Promise<string>((resolve, reject) => {
       const postId = sessionData.getInitialPost()?._id;
       if (postId === undefined) reject("No Post id");
-      api
+      api.post
         .updatePostBanner(img, postId)
         .then((result) => {
           resolve(result);
@@ -148,7 +149,7 @@ export default {
     return new Promise<any>((resolve, reject) => {
       const userData = sessionData.getUserData();
       if (userData) {
-        api
+        api.user
           .updateUser(userData, user)
           .then((response) => resolve(response))
           .catch((error) => {
@@ -164,7 +165,7 @@ export default {
     return new Promise<any>((resolve, reject) => {
       const userData = sessionData.getUserData();
       if (userData) {
-        api
+        api.user
           .createNewUser(userData, user)
           .then((response) => resolve(response))
           .catch((error) => {
@@ -178,7 +179,7 @@ export default {
   },
   async deletePost(post: Post): Promise<any> {
     return new Promise<any>((resolve, reject) => {
-      api
+      api.post
         .deletePost(post)
         .then((response) => {
           this.deleteAllImageFiles(post);
@@ -196,7 +197,7 @@ export default {
   },
   publishPost(post: Post): Promise<any> {
     return new Promise<any>((resolve, reject) => {
-      api
+      api.post
         .publishPost(post)
         .then((response) => {
           resolve(response);
@@ -209,7 +210,7 @@ export default {
   },
   unpublishPost(post: Post): Promise<any> {
     return new Promise<any>((resolve, reject) => {
-      api
+      api.post
         .unpublishPost(post)
         .then((response) => {
           resolve(response);
@@ -279,9 +280,8 @@ export default {
   },
   getBlankPost(): Promise<Post> {
     return new Promise<Post>((resolve, reject) => {
-      const userId = sessionData.getUser()?.userId;
-      api
-        .getBlankPost(userId)
+      api.post
+        .getBlankPost()
         .then((post) => {
           resolve(post);
         })
@@ -293,7 +293,7 @@ export default {
   clearPostData() {
     const post = sessionData.getInitialPost();
     if (!post.title) {
-      api.deletePost(post);
+      api.post.deletePost(post);
     }
     sessionData.clearTempFiles("post");
     sessionData.clearTempFiles("banner");

@@ -3,7 +3,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import csurf from "csurf";
-import baseRoutes from "./routes/base/base";
+import post from "./routes/post";
+import user from "./routes/user";
 
 import dotenv from "dotenv";
 
@@ -32,7 +33,8 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/", baseRoutes);
+app.use("/post", post);
+app.use("/user", user);
 
 app.listen(port, () => {
   console.log(`Listening at port ${port}`);

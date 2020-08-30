@@ -204,6 +204,7 @@ export default Vue.extend({
         session
           .createNewUser(this.user)
           .then(() => {
+            this.$router.push("/");
             sessionData.storeUser(this.user);
           })
           .catch(() => {

@@ -5,7 +5,11 @@ import sessionData from "../session/sessionData";
 
 export class BaseAuth {
   userIsAuth() {
-    return sessionData.getUserData() != null;
+    return (
+      sessionData.getUserToken() != null &&
+      sessionData.getUserToken() !== "" &&
+      sessionData.getUserToken() !== undefined
+    );
   }
 
   signIn(platform: string): Promise<boolean> {
