@@ -6,8 +6,6 @@ import {
   ExecutableMongoInsertCallback,
 } from "../types";
 import { MongoClient, ObjectID } from "mongodb";
-import config from "../config/index";
-const mongoConfig = config.mongo;
 
 export default {
   async getUserPostsByUserId(userId: string): Promise<Post[]> {
@@ -45,6 +43,12 @@ export default {
       return client.db("evergreen").collection("users").findOne({ userId });
     };
     return this.executeFind(findByUserId);
+  },
+  async isUniqueUser(email: string): Promise<any> {
+    const findByUserEmail = (client: MongoClient): Promise<User> => {
+      return client.db("evergreen").collection("users").findOne({ email });
+    };
+    return this.executeFind(findByUserEmail);
   },
   async getUserByIdAndPlatform(
     userId: string,
@@ -174,7 +178,9 @@ export default {
     cb: ExecutableMongoInsertCallback,
     data: Record<string, unknown>
   ): Promise<any> {
-    const client = new MongoClient(mongoConfig.uri);
+    const client = new MongoClient(process.env.DB_CONNECT, {
+      useUnifiedTopology: true,
+    });
     let result = {};
     try {
       await client.connect();
@@ -187,7 +193,9 @@ export default {
     return result;
   },
   async executeFind(cb: ExecutableMongoFindCallback): Promise<any> {
-    const client = new MongoClient(mongoConfig.uri);
+    const client = new MongoClient(process.env.DB_CONNECT, {
+      useUnifiedTopology: true,
+    });
     let results: Post[] = [];
     try {
       await client.connect();

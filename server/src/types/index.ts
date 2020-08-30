@@ -22,6 +22,7 @@ export interface Post {
 
 export interface User {
   userId: string;
+  _id: string;
   firstName: string;
   lastName: string;
   interests: string[];

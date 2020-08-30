@@ -88,7 +88,6 @@ export default {
     urlName: string,
     published?: boolean
   ): Promise<Post | undefined> {
-    console.log(published);
     if (published !== null && published !== undefined) {
       return new Promise<Post>((resolve, reject) => {
         api
@@ -190,6 +189,10 @@ export default {
           reject(error);
         });
     });
+  },
+  logoutUserAndRedirect(): void {
+    sessionData.removeUserData();
+    window.location.href = "/sign-in?timeout=true";
   },
   publishPost(post: Post): Promise<any> {
     return new Promise<any>((resolve, reject) => {

@@ -1,33 +1,27 @@
 import { Post, User, UserData } from "@/types";
 import axios from "./axios-instance";
 import publitio from "../assets";
-
-axios.defaults.timeout = 5000;
+import sessionData from "./sessionData";
+import session from ".";
 
 export default {
-  /**
-   * getUserPosts?userId=${authorId}
-   *
-   * returns posts for an author
-   * @param authorId -> the author for which posts should be found
-   */
   getUserPosts(id: string): Promise<Post[]> {
     return new Promise((resolve, reject) => {
       axios
-        .get(`getUserPosts?userId=${id}`)
-        .then((res) => {
-          if (res.status == 200) {
-            resolve(res.data);
-          } else reject([]);
+        .get(`getUserPosts?userId=${id}`, {
+          headers: {
+            "User-Token": sessionData.getUserToken(),
+          },
         })
-        .catch(() => reject([]));
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response.status === 401) session.logoutUserAndRedirect();
+          reject(error);
+        });
     });
   },
-  /**
-   * getPost?urlName=${urlName}
-   *
-   * @param urlName -> returns a post with the given url name
-   */
   getPost(urlName: string, isPublished: boolean | true): Promise<Post> {
     return new Promise((resolve, reject) => {
       axios
@@ -45,24 +39,20 @@ export default {
   getPostRegardless(urlName: string): Promise<Post> {
     return new Promise((resolve, reject) => {
       axios
-        .get(`getPostRegardless?urlName=${urlName}`)
-        .then((res) => {
-          if (res.status == 200) {
-            resolve(res.data);
-          } else reject(undefined);
+        .get(`getPostRegardless?urlName=${urlName}`, {
+          headers: {
+            "User-Token": sessionData.getUserToken(),
+          },
         })
-        .catch(() => {
-          reject(undefined);
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response.status === 401) session.logoutUserAndRedirect();
+          reject(error);
         });
     });
   },
-  /**
-   * getAuthor?authorId=${authorId}
-   *
-   * returns the author data for a user
-   *
-   * @param authorId -> the ID for an author
-   */
   getAuthor(userId: string): Promise<User | undefined> {
     return new Promise((resolve, reject) => {
       axios
@@ -77,31 +67,17 @@ export default {
         });
     });
   },
-  /**
-   * getUser?userId=${oAuthRes.id}&platform=${platform}
-   *
-   * returns relevant user for the authenticated user
-   *
-   * @param oAuthRes -> response from oAuth
-   * @param platform -> which platform was used to authenticate
-   */
   getUser(userData: UserData, platform: string): Promise<User | undefined> {
     return new Promise((resolve, reject) => {
       axios
         .get(`getUser?userId=${userData.id}&platform=${platform}`)
         .then((res) => {
-          if (res.status == 200) {
-            resolve(res.data);
-          } else reject(undefined);
+          sessionData.storeUserToken(res.headers["user-token"]);
+          resolve(res.data);
         })
-        .catch(() => reject(undefined));
+        .catch((error) => reject(error));
     });
   },
-  /**
-   * getPosts
-   *
-   * returns currently relevant posts for an unauthenticated user, or an empty array if there is an error
-   */
   getPosts(): Promise<Post[]> {
     return new Promise((resolve, reject) => {
       axios
@@ -126,6 +102,9 @@ export default {
           method: "POST",
           url: "savePost",
           data: post,
+          headers: {
+            "User-Token": sessionData.getUserToken(),
+          },
         })
         .then((res) => {
           if (res.status == 200) {
@@ -134,8 +113,9 @@ export default {
             throw new Error("Non-200 status returned.");
           }
         })
-        .catch(() => {
-          reject(undefined);
+        .catch((error) => {
+          if (error.response.status === 401) session.logoutUserAndRedirect();
+          reject(error);
         });
     });
   },
@@ -148,15 +128,17 @@ export default {
           data: {
             post,
           },
+          headers: {
+            "User-Token": sessionData.getUserToken(),
+          },
         })
         .then((res) => {
-          if (res.status == 200) {
-            resolve(res.data);
-          } else {
-            reject(undefined);
-          }
+          resolve(res.data);
         })
-        .catch(() => reject(undefined));
+        .catch((error) => {
+          if (error.response.status === 401) session.logoutUserAndRedirect();
+          reject(error);
+        });
     });
   },
   publishPost(post: Post): Promise<any> {
@@ -168,15 +150,17 @@ export default {
           data: {
             post,
           },
+          headers: {
+            "User-Token": sessionData.getUserToken(),
+          },
         })
         .then((res) => {
-          if (res.status == 200) {
-            resolve(res.data);
-          } else {
-            reject(undefined);
-          }
+          resolve(res.data);
         })
-        .catch(() => reject(undefined));
+        .catch((error) => {
+          if (error.response.status === 401) session.logoutUserAndRedirect();
+          reject(error);
+        });
     });
   },
   unpublishPost(post: Post): Promise<any> {
@@ -188,15 +172,17 @@ export default {
           data: {
             post,
           },
+          headers: {
+            "User-Token": sessionData.getUserToken(),
+          },
         })
         .then((res) => {
-          if (res.status == 200) {
-            resolve(res.data);
-          } else {
-            reject(undefined);
-          }
+          resolve(res.data);
         })
-        .catch(() => reject(undefined));
+        .catch((error) => {
+          if (error.response.status === 401) session.logoutUserAndRedirect();
+          reject(error);
+        });
     });
   },
   updateUser(userData: UserData, user: User): Promise<any> {
@@ -206,13 +192,16 @@ export default {
           method: "POST",
           url: "updateUser",
           data: { userData, user },
+          headers: {
+            "User-Token": sessionData.getUserToken(),
+          },
         })
         .then((res) => {
-          if (res.status == 200) {
-            resolve(res.data);
-          } else {
-            reject(undefined);
-          }
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response.status === 401) session.logoutUserAndRedirect();
+          reject(error);
         });
     });
   },
@@ -225,12 +214,10 @@ export default {
           data: { userData, user },
         })
         .then((res) => {
-          if (res.status == 200) {
-            resolve(res.data);
-          } else {
-            reject(undefined);
-          }
-        });
+          sessionData.storeUserToken(res.headers["user-token"]);
+          resolve(res.data);
+        })
+        .catch((error) => reject(error));
     });
   },
   uploadImage(file: File): Promise<any> {
@@ -253,7 +240,10 @@ export default {
       axios
         .get(`newPost?authorId=${userId}`)
         .then((res) => resolve(res.data))
-        .catch((error) => reject(error));
+        .catch((error) => {
+          if (error.response.status === 401) session.logoutUserAndRedirect();
+          reject(error);
+        });
     });
   },
   updatePostBanner(img: string, postId: string | undefined): Promise<any> {
@@ -263,13 +253,16 @@ export default {
           method: "POST",
           url: "updatePostBanner",
           data: { img, postId },
+          headers: {
+            "User-Token": sessionData.getUserToken(),
+          },
         })
         .then((res) => {
-          if (res.status == 200) {
-            resolve(res.data);
-          } else {
-            reject(undefined);
-          }
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response.status === 401) session.logoutUserAndRedirect();
+          reject(error);
         });
     });
   },

@@ -5,6 +5,7 @@ export default {
   userKey: "user",
   tempImgFileKey: "temp_img_file",
   initialPostKey: "initial_post",
+  userTokenKey: "CgQIq5AB",
   saveFileLocally(key: string, file: File): void {
     const reader = new FileReader();
     reader.onload = function() {
@@ -31,6 +32,9 @@ export default {
   removeUserData() {
     sessionStorage.removeItem(this.userDataKey);
     sessionStorage.removeItem(this.userKey);
+    sessionStorage.removeItem(this.userTokenKey);
+    sessionStorage.removeItem(this.tempImgFileKey);
+    sessionStorage.removeItem(this.initialPostKey);
   },
   getUserData(): UserData | null {
     return this.getSessionItem(this.userDataKey);
@@ -70,5 +74,14 @@ export default {
   },
   clearInitialPost(): void {
     sessionStorage.removeItem(this.initialPostKey);
+  },
+  storeUserToken(token: string): void {
+    sessionStorage.setItem(this.userTokenKey, token);
+  },
+  getUserToken(): string {
+    const token = sessionStorage.getItem(this.userTokenKey);
+    return token !== "" && token !== undefined && token !== null
+      ? String(sessionStorage.getItem(this.userTokenKey))
+      : "";
   },
 };
