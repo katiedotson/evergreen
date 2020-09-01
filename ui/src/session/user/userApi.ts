@@ -1,7 +1,6 @@
 import { User, UserData } from "@/types";
-import axios from "./axios-instance";
-import sessionData from "./sessionData";
-import session from ".";
+import axios from "../api/axios-instance";
+import session from "..";
 
 export default {
   getAuthor(userId: string): Promise<User | undefined> {
@@ -22,7 +21,7 @@ export default {
       axios
         .get(`user/get?userId=${userData.id}&platform=${platform}`)
         .then((res) => {
-          sessionData.storeUserToken(res.headers["user-token"]);
+          session.storeUserToken(res.headers["user-token"]);
           resolve(res.data);
         })
         .catch((error) => {
@@ -39,14 +38,15 @@ export default {
           url: "user/update",
           data: { userData, user },
           headers: {
-            "User-Token": sessionData.getUserToken(),
+            "User-Token": session.getUserToken(),
           },
         })
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
-          if (error.response.status === 401) session.logoutUserAndRedirect();
+          if (error.response.status === 401)
+            session.user.logoutUserAndRedirect();
           reject(error);
         });
     });
@@ -60,7 +60,7 @@ export default {
           data: { userData, user },
         })
         .then((res) => {
-          sessionData.storeUserToken(res.headers["user-token"]);
+          session.storeUserToken(res.headers["user-token"]);
           resolve(res.data);
         })
         .catch((error) => {

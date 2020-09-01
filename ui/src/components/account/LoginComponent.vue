@@ -28,7 +28,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import baseAuth from "../auth/BaseAuth";
+import baseAuth from "../../auth/BaseAuth";
 import ErrorCard from "./ErrorCard.vue";
 
 export default Vue.extend({

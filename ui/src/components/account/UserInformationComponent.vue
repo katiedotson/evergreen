@@ -97,10 +97,8 @@ import {
   maxLength,
   email,
 } from "vuelidate/lib/validators";
-import { HTMLInputEvent } from "../types";
-import { User } from "../types";
-import session from "../session";
-import sessionData from "../session/sessionData";
+import { HTMLInputEvent, User } from "../../types";
+import session from "../../session";
 
 export default Vue.extend({
   props: {
@@ -158,7 +156,7 @@ export default Vue.extend({
     },
     loadUser() {
       if (!this.firstTime) {
-        this.user = sessionData.getUser();
+        this.user = session.getUser();
         this.isLoading = false;
       } else {
         this.user = {
@@ -176,7 +174,7 @@ export default Vue.extend({
     processFile(event: HTMLInputEvent) {
       if (event && event.target && event.target.files) {
         const file = event.target.files[0];
-        session
+        session.image
           .storeImage(file, "profile")
           .then((location: string) => {
             this.user.img = location;
@@ -191,10 +189,10 @@ export default Vue.extend({
     submit() {
       this.$v.$touch();
       if (!this.$v.$invalid && !this.firstTime) {
-        session
+        session.user
           .updateUser(this.user)
           .then(() => {
-            sessionData.storeUser(this.user);
+            session.storeUser(this.user);
           })
           .catch(() => {
             this.errorMessage = "Something went wrong.";
@@ -202,11 +200,11 @@ export default Vue.extend({
           });
       } else if (!this.$v.$invalid) {
         this.isLoading = true;
-        session
+        session.user
           .createNewUser(this.user)
           .then(() => {
             this.$router.push("/");
-            sessionData.storeUser(this.user);
+            session.storeUser(this.user);
           })
           .catch(() => {
             this.isLoading = false;

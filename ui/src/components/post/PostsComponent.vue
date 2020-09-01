@@ -9,11 +9,11 @@
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Post } from "../types";
+import { Post } from "../../types";
 import PostCard from "../components/PostCardComponent.vue";
 import ErrorCard from "../components/ErrorCard.vue";
 import Loader from "./Loader.vue";
-import session from "../session";
+import session from "../../session";
 
 export default Vue.extend({
   data() {
@@ -26,7 +26,7 @@ export default Vue.extend({
   },
   methods: {
     loadPosts() {
-      session
+      session.post
         .getPosts()
         .then((posts) => {
           this.posts = posts.filter((post) => post.title.length);

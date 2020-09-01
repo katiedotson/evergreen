@@ -3,7 +3,9 @@
     <AccountHeading name="Posts" />
     <Loader :show="isLoading" />
     <ErrorCard :show="showError" :message="errorMessage" />
-    <button @click="toggleOptionsMenu" class="options" v-if="!isLoading">Options</button>
+    <button @click="toggleOptionsMenu" class="options" v-if="!isLoading">
+      Options
+    </button>
     <div v-if="!isLoading">
       <transition name="left">
         <div v-if="showOptions" class="options-menu">
@@ -14,23 +16,35 @@
               class="filter-btn"
               :class="{ underline: filterType === 'all' }"
               @click="filterPosts('all')"
-            >All</button>
+            >
+              All
+            </button>
             <button
               class="filter-btn"
               :class="{ underline: filterType === 'unpublished' }"
               @click="filterPosts('unpublished')"
-            >Unpublished</button>
+            >
+              Unpublished
+            </button>
             <button
               class="filter-btn"
               :class="{ underline: filterType === 'published' }"
               @click="filterPosts('published')"
-            >Published</button>
+            >
+              Published
+            </button>
           </div>
           <div class="new-button-wrapper">
             <router-link to="/create/post" class="button new">Post</router-link>
-            <router-link to="/create/gallery" class="button new">Gallery</router-link>
-            <router-link to="/create/audio" class="button new">Audio</router-link>
-            <router-link to="/create/video" class="button new">Video</router-link>
+            <router-link to="/create/gallery" class="button new"
+              >Gallery</router-link
+            >
+            <router-link to="/create/audio" class="button new"
+              >Audio</router-link
+            >
+            <router-link to="/create/video" class="button new"
+              >Video</router-link
+            >
           </div>
           <button class="close" @click="toggleOptionsMenu">Cancel</button>
         </div>
@@ -41,24 +55,30 @@
           v-if="post.published"
           class="url-name"
           :to="`../post/${post.urlName}`"
-        >{{ post.urlName }}</router-link>
+          >{{ post.urlName }}</router-link
+        >
         <div class="edit-button-wrapper">
-          <router-link class="button edit" :to="`../edit-post/${post.urlName}`">Edit</router-link>
+          <router-link class="button edit" :to="`../edit-post/${post.urlName}`"
+            >Edit</router-link
+          >
           <router-link
             v-if="!post.published"
             class="button delete"
             :to="`../delete-post/${post.urlName}`"
-          >Delete</router-link>
+            >Delete</router-link
+          >
           <router-link
             v-if="!post.published"
             class="button publish"
             :to="`../publish-post/${post.urlName}`"
-          >Publish</router-link>
+            >Publish</router-link
+          >
           <router-link
             v-if="post.published"
             class="button unpublish"
             :to="`../unpublish-post/${post.urlName}`"
-          >Unpublish</router-link>
+            >Unpublish</router-link
+          >
         </div>
       </div>
       <div class="empty" v-if="!posts.length">Nothing here yet.</div>
@@ -71,8 +91,8 @@ import Vue from "vue";
 import AccountHeading from "./AccountHeading.vue";
 import ErrorCard from "./ErrorCard.vue";
 import Loader from "./Loader.vue";
-import session from "../session";
-import { Post } from "../types";
+import session from "../../session";
+import { Post } from "../../types";
 
 export default Vue.extend({
   data() {
@@ -87,7 +107,7 @@ export default Vue.extend({
     };
   },
   mounted() {
-    session
+    session.post
       .getUserPosts()
       .then((posts) => {
         this.unfilteredPosts = posts.filter((post) => post.title.length);

@@ -1,8 +1,6 @@
 import { Gallery } from "@/types";
-import { Post } from "@/types";
-import sessionData from "./sessionData";
-import axios from "./axios-instance";
-import session from ".";
+import axios from "../api/axios-instance";
+import session from "..";
 
 export default {
   saveGallery(gallery: Gallery): Promise<Gallery> {
@@ -13,14 +11,15 @@ export default {
           url: "gallery/save",
           data: { gallery },
           headers: {
-            "User-Token": sessionData.getUserToken(),
+            "User-Token": session.getUserToken(),
           },
         })
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
-          if (error.response.status === 401) session.logoutUserAndRedirect();
+          if (error.response.status === 401)
+            session.user.logoutUserAndRedirect();
           reject(error);
         });
     });

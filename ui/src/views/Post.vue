@@ -44,7 +44,7 @@ export default Vue.extend({
   },
   methods: {
     loadPost() {
-      session
+      session.post
         .getPost(this.urlName, true)
         .then((post) => {
           if (post) {
@@ -65,7 +65,7 @@ export default Vue.extend({
       this.postNotFound = true;
     },
     loadAuthor() {
-      session
+      session.user
         .getAuthor(this.post.authorId)
         .then((author) => {
           if (author) {

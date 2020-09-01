@@ -15,7 +15,7 @@
           :src="photo.img"
           v-on:mouseover="showImgEditor(i)"
           v-on:mouseleave="showImgEditor(-1)"
-          :class="{loading: imageLoadingIndex === i}"
+          :class="{ loading: imageLoadingIndex === i }"
         />
         <transition name="fade">
           <div
@@ -28,14 +28,21 @@
               class="material-icons"
               v-on:mouseover="showImgEditor(i)"
               @click="updateImg(i)"
-            >publish</i>
+              >publish</i
+            >
             <i
               class="material-icons"
               v-on:mouseover="showImgEditor(i)"
               @click="deleteImg(i)"
               v-if="i !== 0"
-            >delete</i>
-            <i class="material-icons" v-on:mouseover="showImgEditor(i)" @click="addAfter(i)">add</i>
+              >delete</i
+            >
+            <i
+              class="material-icons"
+              v-on:mouseover="showImgEditor(i)"
+              @click="addAfter(i)"
+              >add</i
+            >
           </div>
         </transition>
       </div>
@@ -50,7 +57,9 @@
         @click="save"
         :class="{ active: isChangedSinceUpdate }"
         :disabled="!isChangedSinceUpdate"
-      >Submit</button>
+      >
+        Submit
+      </button>
     </div>
   </div>
 </template>
@@ -59,9 +68,8 @@
 import Vue from "vue";
 import ErrorCard from "../components/ErrorCard.vue";
 import Loader from "../components/Loader.vue";
-import session from "../session";
-import sessionData from "../session/sessionData";
-import { Gallery } from "../types";
+import session from "../../session";
+import { Gallery } from "../../types";
 
 export default Vue.extend({
   props: {
@@ -96,9 +104,9 @@ export default Vue.extend({
   mounted(): void {
     if (!this.isNew) {
       this.loadGallery();
-    } else if (this.isNew && !sessionData.getInitialGallery()?._id) {
+    } else if (this.isNew && !session.getInitialGallery()?._id) {
       this.initialize();
-    } else if (sessionData.getInitialGallery()?._id) {
+    } else if (session.getInitialGallery()?._id) {
       this.loadSessionGallery();
     } else {
       this.showError = true;
@@ -107,13 +115,13 @@ export default Vue.extend({
   },
   methods: {
     storeInitialGallery(): void {
-      sessionData.storeInitialPost(this.gallery);
+      session.storeInitialPost(this.gallery);
     },
     loadSessionGallery(): void {
-      this.gallery = sessionData.getInitialGallery();
+      this.gallery = session.getInitialGallery();
     },
     loadGallery(): void {
-      session.getGallery(this.urlName).then((gallery) => {
+      session.gallery.getGallery(this.urlName).then((gallery) => {
         if (gallery) {
           this.gallery = gallery;
           this.isLoading = false;
@@ -126,7 +134,7 @@ export default Vue.extend({
       });
     },
     initialize(): void {
-      session
+      session.gallery
         .getBlankGallery()
         .then((gallery) => {
           this.gallery = gallery;
@@ -166,7 +174,7 @@ export default Vue.extend({
           if (file) {
             this.activeImgEditor = -1;
             this.imageLoadingIndex = index;
-            session
+            session.image
               .storeImage(file, "gallery")
               .then((fileLocation) => {
                 this.gallery.photos[index].img = fileLocation;
@@ -187,9 +195,9 @@ export default Vue.extend({
       };
     },
     save(): void {
-      session
+      session.gallery
         .saveGallery(this.gallery)
-        .then((res) => {
+        .then(() => {
           this.isChangedSinceUpdate = false;
         })
         .catch(() => {

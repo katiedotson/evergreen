@@ -1,7 +1,6 @@
 import { Post } from "@/types";
-import axios from "./axios-instance";
-import sessionData from "./sessionData";
-import session from ".";
+import axios from "../api/axios-instance";
+import session from "..";
 
 export default {
   getUserPosts(): Promise<Post[]> {
@@ -9,14 +8,15 @@ export default {
       axios
         .get(`post/getAllByUser`, {
           headers: {
-            "User-Token": sessionData.getUserToken(),
+            "User-Token": session.getUserToken(),
           },
         })
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
-          if (error.response.status === 401) session.logoutUserAndRedirect();
+          if (error.response.status === 401)
+            session.user.logoutUserAndRedirect();
           reject(error);
         });
     });
@@ -39,14 +39,15 @@ export default {
       axios
         .get(`post/getRegardless?urlName=${urlName}`, {
           headers: {
-            "User-Token": sessionData.getUserToken(),
+            "User-Token": session.getUserToken(),
           },
         })
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
-          if (error.response.status === 401) session.logoutUserAndRedirect();
+          if (error.response.status === 401)
+            session.user.logoutUserAndRedirect();
           reject(error);
         });
     });
@@ -72,14 +73,15 @@ export default {
           url: "post/save",
           data: post,
           headers: {
-            "User-Token": sessionData.getUserToken(),
+            "User-Token": session.getUserToken(),
           },
         })
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
-          if (error.response.status === 401) session.logoutUserAndRedirect();
+          if (error.response.status === 401)
+            session.user.logoutUserAndRedirect();
           reject(error);
         });
     });
@@ -94,14 +96,15 @@ export default {
             post,
           },
           headers: {
-            "User-Token": sessionData.getUserToken(),
+            "User-Token": session.getUserToken(),
           },
         })
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
-          if (error.response.status === 401) session.logoutUserAndRedirect();
+          if (error.response.status === 401)
+            session.user.logoutUserAndRedirect();
           reject(error);
         });
     });
@@ -116,14 +119,15 @@ export default {
             post,
           },
           headers: {
-            "User-Token": sessionData.getUserToken(),
+            "User-Token": session.getUserToken(),
           },
         })
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
-          if (error.response.status === 401) session.logoutUserAndRedirect();
+          if (error.response.status === 401)
+            session.user.logoutUserAndRedirect();
           reject(error);
         });
     });
@@ -138,14 +142,15 @@ export default {
             post,
           },
           headers: {
-            "User-Token": sessionData.getUserToken(),
+            "User-Token": session.getUserToken(),
           },
         })
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
-          if (error.response.status === 401) session.logoutUserAndRedirect();
+          if (error.response.status === 401)
+            session.user.logoutUserAndRedirect();
           reject(error);
         });
     });
@@ -155,12 +160,13 @@ export default {
       axios
         .get(`post/new`, {
           headers: {
-            "User-Token": sessionData.getUserToken(),
+            "User-Token": session.getUserToken(),
           },
         })
         .then((res) => resolve(res.data))
         .catch((error) => {
-          if (error.response.status === 401) session.logoutUserAndRedirect();
+          if (error.response.status === 401)
+            session.user.logoutUserAndRedirect();
           reject(error);
         });
     });
@@ -173,14 +179,15 @@ export default {
           url: "post/updateBanner",
           data: { img, postId },
           headers: {
-            "User-Token": sessionData.getUserToken(),
+            "User-Token": session.getUserToken(),
           },
         })
         .then((res) => {
           resolve(res.data);
         })
         .catch((error) => {
-          if (error.response.status === 401) session.logoutUserAndRedirect();
+          if (error.response.status === 401)
+            session.user.logoutUserAndRedirect();
           reject(error);
         });
     });

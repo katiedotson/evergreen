@@ -78,10 +78,8 @@ import ErrorCard from "./ErrorCard.vue";
 import Loader from "./Loader.vue";
 import { validationMixin } from "vuelidate";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
-import { HTMLInputEvent } from "../types";
-import session from "../session";
-import sessionData from "../session/sessionData";
-import { Post } from "../types";
+import { HTMLInputEvent, Post } from "../../types";
+import session from "../../session";
 
 export default Vue.extend({
   mixins: [validationMixin],
@@ -117,9 +115,9 @@ export default Vue.extend({
   mounted(): void {
     if (!this.isNew) {
       this.loadPost();
-    } else if (this.isNew && !sessionData.getInitialPost()?._id) {
+    } else if (this.isNew && !session.getInitialPost()?._id) {
       this.initialize();
-    } else if (sessionData.getInitialPost()?._id) {
+    } else if (session.getInitialPost()?._id) {
       this.loadSessionPost();
     } else {
       this.showError = true;
@@ -128,13 +126,13 @@ export default Vue.extend({
   },
   methods: {
     storeInitialPost(): void {
-      sessionData.storeInitialPost(this.post);
+      session.storeInitialPost(this.post);
     },
     loadSessionPost(): void {
-      this.post = sessionData.getInitialPost();
+      this.post = session.getInitialPost();
     },
     save(): void {
-      session
+      session.post
         .savePost(this.post)
         .then((post) => {
           this.post.urlName = post.urlName;
@@ -147,7 +145,7 @@ export default Vue.extend({
         });
     },
     loadPost(): void {
-      session.getPost(this.urlName).then((post) => {
+      session.post.getPost(this.urlName).then((post) => {
         if (post) {
           this.post = post;
           this.postBody = post.body;
@@ -164,10 +162,10 @@ export default Vue.extend({
       if (event && event.target && event.target.files) {
         const file = event.target.files[0];
         this.newImageLoading = true;
-        session
+        session.image
           .storeImage(file, "banner")
           .then((location: string) => {
-            session.updatePostBanner(location).then(() => {
+            session.post.updatePostBanner(location).then(() => {
               this.post.img = location;
               this.newImageLoading = false;
               this.storeInitialPost();
@@ -191,7 +189,7 @@ export default Vue.extend({
       this.post.body = value;
     },
     initialize(): void {
-      session
+      session.post
         .getBlankPost()
         .then((post) => {
           this.post = post;

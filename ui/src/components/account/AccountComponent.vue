@@ -24,11 +24,11 @@
 
 <script lang="ts">
 import Vue from "vue";
-import { User } from "../types/index";
+import { User } from "../../types/index";
 import UserInformationComponent from "./UserInformationComponent.vue";
 import UserPostsComponent from "./UserPostsComponent.vue";
 import ErrorCard from "./ErrorCard.vue";
-import sessionData from "../session/sessionData";
+import session from "../../session";
 
 export default Vue.extend({
   data: function() {
@@ -40,7 +40,7 @@ export default Vue.extend({
     };
   },
   mounted() {
-    this.userData = sessionData.getUser();
+    this.userData = session.getUser();
     if (!this.userData) {
       this.showError = true;
     }

@@ -6,7 +6,8 @@
       v-on:keyup="keyboardEvent"
       class="material-icons menu-icon menu"
       tabindex="200"
-    >menu</i>
+      >menu</i
+    >
     <div class="nav-links" :class="!shown ? 'hide' : ''" @click="toggleShown">
       <router-link to="/">
         <i class="material-icons menu-icon menu-item">home</i>
@@ -22,11 +23,11 @@
 
 <script lang="ts">
 import Vue from "vue";
-import EventUtils from "../utils/EventUtils";
-import baseAuth from "../auth/BaseAuth";
+import EventUtils from "../../utils/EventUtils";
+import baseAuth from "../../auth/BaseAuth";
 
 export default Vue.extend({
-  data: function () {
+  data: function() {
     return { shown: false, userIsAuth: false };
   },
   methods: {

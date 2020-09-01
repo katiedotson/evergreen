@@ -1,6 +1,6 @@
 import Vue, { PluginObject } from "vue";
-import sessionData from "../session/sessionData";
 import { UserData } from "@/types";
+import session from "../session";
 
 import config from "../config";
 
@@ -118,7 +118,7 @@ class GoogleAuth implements PluginObject<any> {
       }
       this.authInstance.signOut().then(() => {
         this.isAuthorized = false;
-        sessionData.removeUserData();
+        session.removeUserData();
         resolve(false);
       });
     });

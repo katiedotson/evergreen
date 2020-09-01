@@ -1,7 +1,6 @@
 import Vue, { PluginObject } from "vue";
-import sessionData from "../session/sessionData";
 import { UserData } from "@/types";
-
+import session from "../session";
 import config from "../config";
 
 declare global {
@@ -84,7 +83,7 @@ class FacebookAuth implements PluginObject<any> {
           window.FB.logout((res: any) => {
             if (res) {
               this.isAuthorized = false;
-              sessionData.removeUserData();
+              session.removeUserData();
               resolve(false);
               return;
             }
@@ -94,7 +93,7 @@ class FacebookAuth implements PluginObject<any> {
       } else
         return new Promise((resolve, reject) => {
           this.isAuthorized = false;
-          sessionData.removeUserData();
+          session.removeUserData();
           reject(false);
         });
     });

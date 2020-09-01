@@ -45,7 +45,7 @@ export default Vue.extend({
   },
   methods: {
     loadPost() {
-      session
+      session.post
         .getPost(this.urlName, false)
         .then((post) => {
           if (post) {
@@ -65,7 +65,7 @@ export default Vue.extend({
       this.errorMessage = "Could not load post.";
     },
     publishPost() {
-      session
+      session.post
         .publishPost(this.post)
         .then((res) => {
           if (res) {

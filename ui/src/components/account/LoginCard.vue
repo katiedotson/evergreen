@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import baseAuth from "../auth/BaseAuth";
+import baseAuth from "../../auth/BaseAuth";
 
 export default Vue.extend({
   data: function() {

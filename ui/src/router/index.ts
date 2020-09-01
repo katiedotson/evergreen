@@ -123,7 +123,7 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some((route) => route.meta.requiresAuth)) {
     if (baseAuth.userIsAuth()) {
       if (from.path.includes("create") || from.path.includes("edit")) {
-        session.clearPostData();
+        session.post.clearPostData();
         next();
       } else next();
     } else {

@@ -1,353 +1,107 @@
-import { Post, User, UserData, Gallery } from "../types";
-import api from "./api";
-import sessionData from "./sessionData";
+import post from "./post/postSession";
+import user from "./user/userSession";
+import gallery from "./gallery/gallerySession";
+import image from "./image/imageSession";
+import { User, UserData, Post, Gallery } from "../types";
 
 export default {
-  async storeImage(file: File, type: string): Promise<string> {
-    const fileType = file.type.toLowerCase();
-    if (fileType.includes("png") || fileType.includes("jpeg")) {
-      return new Promise<string>((resolve, reject) => {
-        api
-          .uploadImage(file)
-          .then((response) => {
-            sessionData.storeTempFile(response.id, type);
-            if (type == "banner" || type == "profile") {
-              const prevPostBanner = sessionData.getInitialPost()?.img;
-              const prevPostBannerId = this.cleanImgSrc(prevPostBanner);
-              if (prevPostBannerId.length)
-                this.deleteUnusedImageFile(prevPostBannerId);
-            }
-            resolve(`https://media.publit.io/file/${response.id}.jpg`);
-          })
-          .catch((error) => {
-            console.error(error);
-            reject(error);
-          });
-      });
-    } else
-      throw new Error(
-        "Image is not either PNG or JPEG, or user could not be found."
-      );
-  },
-  async getAuthor(userId: string): Promise<User> {
-    return new Promise<User>((resolve, reject) => {
-      api.user
-        .getAuthor(userId)
-        .then((user) => resolve(user))
-        .catch((error) => {
-          console.error(error);
-          reject(error);
-        });
-    });
-  },
-  async getPosts(): Promise<Post[]> {
-    return new Promise<Post[]>((resolve, reject) => {
-      api.post
-        .getPosts()
-        .then((posts) => resolve(posts))
-        .catch((error) => {
-          console.error(error);
-          reject(error);
-        });
-    });
-  },
-  async loadUserData(userData: UserData, platform: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      api.user
-        .getUser(userData, platform)
-        .then((user) => {
-          if (userData && user) {
-            sessionData.storeUserData(userData);
-            sessionData.storeUser(user);
-            window.location.replace("/");
-            resolve(true);
-          }
-        })
-        .catch((err) => {
-          if (userData && platform) {
-            sessionData.storeUserData(userData);
-            window.location.replace("/sign-in/first-time");
-            resolve(true);
-          }
-          console.error(err);
-          reject(false);
-        });
-    });
-  },
-  async getUserPosts(): Promise<Post[]> {
-    return new Promise<Post[]>((resolve, reject) => {
-      api.post
-        .getUserPosts()
-        .then((postArray) => resolve(postArray))
-        .catch((error) => {
-          console.error(error);
-          reject(error);
-        });
-    });
-  },
-  async getPost(
-    urlName: string,
-    published?: boolean
-  ): Promise<Post | undefined> {
-    if (published !== null && published !== undefined) {
-      return new Promise<Post>((resolve, reject) => {
-        api.post
-          .getPost(urlName, published)
-          .then((post) => resolve(post))
-          .catch((error) => {
-            console.error(error);
-            reject(error);
-          });
-      });
-    } else {
-      return new Promise<Post>((resolve, reject) => {
-        api.post
-          .getPostRegardless(urlName)
-          .then((post) => resolve(post))
-          .catch((error) => {
-            console.error(error);
-            reject(error);
-          });
-      });
-    }
-  },
-  async savePost(post: Post): Promise<Post> {
-    const userId = sessionData.getUser()?.userId;
-    post.authorId = userId;
-    return new Promise<Post>((resolve, reject) => {
-      api.post
-        .savePost(post)
-        .then((post) => {
-          if (post) {
-            this.deleteUnusedImageFiles(post);
-            sessionData.clearTempFiles("post");
-            sessionData.storeInitialPost(post);
-            resolve(post);
-          }
-        })
-        .catch((error) => {
-          console.error(error);
-          reject(error);
-        });
-    });
-  },
-  async saveGallery(gallery: Gallery): Promise<Gallery> {
-    const userId = sessionData.getUser()?.userId;
-    gallery.authorId = userId;
-    return new Promise<Gallery>((resolve, reject) => {
-      api.gallery
-        .saveGallery(gallery)
-        .then((gallery) => {
-          this.deleteUnusedImageFilesForGallery(gallery);
-          sessionData.clearTempFiles("gallery");
-          sessionData.storeInitialGallery(gallery);
-          resolve(gallery);
-        })
-        .catch((error) => {
-          console.error(error);
-          reject(error);
-        });
-    });
-  },
-  async updatePostBanner(img: string): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
-      const postId = sessionData.getInitialPost()?._id;
-      if (postId === undefined) reject("No Post id");
-      api.post
-        .updatePostBanner(img, postId)
-        .then((result) => {
-          resolve(result);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
-  },
-  async updateUser(user: User): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-      const userData = sessionData.getUserData();
-      if (userData) {
-        api.user
-          .updateUser(userData, user)
-          .then((response) => resolve(response))
-          .catch((error) => {
-            console.error(error);
-            reject(error);
-          });
-      } else {
-        reject("No user data found in session.");
+  post,
+  user,
+  gallery,
+  image,
+  userDataKey: "user_data",
+  userKey: "user",
+  tempImgFileKey: "temp_img_file",
+  initialPostKey: "initial_post",
+  initialGalleryKey: "initial_gallery",
+  userTokenKey: "CgQIq5AB",
+  saveFileLocally(key: string, file: File): void {
+    const reader = new FileReader();
+    reader.onload = function() {
+      const thisImage = reader.result;
+      if (typeof thisImage == "string") {
+        localStorage.setItem(key, thisImage);
       }
-    });
+    };
+    reader.readAsDataURL(file);
   },
-  async createNewUser(user: User): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-      const userData = sessionData.getUserData();
-      if (userData) {
-        api.user
-          .createNewUser(userData, user)
-          .then((response) => resolve(response))
-          .catch((error) => {
-            console.error(error);
-            reject(error);
-          });
-      } else {
-        reject("No user data found in session.");
-      }
-    });
-  },
-  async deletePost(post: Post): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-      api.post
-        .deletePost(post)
-        .then((response) => {
-          this.deleteAllImageFiles(post);
-          resolve(response);
-        })
-        .catch((error) => {
-          console.error(error);
-          reject(error);
-        });
-    });
-  },
-  logoutUserAndRedirect(): void {
-    sessionData.removeUserData();
-    window.location.href = "/sign-in?timeout=true";
-  },
-  async publishPost(post: Post): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-      api.post
-        .publishPost(post)
-        .then((response) => {
-          resolve(response);
-        })
-        .catch((error) => {
-          console.error(error);
-          reject(error);
-        });
-    });
-  },
-  async unpublishPost(post: Post): Promise<any> {
-    return new Promise<any>((resolve, reject) => {
-      api.post
-        .unpublishPost(post)
-        .then((response) => {
-          resolve(response);
-        })
-        .catch((error) => {
-          console.error(error);
-          reject(error);
-        });
-    });
-  },
-  deleteAllImageFiles(post: Post) {
-    const imgsInPost = this.findImagesInPost(post.body);
-    const imgBanner = this.cleanImgSrc(post.img);
-
-    imgsInPost.push(imgBanner);
-
-    api.deleteImages(imgsInPost);
-  },
-  deleteUnusedImageFile(imgId: string) {
-    api.deleteImages([imgId]);
-  },
-  deleteUnusedImageFiles(post: Post) {
-    const imgsInPost: string[] = this.findImagesInPost(post.body);
-
-    const imagesUploaded: string[] = sessionData.getTempFiles("post");
-
-    //always check if images were deleted
-    const initialPost = sessionData.getInitialPost();
-    if (initialPost && initialPost.body !== "") {
-      const imagesInInitialPost = this.findImagesInPost(initialPost.body);
-      if (imagesInInitialPost.length) {
-        const imagesNotUsed = imagesInInitialPost.filter(
-          (src) => !imgsInPost.includes(src)
-        );
-        api.deleteImages(imagesNotUsed);
-      }
+  getSessionItem(key: string): any {
+    const item = sessionStorage.getItem(key);
+    if (item != null && item != "") {
+      return JSON.parse(item);
     }
-
-    if (imagesUploaded) {
-      const imagesNotUsed = imagesUploaded.filter(
-        (src) => !imgsInPost.includes(src)
-      );
-      api.deleteImages(imagesNotUsed);
-    }
+    return null;
   },
-  deleteUnusedImageFilesForGallery(gallery: Gallery) {
-    const imagesUploaded: string[] = sessionData.getTempFiles("gallery");
-    const imgsInGallery = gallery.photos.map((photo) =>
-      this.cleanImgSrc(photo.img)
+  storeUserData(userData: UserData) {
+    sessionStorage.setItem(this.userDataKey, JSON.stringify(userData));
+  },
+  storeUser(user: User) {
+    sessionStorage.setItem(this.userKey, JSON.stringify(user));
+  },
+  removeUserData() {
+    sessionStorage.removeItem(this.userDataKey);
+    sessionStorage.removeItem(this.userKey);
+    sessionStorage.removeItem(this.userTokenKey);
+    sessionStorage.removeItem(this.tempImgFileKey);
+    sessionStorage.removeItem(this.initialPostKey);
+  },
+  getUserData(): UserData | null {
+    return this.getSessionItem(this.userDataKey);
+  },
+  getUser(): User {
+    return this.getSessionItem(this.userKey);
+  },
+  storeTempFile(publicId: string, type: string) {
+    const storedFiles: string[] = sessionStorage.getItem(
+      `${this.tempImgFileKey}_${type}`
+    )
+      ? JSON.parse(
+          String(sessionStorage.getItem(`${this.tempImgFileKey}_${type}`))
+        )
+      : [];
+    storedFiles.push(publicId);
+    sessionStorage.setItem(
+      `${this.tempImgFileKey}_${type}`,
+      JSON.stringify(storedFiles)
     );
-    const imgsToDelete = imagesUploaded.filter(
-      (img) => !imgsInGallery.includes(img)
+  },
+  getTempFiles(type: string) {
+    return JSON.parse(
+      String(sessionStorage.getItem(`${this.tempImgFileKey}_${type}`))
     );
-    api.deleteImages(imgsToDelete);
   },
-  findImagesInPost(postBody: string): string[] {
-    const elem = document.createElement("div");
-    elem.innerHTML = postBody;
-
-    const images: any = elem.getElementsByTagName("img");
-
-    const srcs: string[] = [];
-    images.forEach((img: HTMLImageElement) => {
-      const imgSrc = this.cleanImgSrc(img.src);
-      srcs.push(imgSrc);
-    });
-
-    return srcs;
+  clearTempFiles(type: string) {
+    sessionStorage.removeItem(`${this.tempImgFileKey}_${type}`);
   },
-  cleanImgSrc(imgSrc: string): string {
-    if (imgSrc.includes("http")) {
-      const lastSlash = imgSrc.lastIndexOf("/");
-      const lastDot = imgSrc.lastIndexOf(".");
-      return imgSrc.substr(lastSlash + 1, lastDot - lastSlash - 1);
-    }
-    return imgSrc;
+  storeInitialPost(post: Post) {
+    sessionStorage.setItem(this.initialPostKey, JSON.stringify(post));
   },
-  getBlankPost(): Promise<Post> {
-    return new Promise<Post>((resolve, reject) => {
-      api.post
-        .getBlankPost()
-        .then((post) => {
-          resolve(post);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+  storeInitialGallery(gallery: Gallery): void {
+    sessionStorage.setItem(this.initialGalleryKey, JSON.stringify(gallery));
   },
-  getBlankGallery(): Promise<Gallery> {
-    return new Promise<Gallery>((resolve, reject) => {
-      api.post
-        .getBlankGallery()
-        .then((gallery) => {
-          resolve(gallery);
-        })
-        .catch((error) => {
-          reject(error);
-        });
-    });
+  getInitialPost(): Post {
+    return sessionStorage.getItem(this.initialPostKey)
+      ? JSON.parse(String(sessionStorage.getItem(this.initialPostKey)))
+      : ({} as Post);
   },
-  clearPostData() {
-    const post = sessionData.getInitialPost();
-    if (!post.title) {
-      api.post.deletePost(post);
-    }
-    sessionData.clearTempFiles("post");
-    sessionData.clearTempFiles("banner");
-    sessionData.clearInitialPost();
+  getInitialGallery(): Gallery {
+    return sessionStorage.getItem(this.initialGalleryKey)
+      ? JSON.parse(String(sessionStorage.getItem(this.initialGalleryKey)))
+      : ({} as Gallery);
+  },
+  clearInitialPost(): void {
+    sessionStorage.removeItem(this.initialPostKey);
+  },
+  clearInitialGallery(): void {
+    sessionStorage.removeItem(this.initialGalleryKey);
+  },
+  storeUserToken(token: string): void {
+    sessionStorage.setItem(this.userTokenKey, token);
+  },
+  getUserToken(): string {
+    const token = sessionStorage.getItem(this.userTokenKey);
+    return token !== "" && token !== undefined && token !== null
+      ? String(sessionStorage.getItem(this.userTokenKey))
+      : "";
   },
 };
-
-/**
- * Test paths for image deletion
- *
- * 1. new & old post - add, delete, save
- * 2. new & old post - add, save, delete
- * 3. new & old post - banner, change banner, save
- * 4. new & old post - banner, save, change banner
- * 5. user - add new avatar & save
- * 6. user - add new avatar without saving
- */
