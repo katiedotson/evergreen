@@ -87,9 +87,9 @@
 <script lang="ts">
 import Vue from "vue";
 import AccountHeading from "./AccountHeading.vue";
-import Loader from "./Loader.vue";
-import UserCardModal from "./AuthorCardModal.vue";
-import ErrorCard from "./ErrorCard.vue";
+import Loader from "../shared/Loader.vue";
+import UserCardModal from "../shared/AuthorCardModal.vue";
+import ErrorCard from "../shared/ErrorCard.vue";
 import { validationMixin } from "vuelidate";
 import {
   required,
@@ -231,7 +231,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import "../styles/_global.scss";
+@import "../../styles/_global.scss";
 
 div.form {
   margin-top: 36px;

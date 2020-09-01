@@ -1,6 +1,6 @@
 import { Gallery } from "../../types";
-import api from "./galleryApi";
-import session from "../";
+import api from "./api";
+import session from "..";
 
 export default {
   async saveGallery(gallery: Gallery): Promise<Gallery> {
@@ -29,6 +29,20 @@ export default {
           resolve(gallery);
         })
         .catch((error) => {
+          console.error(error);
+          reject(error);
+        });
+    });
+  },
+  getGallery(urlName: string) {
+    return new Promise<Gallery>((resolve, reject) => {
+      api
+        .getGalleryByUrlName(urlName)
+        .then((gallery) => {
+          resolve(gallery);
+        })
+        .catch((error) => {
+          console.error(error);
           reject(error);
         });
     });

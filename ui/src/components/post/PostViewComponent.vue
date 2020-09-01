@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import AuthorInfoCard from "./AuthorInfoCard.vue";
+import AuthorInfoCard from "../shared/AuthorInfoCard.vue";
 
 export default Vue.extend({
   props: {
@@ -32,7 +32,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import "../styles/global.scss";
+@import "../../styles/_global.scss";
 
 div.post {
   max-width: 800px;

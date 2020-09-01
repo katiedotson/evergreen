@@ -7,7 +7,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import Search from "./SearchComponent.vue";
+import Search from "../shared/SearchComponent.vue";
 export default Vue.extend({
   components: {
     Search,
@@ -16,7 +16,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import "../styles/_global.scss";
+@import "../../styles/_global.scss";
 
 div.not-found {
   max-width: 800px;

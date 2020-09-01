@@ -74,8 +74,8 @@
 <script lang="ts">
 import Vue from "vue";
 import Editor from "./Editor.vue";
-import ErrorCard from "./ErrorCard.vue";
-import Loader from "./Loader.vue";
+import ErrorCard from "../shared/ErrorCard.vue";
+import Loader from "../shared/Loader.vue";
 import { validationMixin } from "vuelidate";
 import { required, minLength, maxLength } from "vuelidate/lib/validators";
 import { HTMLInputEvent, Post } from "../../types";
@@ -212,7 +212,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import "../styles/global.scss";
+@import "../../styles/_global.scss";
 
 div.editor-wrapper.form {
   max-width: 800px;

@@ -10,10 +10,10 @@
 <script lang="ts">
 import Vue from "vue";
 import router from "../router";
-import PostView from "../components/PostViewComponent.vue";
-import Loader from "../components/Loader.vue";
-import ErrorCard from "../components/ErrorCard.vue";
-import PostNotFound from "../components/PostNotFoundComponent.vue";
+import PostView from "../components/post/PostViewComponent.vue";
+import Loader from "../components/shared/Loader.vue";
+import ErrorCard from "../components/shared/ErrorCard.vue";
+import PostNotFound from "../components/post/PostNotFoundComponent.vue";
 import { Post, User } from "../types";
 import session from "../session";
 

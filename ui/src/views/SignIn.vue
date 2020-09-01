@@ -11,9 +11,9 @@
 <script lang="ts">
 import Vue from "vue";
 
-import SearchComponent from "../components/SearchComponent.vue";
-import LoginComponent from "../components/LoginComponent.vue";
-import ErrorCard from "../components/ErrorCard.vue";
+import SearchComponent from "../components/shared/SearchComponent.vue";
+import LoginComponent from "../components/account/LoginComponent.vue";
+import ErrorCard from "../components/shared/ErrorCard.vue";
 
 export default Vue.extend({
   components: {

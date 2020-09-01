@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import UserInformationComponent from "../components/UserInformationComponent.vue";
+import UserInformationComponent from "../components/account/UserInformationComponent.vue";
 
 export default Vue.extend({
   components: {

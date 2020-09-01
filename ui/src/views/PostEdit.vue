@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import PostEditor from "../components/PostEditorComponent.vue";
+import PostEditor from "../components/post/PostEditorComponent.vue";
 
 export default Vue.extend({
   props: {

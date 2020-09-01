@@ -4,7 +4,7 @@
 
 <script>
 import Quill from "quill";
-import session from "../session";
+import session from "../../session";
 
 export default {
   props: {

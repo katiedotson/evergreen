@@ -89,8 +89,8 @@
 <script lang="ts">
 import Vue from "vue";
 import AccountHeading from "./AccountHeading.vue";
-import ErrorCard from "./ErrorCard.vue";
-import Loader from "./Loader.vue";
+import ErrorCard from "../shared/ErrorCard.vue";
+import Loader from "../shared/Loader.vue";
 import session from "../../session";
 import { Post } from "../../types";
 
@@ -164,7 +164,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import "../styles/global.scss";
+@import "../../styles/_global.scss";
 
 button.options {
   float: right;

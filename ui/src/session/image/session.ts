@@ -1,5 +1,5 @@
 import { Post, Gallery } from "../../types";
-import api from "./imageApi";
+import api from "./api";
 import session from "..";
 
 export default {

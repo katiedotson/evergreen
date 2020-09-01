@@ -27,7 +27,7 @@ import Vue from "vue";
 import { User } from "../../types/index";
 import UserInformationComponent from "./UserInformationComponent.vue";
 import UserPostsComponent from "./UserPostsComponent.vue";
-import ErrorCard from "./ErrorCard.vue";
+import ErrorCard from "../shared/ErrorCard.vue";
 import session from "../../session";
 
 export default Vue.extend({
@@ -65,7 +65,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import "../styles/_global.scss";
+@import "../../styles/_global.scss";
 
 div.account {
   ul {

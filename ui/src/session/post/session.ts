@@ -1,5 +1,5 @@
 import { Post } from "../../types";
-import api from "./postApi";
+import api from "./api";
 import session from "..";
 
 export default {

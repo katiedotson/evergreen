@@ -66,8 +66,8 @@
 
 <script lang="ts">
 import Vue from "vue";
-import ErrorCard from "../components/ErrorCard.vue";
-import Loader from "../components/Loader.vue";
+import ErrorCard from "../shared/ErrorCard.vue";
+import Loader from "../shared/Loader.vue";
 import session from "../../session";
 import { Gallery } from "../../types";
 
@@ -115,7 +115,7 @@ export default Vue.extend({
   },
   methods: {
     storeInitialGallery(): void {
-      session.storeInitialPost(this.gallery);
+      session.storeInitialGallery(this.gallery);
     },
     loadSessionGallery(): void {
       this.gallery = session.getInitialGallery();
@@ -220,7 +220,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import "../styles/global.scss";
+@import "../../styles/_global.scss";
 
 .title,
 .description {

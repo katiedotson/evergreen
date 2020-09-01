@@ -1,4 +1,4 @@
-import { User, UserData } from "@/types";
+import { User, UserData } from "../../types";
 import axios from "../api/axios-instance";
 import session from "..";
 

@@ -10,9 +10,9 @@
 </template>
 
 <script>
-import Navigation from "./components/NavigationComponent.vue";
-import PageTitle from "./components/PageTitleComponent.vue";
-import LoginCard from "./components/LoginCard.vue";
+import Navigation from "./components/shared/NavigationComponent.vue";
+import PageTitle from "./components/shared/PageTitleComponent.vue";
+import LoginCard from "./components/account/LoginCard.vue";
 
 export default {
   name: "app",

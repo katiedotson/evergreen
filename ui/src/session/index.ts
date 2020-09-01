@@ -1,7 +1,7 @@
-import post from "./post/postSession";
-import user from "./user/userSession";
-import gallery from "./gallery/gallerySession";
-import image from "./image/imageSession";
+import post from "./post/session";
+import user from "./user/session";
+import gallery from "./gallery/session";
+import image from "./image/session";
 import { User, UserData, Post, Gallery } from "../types";
 
 export default {

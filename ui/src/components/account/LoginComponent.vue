@@ -29,7 +29,7 @@
 <script lang="ts">
 import Vue from "vue";
 import baseAuth from "../../auth/BaseAuth";
-import ErrorCard from "./ErrorCard.vue";
+import ErrorCard from "../shared/ErrorCard.vue";
 
 export default Vue.extend({
   data: function() {
@@ -92,7 +92,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import "../styles/global.scss";
+@import "../../styles/_global.scss";
 
 div.account-creation {
   max-width: 800px;

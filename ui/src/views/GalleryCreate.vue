@@ -4,7 +4,7 @@
 
 <script lang="ts">
 import Vue from "vue";
-import GalleryEditor from "../components/GalleryEditorComponent.vue";
+import GalleryEditor from "../components/gallery/GalleryEditorComponent.vue";
 
 export default Vue.extend({
   props: {

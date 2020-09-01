@@ -10,9 +10,9 @@
 <script lang="ts">
 import Vue from "vue";
 import { Post } from "../../types";
-import PostCard from "../components/PostCardComponent.vue";
-import ErrorCard from "../components/ErrorCard.vue";
-import Loader from "./Loader.vue";
+import PostCard from "./PostCardComponent.vue";
+import ErrorCard from "../shared/ErrorCard.vue";
+import Loader from "../shared/Loader.vue";
 import session from "../../session";
 
 export default Vue.extend({

@@ -1,11 +1,11 @@
 import { User, UserData } from "../../types";
-import api from "../api/api";
+import api from "./api";
 import session from "..";
 
 export default {
   async getAuthor(userId: string): Promise<User> {
     return new Promise<User>((resolve, reject) => {
-      api.user
+      api
         .getAuthor(userId)
         .then((user) => resolve(user))
         .catch((error) => {
@@ -16,7 +16,7 @@ export default {
   },
   async loadUserData(userData: UserData, platform: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
-      api.user
+      api
         .getUser(userData, platform)
         .then((user) => {
           if (userData && user) {
@@ -41,7 +41,7 @@ export default {
     return new Promise<any>((resolve, reject) => {
       const userData = session.getUserData();
       if (userData) {
-        api.user
+        api
           .updateUser(userData, user)
           .then((response) => resolve(response))
           .catch((error) => {
@@ -57,7 +57,7 @@ export default {
     return new Promise<any>((resolve, reject) => {
       const userData = session.getUserData();
       if (userData) {
-        api.user
+        api
           .createNewUser(userData, user)
           .then((response) => resolve(response))
           .catch((error) => {
