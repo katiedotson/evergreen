@@ -10,6 +10,9 @@ import NewAccount from "../views/NewAccount.vue";
 import Account from "../views/Account.vue";
 import PostEdit from "../views/PostEdit.vue";
 import PostCreate from "../views/PostCreate.vue";
+import GalleryCreate from "../views/GalleryCreate.vue";
+import AudioCreate from "../views/AudioCreate.vue";
+import VideoCreate from "../views/VideoCreate.vue";
 import PostDelete from "../views/PostDelete.vue";
 import PostPublish from "../views/PostPublish.vue";
 import PostUnpublish from "../views/PostUnpublish.vue";
@@ -58,8 +61,29 @@ const routes: Array<RouteConfig> = [
     },
   },
   {
-    path: "/create",
+    path: "/create/post",
     component: PostCreate,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/create/gallery",
+    component: GalleryCreate,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/create/audio",
+    component: AudioCreate,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/create/video",
+    component: VideoCreate,
     meta: {
       requiresAuth: true,
     },

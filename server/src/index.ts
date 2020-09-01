@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import csurf from "csurf";
 import post from "./routes/post";
 import user from "./routes/user";
+import gallery from "./routes/gallery";
 
 import dotenv from "dotenv";
 
@@ -35,6 +36,7 @@ app.use((req, res, next) => {
 
 app.use("/post", post);
 app.use("/user", user);
+app.use("/gallery", gallery);
 
 app.listen(port, () => {
   console.log(`Listening at port ${port}`);

@@ -242,7 +242,7 @@ div.editor-wrapper.form {
     }
 
     input {
-      width: 100%;
+      width: calc(100% - 14px);
       max-width: 786px;
       padding: 6px;
       border: 1px solid $dirty-snow;

@@ -1,10 +1,12 @@
 import publitio from "../assets";
 import post from "./postApi";
 import user from "./userApi";
+import gallery from "./galleryApi";
 
 export default {
   post,
   user,
+  gallery,
   uploadImage(file: File): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       publitio

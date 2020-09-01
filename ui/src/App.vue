@@ -36,6 +36,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   font-family: "Barlow";
+  overflow-x: hidden;
 }
 
 div.content {
@@ -48,6 +49,19 @@ div.content {
   transition: opacity 0.5s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active in <2.1.8 */ {
+  opacity: 0;
+}
+
+.left-enter-active,
+.left-leave-active {
+  transition: all 0.5s cubic-bezier(1, 0.5, 0.8, 1);
+}
+.left-enter /* .fade-leave-active in <2.1.8 */ {
+  transform: translateX(50vw);
+  opacity: 0;
+}
+.left-leave-to {
+  transform: translateX(-50vw);
   opacity: 0;
 }
 </style>

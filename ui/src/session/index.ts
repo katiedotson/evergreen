@@ -1,4 +1,4 @@
-import { Post, User, UserData } from "../types";
+import { Post, User, UserData, Gallery } from "../types";
 import api from "./api";
 import sessionData from "./sessionData";
 
@@ -59,7 +59,7 @@ export default {
           if (userData && user) {
             sessionData.storeUserData(userData);
             sessionData.storeUser(user);
-            window.location.reload();
+            window.location.replace("/");
             resolve(true);
           }
         })
@@ -131,6 +131,24 @@ export default {
         });
     });
   },
+  async saveGallery(gallery: Gallery): Promise<Gallery> {
+    const userId = sessionData.getUser()?.userId;
+    gallery.authorId = userId;
+    return new Promise<Gallery>((resolve, reject) => {
+      api.gallery
+        .saveGallery(gallery)
+        .then((gallery) => {
+          this.deleteUnusedImageFilesForGallery(gallery);
+          sessionData.clearTempFiles("gallery");
+          sessionData.storeInitialGallery(gallery);
+          resolve(gallery);
+        })
+        .catch((error) => {
+          console.error(error);
+          reject(error);
+        });
+    });
+  },
   async updatePostBanner(img: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       const postId = sessionData.getInitialPost()?._id;
@@ -195,7 +213,7 @@ export default {
     sessionData.removeUserData();
     window.location.href = "/sign-in?timeout=true";
   },
-  publishPost(post: Post): Promise<any> {
+  async publishPost(post: Post): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       api.post
         .publishPost(post)
@@ -208,7 +226,7 @@ export default {
         });
     });
   },
-  unpublishPost(post: Post): Promise<any> {
+  async unpublishPost(post: Post): Promise<any> {
     return new Promise<any>((resolve, reject) => {
       api.post
         .unpublishPost(post)
@@ -256,6 +274,16 @@ export default {
       api.deleteImages(imagesNotUsed);
     }
   },
+  deleteUnusedImageFilesForGallery(gallery: Gallery) {
+    const imagesUploaded: string[] = sessionData.getTempFiles("gallery");
+    const imgsInGallery = gallery.photos.map((photo) =>
+      this.cleanImgSrc(photo.img)
+    );
+    const imgsToDelete = imagesUploaded.filter(
+      (img) => !imgsInGallery.includes(img)
+    );
+    api.deleteImages(imgsToDelete);
+  },
   findImagesInPost(postBody: string): string[] {
     const elem = document.createElement("div");
     elem.innerHTML = postBody;
@@ -284,6 +312,18 @@ export default {
         .getBlankPost()
         .then((post) => {
           resolve(post);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  },
+  getBlankGallery(): Promise<Gallery> {
+    return new Promise<Gallery>((resolve, reject) => {
+      api.post
+        .getBlankGallery()
+        .then((gallery) => {
+          resolve(gallery);
         })
         .catch((error) => {
           reject(error);

@@ -6,8 +6,7 @@
       v-on:keyup="keyboardEvent"
       class="material-icons menu-icon menu"
       tabindex="200"
-      >menu</i
-    >
+    >menu</i>
     <div class="nav-links" :class="!shown ? 'hide' : ''" @click="toggleShown">
       <router-link to="/">
         <i class="material-icons menu-icon menu-item">home</i>
@@ -27,15 +26,15 @@ import EventUtils from "../utils/EventUtils";
 import baseAuth from "../auth/BaseAuth";
 
 export default Vue.extend({
-  data: function() {
+  data: function () {
     return { shown: false, userIsAuth: false };
   },
   methods: {
-    toggleShown() {
-      this.shown = !this.shown;
+    toggleShown(e: any) {
+      if (!e.target.href) this.shown = !this.shown;
     },
     keyboardEvent(event: KeyboardEvent) {
-      EventUtils.keyboardEvent(event, this.toggleShown, this);
+      EventUtils.keyboardEvent(event);
     },
     getIsUserAuthenticated() {
       return baseAuth.userIsAuth();
@@ -63,6 +62,11 @@ export default Vue.extend({
   mounted() {
     this.userIsAuth = this.getIsUserAuthenticated();
   },
+  watch: {
+    $route() {
+      this.shown = false;
+    },
+  },
 });
 </script>
 
@@ -80,6 +84,7 @@ nav {
     width: 100%;
     font-size: x-large;
     transition: width 0.6s ease-in-out;
+    background-color: $dark-blue-grey;
     background-image: linear-gradient(
       to top,
       $x-dark-blue-grey 10%,

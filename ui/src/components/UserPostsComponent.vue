@@ -3,63 +3,62 @@
     <AccountHeading name="Posts" />
     <Loader :show="isLoading" />
     <ErrorCard :show="showError" :message="errorMessage" />
+    <button @click="toggleOptionsMenu" class="options" v-if="!isLoading">Options</button>
     <div v-if="!isLoading">
-      <div class="filter-wrapper">
-        <button
-          class="filter-btn"
-          :class="{ underline: filterTypeAll() }"
-          @click="filterPosts('all')"
-        >
-          All
-        </button>
-        <button
-          class="filter-btn"
-          :class="{ underline: filterTypeUnpublished() }"
-          @click="filterPosts('unpublished')"
-        >
-          Unpublished
-        </button>
-        <button
-          class="filter-btn"
-          :class="{ underline: filterTypePublished() }"
-          @click="filterPosts('published')"
-        >
-          Published
-        </button>
-      </div>
-      <router-link to="/create" class="new-post-button button"
-        >New Post</router-link
-      >
+      <transition name="left">
+        <div v-if="showOptions" class="options-menu">
+          <div class="heading left">Filter</div>
+          <div class="heading right">Create</div>
+          <div class="filter-wrapper">
+            <button
+              class="filter-btn"
+              :class="{ underline: filterType === 'all' }"
+              @click="filterPosts('all')"
+            >All</button>
+            <button
+              class="filter-btn"
+              :class="{ underline: filterType === 'unpublished' }"
+              @click="filterPosts('unpublished')"
+            >Unpublished</button>
+            <button
+              class="filter-btn"
+              :class="{ underline: filterType === 'published' }"
+              @click="filterPosts('published')"
+            >Published</button>
+          </div>
+          <div class="new-button-wrapper">
+            <router-link to="/create/post" class="button new">Post</router-link>
+            <router-link to="/create/gallery" class="button new">Gallery</router-link>
+            <router-link to="/create/audio" class="button new">Audio</router-link>
+            <router-link to="/create/video" class="button new">Video</router-link>
+          </div>
+          <button class="close" @click="toggleOptionsMenu">Cancel</button>
+        </div>
+      </transition>
       <div class="user-post" v-for="post in posts" v-bind:key="post.title">
         <div class="title">{{ post.title }}</div>
         <router-link
           v-if="post.published"
           class="url-name"
           :to="`../post/${post.urlName}`"
-          >{{ post.urlName }}</router-link
-        >
+        >{{ post.urlName }}</router-link>
         <div class="edit-button-wrapper">
-          <router-link class="button edit" :to="`../edit-post/${post.urlName}`"
-            >Edit</router-link
-          >
+          <router-link class="button edit" :to="`../edit-post/${post.urlName}`">Edit</router-link>
           <router-link
             v-if="!post.published"
             class="button delete"
             :to="`../delete-post/${post.urlName}`"
-            >Delete</router-link
-          >
+          >Delete</router-link>
           <router-link
             v-if="!post.published"
             class="button publish"
             :to="`../publish-post/${post.urlName}`"
-            >Publish</router-link
-          >
+          >Publish</router-link>
           <router-link
             v-if="post.published"
             class="button unpublish"
             :to="`../unpublish-post/${post.urlName}`"
-            >Unpublish</router-link
-          >
+          >Unpublish</router-link>
         </div>
       </div>
       <div class="empty" v-if="!posts.length">Nothing here yet.</div>
@@ -84,6 +83,7 @@ export default Vue.extend({
       showError: false,
       errorMessage: "",
       filterType: "",
+      showOptions: false,
     };
   },
   mounted() {
@@ -101,16 +101,11 @@ export default Vue.extend({
       });
   },
   methods: {
-    filterTypeAll(): boolean {
-      return this.filterType === "all";
-    },
-    filterTypeUnpublished(): boolean {
-      return this.filterType === "unpublished";
-    },
-    filterTypePublished(): boolean {
-      return this.filterType === "published";
+    toggleOptionsMenu(): void {
+      this.showOptions = !this.showOptions;
     },
     filterPosts(type: string) {
+      this.showOptions = false;
       this.filterType = type;
     },
   },
@@ -151,15 +146,80 @@ export default Vue.extend({
 <style lang="scss" scoped>
 @import "../styles/global.scss";
 
-div.filter-wrapper {
-  button {
-    font-size: x-small;
-    background-color: $smoke;
-    &.underline {
-      text-decoration: underline;
+button.options {
+  float: right;
+  position: relative;
+  top: -68px;
+  background-color: $dark-blue-grey;
+  color: $snow;
+}
+
+div.options-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: calc(100vh - 24px);
+  background-color: $dark-blue-grey;
+  background-image: linear-gradient(
+    to top,
+    $x-dark-blue-grey 10%,
+    $dark-blue-grey 90%
+  );
+  padding: 6px;
+
+  button.close {
+    width: 100%;
+    background-color: $burnt-orange;
+    color: $snow;
+  }
+
+  div.heading {
+    width: 50%;
+    display: inline-block;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: $snow;
+    &.right {
+      float: right;
+      text-align: right;
     }
-    &:focus {
-      outline: none;
+  }
+
+  div.new-button-wrapper {
+    display: inline-block;
+    float: right;
+    width: 50%;
+    a.button.new {
+      display: block;
+      font-size: x-small;
+      color: $snow;
+      text-align: right;
+      text-decoration: none;
+      padding: 16px;
+      font-family: "Barlow", sans-serif;
+      text-transform: uppercase;
+      border: none;
+      margin-bottom: none;
+      cursor: pointer;
+      transition: 0.5s;
+    }
+  }
+
+  div.filter-wrapper {
+    display: inline-block;
+    width: 50%;
+    text-align: right;
+    button {
+      display: block;
+      font-size: x-small;
+      background-color: transparent;
+      color: $snow;
+      &.underline {
+        text-decoration: underline;
+      }
+      &:focus {
+        outline: none;
+      }
     }
   }
 }
@@ -210,20 +270,5 @@ div.user-post {
       }
     }
   }
-}
-a.new-post-button.button {
-  width: 100%;
-  text-decoration: none;
-  text-align: center;
-  padding: 16px;
-  max-width: 334px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 36px;
-  background-color: $dark-blue-grey;
-  color: $snow;
-  position: sticky;
-  top: 20px;
 }
 </style>

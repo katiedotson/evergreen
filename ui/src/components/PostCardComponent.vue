@@ -33,6 +33,7 @@ export default Vue.extend({
 @import "../styles/global.scss";
 
 a.post-card {
+  max-width: 300px;
   margin-bottom: 10px;
   display: block;
   cursor: pointer;

@@ -4,6 +4,7 @@ import {
   UserData,
   ExecutableMongoFindCallback,
   ExecutableMongoInsertCallback,
+  Gallery,
 } from "../types";
 import { MongoClient, ObjectID } from "mongodb";
 
@@ -23,7 +24,7 @@ export default {
       const result = client
         .db("evergreen")
         .collection("posts")
-        .findOne({ urlName, published });
+        .findOne({ urlName, published: published });
       return result;
     };
     return this.executeFind(findByUrlName);
@@ -99,6 +100,29 @@ export default {
     };
     return this.executeInsert(update, post);
   },
+  async updateGallery(gallery: Gallery, userId: string): Promise<any> {
+    const update = async (client: MongoClient, gallery: Gallery) => {
+      const newValues = {
+        $set: {
+          title: gallery.title,
+          description: gallery.description,
+          urlName: gallery.urlName,
+          photos: gallery.photos,
+          relevance: gallery.relevance,
+          published: gallery.published,
+        },
+      };
+      await client
+        .db("evergreen")
+        .collection("galleries")
+        .updateOne(
+          { _id: new ObjectID(gallery._id), authorId: userId },
+          newValues
+        );
+      return gallery;
+    };
+    return this.executeInsert(update, gallery);
+  },
   async deletePost(urlName: string, userId: string): Promise<any> {
     const deletePost = async (client: MongoClient, params: any) => {
       return await client
@@ -170,6 +194,16 @@ export default {
     };
     return this.executeInsert(newPost, post);
   },
+  async newGallery(gallery: Gallery): Promise<any> {
+    const newGallery = async (client: MongoClient, gallery: Gallery) => {
+      const _id = await (
+        await client.db("evergreen").collection("posts").insertOne(gallery)
+      ).insertedId;
+      gallery._id = _id;
+      return gallery;
+    };
+    return this.executeInsert(newGallery, gallery);
+  },
   async updatePostBanner(
     img: string,
     postId: string,
@@ -222,6 +256,7 @@ export default {
     const client = new MongoClient(process.env.DB_CONNECT, {
       useUnifiedTopology: true,
       useNewUrlParser: true,
+      connectTimeoutMS: 60000,
     });
     let result = {};
     try {
@@ -240,6 +275,7 @@ export default {
     const client = new MongoClient(process.env.DB_CONNECT, {
       useUnifiedTopology: true,
       useNewUrlParser: true,
+      connectTimeoutMS: 60000,
     });
     let results: Post[] = [];
     try {

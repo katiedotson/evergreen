@@ -1,5 +1,7 @@
 <template>
-  <div><AccountComponent /></div>
+  <div>
+    <AccountComponent />
+  </div>
 </template>
 <script lang="ts">
 import Vue from "vue";

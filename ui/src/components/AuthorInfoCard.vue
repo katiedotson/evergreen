@@ -30,6 +30,9 @@ div.author {
     float: left;
     margin-right: 10px;
     margin-bottom: 10px;
+    &[src=""] {
+      display: none;
+    }
   }
   .name {
     font-weight: bold;

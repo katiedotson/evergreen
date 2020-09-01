@@ -1,10 +1,11 @@
-import { User, UserData, Post } from "../types";
+import { User, UserData, Post, Gallery } from "../types";
 
 export default {
-  userDataKey: "userData",
+  userDataKey: "user_data",
   userKey: "user",
   tempImgFileKey: "temp_img_file",
   initialPostKey: "initial_post",
+  initialGalleryKey: "initial_gallery",
   userTokenKey: "CgQIq5AB",
   saveFileLocally(key: string, file: File): void {
     const reader = new FileReader();
@@ -67,13 +68,24 @@ export default {
   storeInitialPost(post: Post) {
     sessionStorage.setItem(this.initialPostKey, JSON.stringify(post));
   },
+  storeInitialGallery(gallery: Gallery): void {
+    sessionStorage.setItem(this.initialGalleryKey, JSON.stringify(gallery));
+  },
   getInitialPost(): Post {
     return sessionStorage.getItem(this.initialPostKey)
       ? JSON.parse(String(sessionStorage.getItem(this.initialPostKey)))
       : ({} as Post);
   },
+  getInitialGallery(): Gallery {
+    return sessionStorage.getItem(this.initialGalleryKey)
+      ? JSON.parse(String(sessionStorage.getItem(this.initialGalleryKey)))
+      : ({} as Gallery);
+  },
   clearInitialPost(): void {
     sessionStorage.removeItem(this.initialPostKey);
+  },
+  clearInitialGallery(): void {
+    sessionStorage.removeItem(this.initialGalleryKey);
   },
   storeUserToken(token: string): void {
     sessionStorage.setItem(this.userTokenKey, token);
