@@ -278,6 +278,34 @@ export default {
     };
     return this.executeInsert(updatePostPublished, { isPublished, postId });
   },
+  async updateGalleryPublished(
+    gallery: Gallery,
+    userId: string,
+    isPublished: boolean
+  ): Promise<any> {
+    const updateGalleryPublished = async (
+      client: MongoClient,
+      params: Record<string, string>
+    ) => {
+      const newValues = {
+        $set: {
+          published: params.isPublished,
+        },
+      };
+      return await client
+        .db("evergreen")
+        .collection("galleries")
+        .updateOne(
+          { _id: new ObjectID(params.id), authorId: params.userId },
+          newValues
+        );
+    };
+    return this.executeInsert(updateGalleryPublished, {
+      id: gallery._id,
+      isPublished,
+      userId,
+    });
+  },
   async executeInsert(
     cb: ExecutableMongoInsertCallback,
     data: Record<string, unknown>

@@ -3,14 +3,17 @@
     <ErrorCard :show="showError" :message="errorMessage" />
     <Loader :show="isLoading" />
     <div class="posts" v-if="!isLoading">
-      <PostCard v-for="(post, i) in posts" v-bind:key="i" v-bind:post="post" />
+      <ContentCard
+        v-for="(result, i) in results"
+        v-bind:key="i"
+        v-bind:item="result"
+      />
     </div>
   </div>
 </template>
 <script lang="ts">
 import Vue from "vue";
-import { Post } from "../../types";
-import PostCard from "./PostCardComponent.vue";
+import ContentCard from "../shared/ContentCard.vue";
 import ErrorCard from "../shared/ErrorCard.vue";
 import Loader from "../shared/Loader.vue";
 import session from "../../session";
@@ -18,7 +21,7 @@ import session from "../../session";
 export default Vue.extend({
   data() {
     return {
-      posts: {} as Post[],
+      results: {} as any[],
       isLoading: true,
       errorMessage: "",
       showError: false,
@@ -29,8 +32,11 @@ export default Vue.extend({
       session.post
         .getPosts()
         .then((posts) => {
-          this.posts = posts.filter((post) => post.title.length);
-          this.isLoading = false;
+          this.results = posts.filter((post) => post.title.length);
+          session.gallery.getUserGalleries().then((galleries) => {
+            this.results = this.results.concat(galleries);
+            this.isLoading = false;
+          });
         })
         .catch(() => {
           this.errorMessage = "Hmm. Something went wrong.";
@@ -43,7 +49,7 @@ export default Vue.extend({
     this.loadPosts();
   },
   components: {
-    PostCard,
+    ContentCard,
     Loader,
     ErrorCard,
   },

@@ -2,30 +2,34 @@
   <div>
     <ErrorCard :show="showError" :message="errorMessage" />
     <Loader :show="isLoading" />
-    <PostView v-bind:post="post" v-bind:author="author" v-if="!isLoading" />
-    <NotFound v-if="postNotFound" />
+    <GalleryView
+      v-bind:gallery="gallery"
+      v-bind:author="author"
+      v-if="!isLoading"
+    />
+    <NotFound v-if="galleryNotFound" />
   </div>
 </template>
 
 <script lang="ts">
 import Vue from "vue";
 import router from "../router";
-import PostView from "../components/post/PostViewComponent.vue";
+import GalleryView from "../components/gallery/GalleryView.vue";
 import Loader from "../components/shared/Loader.vue";
 import ErrorCard from "../components/shared/ErrorCard.vue";
 import NotFound from "../components/shared/ContentNotFoundComponent.vue";
-import { Post, User } from "../types";
+import { Gallery, User } from "../types";
 import session from "../session";
 
 export default Vue.extend({
   data() {
     return {
-      post: {} as Post,
+      gallery: {} as Gallery,
       author: {} as User,
       isLoading: true,
       showError: false,
       errorMessage: "",
-      postNotFound: false,
+      galleryNotFound: false,
     };
   },
   props: {
@@ -34,39 +38,39 @@ export default Vue.extend({
     },
   },
   components: {
-    PostView,
+    GalleryView,
     Loader,
     ErrorCard,
     NotFound,
   },
   mounted() {
-    this.loadPost();
+    this.loadGallery();
   },
   methods: {
-    loadPost() {
-      session.post
-        .getPost(this.urlName, true)
-        .then((post) => {
-          if (post) {
-            this.post = post;
+    loadGallery() {
+      session.gallery
+        .getGallery(this.urlName)
+        .then((gallery) => {
+          if (gallery) {
+            this.gallery = gallery;
             this.loadAuthor();
           } else {
-            this.postLoadError();
+            this.galleryLoadError();
           }
         })
         .catch(() => {
-          this.postLoadError();
+          this.galleryLoadError();
         });
     },
-    postLoadError() {
+    galleryLoadError() {
       this.isLoading = false;
       this.showError = true;
-      this.errorMessage = "Could not load post.";
-      this.postNotFound = true;
+      this.errorMessage = "Could not load gallery.";
+      this.galleryNotFound = true;
     },
     loadAuthor() {
       session.user
-        .getAuthor(this.post.authorId)
+        .getAuthor(this.gallery.authorId)
         .then((author) => {
           if (author) {
             this.author = author;

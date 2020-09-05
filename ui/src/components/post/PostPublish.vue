@@ -69,7 +69,7 @@ export default Vue.extend({
         .publishPost(this.post)
         .then((res) => {
           if (res) {
-            router.push("/account#posts");
+            router.push("/account#content");
           } else {
             this.publishError();
           }
@@ -79,7 +79,7 @@ export default Vue.extend({
         });
     },
     cancel() {
-      this.$router.push("/account#posts");
+      this.$router.push("/account#content");
     },
     publishError() {
       this.showError = true;

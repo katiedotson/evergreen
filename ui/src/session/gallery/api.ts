@@ -101,4 +101,50 @@ export default {
         });
     });
   },
+  publishGallery(gallery: Gallery): Promise<any> {
+    return new Promise<Gallery[]>((resolve, reject) => {
+      axios
+        .request({
+          method: "POST",
+          url: "gallery/publish",
+          data: {
+            gallery,
+          },
+          headers: {
+            "User-Token": session.getUserToken(),
+          },
+        })
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response.status === 401)
+            session.user.logoutUserAndRedirect();
+          reject(error);
+        });
+    });
+  },
+  unpublishGallery(gallery: Gallery): Promise<any> {
+    return new Promise<Gallery[]>((resolve, reject) => {
+      axios
+        .request({
+          method: "POST",
+          url: "gallery/unpublish",
+          data: {
+            gallery,
+          },
+          headers: {
+            "User-Token": session.getUserToken(),
+          },
+        })
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          if (error.response.status === 401)
+            session.user.logoutUserAndRedirect();
+          reject(error);
+        });
+    });
+  },
 };

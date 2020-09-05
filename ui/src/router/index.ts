@@ -4,6 +4,7 @@ import VueRouter, { RouteConfig } from "vue-router";
 import Home from "../views/Home.vue";
 import About from "../views/About.vue";
 import Posts from "../views/Posts.vue";
+import Gallery from "../views/Gallery.vue";
 import Post from "../views/Post.vue";
 import SignIn from "../views/SignIn.vue";
 import NewAccount from "../views/NewAccount.vue";
@@ -35,6 +36,11 @@ const routes: Array<RouteConfig> = [
     component: Post,
   },
   {
+    path: "/gallery/:urlName",
+    props: true,
+    component: Gallery,
+  },
+  {
     path: "/sign-in",
     component: SignIn,
   },
@@ -60,6 +66,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/create/:type",
     component: Create,
+    props: true,
     meta: {
       requiresAuth: true,
     },

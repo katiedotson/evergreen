@@ -1,11 +1,18 @@
 <template>
-  <a class="post-card" :href="redirectToPost(post.urlName)" tabindex="200">
-    <img :src="post.img" v-if="post.img.length" />
-    <div v-html="post.title" class="title"></div>
-    <div v-html="post.tagline" class="tagline"></div>
-    <hr />
-    <div class="body" v-html="abbreviate(post.body)"></div>
-    <hr />
+  <a class="card" :href="redirectTo(item)" tabindex="200">
+    <div v-if="item.type === 'post'">
+      <img :src="item.img" v-if="item.img.length" />
+      <div v-html="item.title" class="title"></div>
+      <div v-html="item.tagline" class="tagline"></div>
+      <hr />
+      <div class="body" v-html="abbreviate(item.body)"></div>
+      <hr />
+    </div>
+    <div v-if="item.type === 'gallery'">
+      <img :src="item.photos[0].img" />
+      <div v-html="item.title" class="title"></div>
+      <hr />
+    </div>
   </a>
 </template>
 
@@ -14,13 +21,13 @@ import Vue from "vue";
 
 export default Vue.extend({
   props: {
-    post: {
+    item: {
       type: Object,
     },
   },
   methods: {
-    redirectToPost(urlName: string) {
-      return `/post/${urlName}`;
+    redirectTo(item: any) {
+      return `/${item.type}/${item.urlName}`;
     },
     abbreviate(postBody: string) {
       return postBody.substring(0, 200).concat("...");
@@ -32,7 +39,7 @@ export default Vue.extend({
 <style lang="scss" scoped>
 @import "../../styles/_global.scss";
 
-a.post-card {
+a.card {
   max-width: 300px;
   margin-bottom: 10px;
   display: block;

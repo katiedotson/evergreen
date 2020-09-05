@@ -70,20 +70,37 @@ export default {
   },
   getUserGalleries(): Promise<Gallery[]> {
     return new Promise<Gallery[]>((resolve, reject) => {
-      const userId = session.getUserData()?.id;
-      if (userId) {
-        api
-          .getGalleriesByUserId()
-          .then((galleries) => {
-            resolve(galleries);
-          })
-          .catch((error) => {
-            console.error(error);
-            reject(error);
-          });
-      } else {
-        reject("User is not authenticated");
-      }
+      api
+        .getGalleriesByUserId()
+        .then((galleries) => {
+          resolve(galleries);
+        })
+        .catch((error) => {
+          console.error(error);
+          reject(error);
+        });
+    });
+  },
+  publishGallery(gallery: Gallery): Promise<any> {
+    return new Promise((resolve, reject) => {
+      api
+        .publishGallery(gallery)
+        .then((res) => resolve(res))
+        .catch((error) => {
+          console.error(error);
+          reject(error);
+        });
+    });
+  },
+  unpublishGallery(gallery: Gallery): Promise<any> {
+    return new Promise((resolve, reject) => {
+      api
+        .unpublishGallery(gallery)
+        .then((res) => resolve(res))
+        .catch((error) => {
+          console.error(error);
+          reject(error);
+        });
     });
   },
 };

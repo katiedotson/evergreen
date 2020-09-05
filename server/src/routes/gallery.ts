@@ -89,4 +89,32 @@ router.get("/getAllByUserId", isAuthorized, (req, res) => {
     });
 });
 
+router.post("/publish", isAuthorized, (req, res) => {
+  const gallery = req.body.gallery;
+  const userId = getUserDataFromHeader(req).id;
+  services
+    .updateGalleryPublished(gallery, userId, true)
+    .then((result) => {
+      res.status(200).send(result);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send(error);
+    });
+});
+
+router.post("/unpublish", isAuthorized, (req, res) => {
+  const gallery = req.body.gallery;
+  const userId = getUserDataFromHeader(req).id;
+  services
+    .updateGalleryPublished(gallery, userId, false)
+    .then((result) => {
+      res.status(200).send(result);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send(error);
+    });
+});
+
 export default router;

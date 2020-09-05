@@ -261,12 +261,21 @@ export default Vue.extend({
 <style lang="scss" scoped>
 @import "../../styles/_global.scss";
 
-.title,
-.description {
+div.field-wrapper {
   margin-bottom: 10px;
   margin-left: auto;
   margin-right: auto;
   max-width: 786px;
+  &.title {
+    input {
+      font-size: x-large;
+    }
+  }
+  &.description {
+    textarea {
+      height: 100px;
+    }
+  }
 
   &.form-group--error {
     input,
@@ -285,7 +294,6 @@ export default Vue.extend({
 
   input,
   textarea {
-    font-size: x-large;
     width: calc(100% - 14px);
     max-width: 786px;
     border: 1px solid $dirty-snow;
