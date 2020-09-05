@@ -1,5 +1,5 @@
 <template>
-  <div>VideoCreate</div>
+  <div>Gallery Publish</div>
 </template>
 
 <script lang="ts">

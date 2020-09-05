@@ -34,10 +34,10 @@ export default {
         });
     });
   },
-  getGallery(urlName: string) {
+  getGallery(id: string) {
     return new Promise<Gallery>((resolve, reject) => {
       api
-        .getGalleryByUrlName(urlName)
+        .getGallery(id)
         .then((gallery) => {
           resolve(gallery);
         })
@@ -45,6 +45,45 @@ export default {
           console.error(error);
           reject(error);
         });
+    });
+  },
+  deleteGallery(gallery: Gallery): Promise<any> {
+    return new Promise<any>((resolve, reject) => {
+      api
+        .deleteGallery(gallery)
+        .then((result) => {
+          resolve(result);
+        })
+        .catch((error) => {
+          console.error(error);
+          reject(error);
+        });
+    });
+  },
+  clearGalleryData(): void {
+    const gallery = session.getInitialGallery();
+    if (!gallery.title) {
+      this.deleteGallery(gallery);
+    }
+    session.clearTempFiles("gallery");
+    session.clearInitialGallery();
+  },
+  getUserGalleries(): Promise<Gallery[]> {
+    return new Promise<Gallery[]>((resolve, reject) => {
+      const userId = session.getUserData()?.id;
+      if (userId) {
+        api
+          .getGalleriesByUserId()
+          .then((galleries) => {
+            resolve(galleries);
+          })
+          .catch((error) => {
+            console.error(error);
+            reject(error);
+          });
+      } else {
+        reject("User is not authenticated");
+      }
     });
   },
 };

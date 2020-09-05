@@ -8,14 +8,11 @@ import Post from "../views/Post.vue";
 import SignIn from "../views/SignIn.vue";
 import NewAccount from "../views/NewAccount.vue";
 import Account from "../views/Account.vue";
-import PostEdit from "../views/PostEdit.vue";
-import PostCreate from "../views/PostCreate.vue";
-import GalleryCreate from "../views/GalleryCreate.vue";
-import AudioCreate from "../views/AudioCreate.vue";
-import VideoCreate from "../views/VideoCreate.vue";
-import PostDelete from "../views/PostDelete.vue";
-import PostPublish from "../views/PostPublish.vue";
-import PostUnpublish from "../views/PostUnpublish.vue";
+import Edit from "../views/Edit.vue";
+import Create from "../views/Create.vue";
+import Delete from "../views/Delete.vue";
+import Publish from "../views/Publish.vue";
+import Unpublish from "../views/Unpublish.vue";
 import session from "../session";
 import baseAuth from "../auth/BaseAuth";
 
@@ -53,61 +50,40 @@ const routes: Array<RouteConfig> = [
     },
   },
   {
-    path: "/edit-post/:urlName",
+    path: "/edit/:type/:urlName",
     props: true,
-    component: PostEdit,
+    component: Edit,
     meta: {
       requiresAuth: true,
     },
   },
   {
-    path: "/create/post",
-    component: PostCreate,
+    path: "/create/:type",
+    component: Create,
     meta: {
       requiresAuth: true,
     },
   },
   {
-    path: "/create/gallery",
-    component: GalleryCreate,
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: "/create/audio",
-    component: AudioCreate,
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: "/create/video",
-    component: VideoCreate,
-    meta: {
-      requiresAuth: true,
-    },
-  },
-  {
-    path: "/delete-post/:urlName",
+    path: "/delete/:type/:urlName",
     props: true,
-    component: PostDelete,
+    component: Delete,
     meta: {
       requiresAuth: true,
     },
   },
   {
-    path: "/publish-post/:urlName",
+    path: "/publish/:type/:urlName",
     props: true,
-    component: PostPublish,
+    component: Publish,
     meta: {
       requiresAuth: true,
     },
   },
   {
-    path: "/unpublish-post/:urlName",
+    path: "/unpublish/:type/:urlName",
     props: true,
-    component: PostUnpublish,
+    component: Unpublish,
     meta: {
       requiresAuth: true,
     },
@@ -124,6 +100,7 @@ router.beforeEach((to, from, next) => {
     if (baseAuth.userIsAuth()) {
       if (from.path.includes("create") || from.path.includes("edit")) {
         session.post.clearPostData();
+        session.gallery.clearGalleryData();
         next();
       } else next();
     } else {

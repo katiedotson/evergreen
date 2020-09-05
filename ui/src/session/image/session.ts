@@ -64,15 +64,26 @@ export default {
       api.deleteImages(imagesNotUsed);
     }
   },
-  deleteUnusedImageFilesForGallery(gallery: Gallery) {
+  deleteUnusedImageFilesForGallery(gallery: Gallery): void {
     const imagesUploaded: string[] = session.getTempFiles("gallery");
     const imgsInGallery = gallery.photos.map((photo) =>
       this.cleanImgSrc(photo.img)
     );
-    const imgsToDelete = imagesUploaded.filter(
-      (img) => !imgsInGallery.includes(img)
+    const imagesInInitial = session
+      .getInitialGallery()
+      .photos.map((photo) => this.cleanImgSrc(photo.img));
+    const imagesRemoved = imagesInInitial.filter(
+      (src) => !imgsInGallery.includes(src)
     );
-    api.deleteImages(imgsToDelete);
+    if (imagesRemoved) {
+      api.deleteImages(imagesRemoved);
+    }
+    if (imagesUploaded) {
+      const imgsToDelete = imagesUploaded.filter(
+        (img) => !imgsInGallery.includes(img)
+      );
+      api.deleteImages(imgsToDelete);
+    }
   },
   findImagesInPost(postBody: string): string[] {
     const elem = document.createElement("div");

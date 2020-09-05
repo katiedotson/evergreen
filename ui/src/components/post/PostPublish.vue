@@ -5,7 +5,7 @@
     <div v-if="!isLoading">
       <PostView v-bind:post="post" v-bind:author="undefined" />
       <div class="button-wrapper">
-        <button class="unpublish" @click="unpublishPost">unpublish</button>
+        <button class="publish" @click="publishPost">Publish</button>
         <button class="cancel" @click="cancel">Cancel</button>
       </div>
     </div>
@@ -14,12 +14,12 @@
 
 <script lang="ts">
 import Vue from "vue";
-import router from "../router";
-import PostView from "../components/post/PostViewComponent.vue";
-import Loader from "../components/shared/Loader.vue";
-import ErrorCard from "../components/shared/ErrorCard.vue";
-import { Post } from "../types";
-import session from "../session";
+import router from "../../router";
+import PostView from "./PostViewComponent.vue";
+import Loader from "../shared/Loader.vue";
+import ErrorCard from "../shared/ErrorCard.vue";
+import { Post } from "../../types";
+import session from "../../session";
 
 export default Vue.extend({
   data: function() {
@@ -46,7 +46,7 @@ export default Vue.extend({
   methods: {
     loadPost() {
       session.post
-        .getPost(this.urlName, true)
+        .getPost(this.urlName, false)
         .then((post) => {
           if (post) {
             this.post = post;
@@ -64,26 +64,26 @@ export default Vue.extend({
       this.showError = true;
       this.errorMessage = "Could not load post.";
     },
-    unpublishPost() {
+    publishPost() {
       session.post
-        .unpublishPost(this.post)
+        .publishPost(this.post)
         .then((res) => {
           if (res) {
             router.push("/account#posts");
           } else {
-            this.unpublishError();
+            this.publishError();
           }
         })
         .catch(() => {
-          this.unpublishError();
+          this.publishError();
         });
     },
     cancel() {
       this.$router.push("/account#posts");
     },
-    unpublishError() {
+    publishError() {
       this.showError = true;
-      this.errorMessage = "Could not unpublish post at this time.";
+      this.errorMessage = "Could not publish post at this time.";
     },
   },
   router,
@@ -91,7 +91,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import "../styles/global.scss";
+@import "../../styles/_global.scss";
 
 div.button-wrapper {
   margin-top: 20px;
@@ -100,7 +100,7 @@ div.button-wrapper {
   margin-left: auto;
   margin-right: auto;
   text-align: right;
-  button.unpublish {
+  button.publish {
     background-color: $light-blue;
   }
 }

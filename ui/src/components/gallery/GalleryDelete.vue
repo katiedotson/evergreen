@@ -1,5 +1,5 @@
 <template>
-  <div>AudioCreate</div>
+  <div>Gallery Delete</div>
 </template>
 
 <script lang="ts">

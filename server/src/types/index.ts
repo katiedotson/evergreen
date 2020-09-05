@@ -17,6 +17,7 @@ export interface Post {
   urlName: string;
   authorId: string;
   published: boolean;
+  type: string;
   _id?: string;
 }
 
@@ -28,6 +29,7 @@ export interface Gallery {
   urlName: string;
   authorId: string;
   published: boolean;
+  type: string;
   _id?: string;
 }
 

@@ -19,6 +19,16 @@ export default {
     };
     return this.executeFind(findByUserId);
   },
+  async getGalleriesByUserId(userId: string): Promise<Post[]> {
+    const findByUserId = (client: MongoClient): Promise<Post[]> => {
+      return client
+        .db("evergreen")
+        .collection("galleries")
+        .find({ authorId: userId })
+        .toArray();
+    };
+    return this.executeFind(findByUserId);
+  },
   async getPostByUrlName(urlName: string, published: boolean): Promise<Post> {
     const findByUrlName = (client: MongoClient): Promise<Post> => {
       const result = client
@@ -28,6 +38,16 @@ export default {
       return result;
     };
     return this.executeFind(findByUrlName);
+  },
+  async getGalleryByUrlName(urlName: string, userId: string): Promise<Post> {
+    const findById = (client: MongoClient): Promise<Post> => {
+      const result = client
+        .db("evergreen")
+        .collection("galleries")
+        .findOne({ authorId: userId, urlName });
+      return result;
+    };
+    return this.executeFind(findById);
   },
   async getPostByUrlNameRegardless(
     urlName: string,
@@ -132,6 +152,15 @@ export default {
     };
     return this.executeInsert(deletePost, { urlName, userId });
   },
+  async deleteGallery(gallery: Gallery, userId: string): Promise<any> {
+    const deleteGallery = async (client: MongoClient, params: any) => {
+      return await client.db("evergreen").collection("galleries").deleteOne({
+        urlName: params.gallery.urlName,
+        authorId: params.userId,
+      });
+    };
+    return this.executeInsert(deleteGallery, { gallery, userId });
+  },
   async insertNewUser(userData: UserData, user: User): Promise<any> {
     user.platform = userData.platform;
     user.userId = userData.id;
@@ -197,7 +226,7 @@ export default {
   async newGallery(gallery: Gallery): Promise<any> {
     const newGallery = async (client: MongoClient, gallery: Gallery) => {
       const _id = await (
-        await client.db("evergreen").collection("posts").insertOne(gallery)
+        await client.db("evergreen").collection("galleries").insertOne(gallery)
       ).insertedId;
       gallery._id = _id;
       return gallery;

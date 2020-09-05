@@ -115,6 +115,7 @@ router.get("/new", isAuthorized, (req, res) => {
     relevance: 0,
     urlName: "",
     published: false,
+    type: "post",
   };
   services
     .newPost(post)

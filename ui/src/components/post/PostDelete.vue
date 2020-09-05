@@ -12,12 +12,12 @@
 
 <script lang="ts">
 import Vue from "vue";
-import router from "../router";
-import PostView from "../components/post/PostViewComponent.vue";
-import Loader from "../components/shared/Loader.vue";
-import ErrorCard from "../components/shared/ErrorCard.vue";
-import { Post } from "../types";
-import session from "../session";
+import router from "../../router";
+import PostView from "./PostViewComponent.vue";
+import Loader from "../shared/Loader.vue";
+import ErrorCard from "../shared/ErrorCard.vue";
+import { Post } from "../../types";
+import session from "../../session";
 
 export default Vue.extend({
   data: function() {
@@ -89,7 +89,7 @@ export default Vue.extend({
 </script>
 
 <style lang="scss" scoped>
-@import "../styles/global.scss";
+@import "../../styles/_global.scss";
 
 div.button-wrapper {
   position: sticky;

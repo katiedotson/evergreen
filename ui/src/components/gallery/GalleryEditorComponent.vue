@@ -1,16 +1,49 @@
 <template>
   <div>
     <ErrorCard :show="showError" :message="errorMessage" />
-    <Loader :isLoading="isLoading" />
-    <div class="field-wrapper title">
+    <Loader :show="isLoading" />
+    <div
+      class="field-wrapper title"
+      :class="{ 'form-group--error': $v.gallery.title.$error }"
+      v-if="!isLoading"
+    >
       <label>Title</label>
-      <input class="title" type="text" v-model="gallery.title" />
+      <input
+        class="title"
+        type="text"
+        v-model.trim="$v.gallery.title.$model"
+        @change="isChangedSinceUpdate = true"
+      />
+      <div class="error" v-if="!$v.gallery.title.required">
+        Field is required
+      </div>
+      <div class="error" v-if="!$v.gallery.title.minLength">
+        Minimum length: {{ $v.gallery.title.$params.minLength.min }} characters
+      </div>
+      <div class="error" v-if="!$v.gallery.title.maxLength">
+        Maximum length: {{ $v.gallery.title.$params.maxLength.max }} characters
+      </div>
+    </div>
+    <div
+      class="field-wrapper description"
+      :class="{ 'form-group--error': $v.gallery.description.$error }"
+      v-if="!isLoading"
+    >
       <label>Description</label>
-      <textarea class="title" type="text" v-model="gallery.description" />
+      <textarea
+        class="title"
+        type="text"
+        v-model.trim="$v.gallery.description.$model"
+        @change="isChangedSinceUpdate = true"
+      />
+      <div class="error" v-if="!$v.gallery.description.maxLength">
+        Maximum length:
+        {{ $v.gallery.description.$params.maxLength.max }} characters
+      </div>
       <hr />
     </div>
     <div v-for="(photo, i) in gallery.photos" :key="i" class="photo">
-      <div class="img-container">
+      <div class="img-container" v-if="!isLoading">
         <img
           :src="photo.img"
           v-on:mouseover="showImgEditor(i)"
@@ -46,17 +79,17 @@
           </div>
         </transition>
       </div>
-      <div class="field-wrapper">
+      <div class="field-wrapper" v-if="!isLoading">
         <label>Tagline</label>
         <input class="tagline" type="text" v-model="photo.tagline" />
       </div>
     </div>
-    <div class="button-wrapper">
+    <div class="button-wrapper" v-if="!isLoading">
       <button
         type="submit"
         @click="save"
         :class="{ active: isChangedSinceUpdate }"
-        :disabled="!isChangedSinceUpdate"
+        :disabled="!isChangedSinceUpdate || this.$v.$invalid"
       >
         Submit
       </button>
@@ -69,9 +102,20 @@ import Vue from "vue";
 import ErrorCard from "../shared/ErrorCard.vue";
 import Loader from "../shared/Loader.vue";
 import session from "../../session";
-import { Gallery } from "../../types";
+import { Gallery, GalleryPhoto } from "../../types";
+import { validationMixin } from "vuelidate";
+import { required, minLength, maxLength } from "vuelidate/lib/validators";
 
 export default Vue.extend({
+  mixins: [validationMixin],
+  validations: {
+    gallery: {
+      title: { required, minLength: minLength(4), maxLength: maxLength(40) },
+      description: {
+        maxLength: maxLength(100),
+      },
+    },
+  },
   props: {
     urlName: {
       type: String,
@@ -82,7 +126,7 @@ export default Vue.extend({
   },
   data() {
     return {
-      isLoading: false,
+      isLoading: true,
       errorMessage: "",
       showError: false,
       isChangedSinceUpdate: false,
@@ -90,13 +134,7 @@ export default Vue.extend({
       gallery: {
         title: "",
         description: "",
-        photos: [
-          {
-            img:
-              "https://images.unsplash.com/photo-1598722333020-0d3f58cfd47e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=2100&q=80",
-            tagline: "Photo 1 tagline.",
-          },
-        ],
+        photos: [{} as GalleryPhoto],
       } as Gallery,
       activeImgEditor: -1,
     };
@@ -119,6 +157,7 @@ export default Vue.extend({
     },
     loadSessionGallery(): void {
       this.gallery = session.getInitialGallery();
+      this.isLoading = false;
     },
     loadGallery(): void {
       session.gallery.getGallery(this.urlName).then((gallery) => {
@@ -228,6 +267,21 @@ export default Vue.extend({
   margin-left: auto;
   margin-right: auto;
   max-width: 786px;
+
+  &.form-group--error {
+    input,
+    textarea {
+      color: $bright-orange;
+      border: 1px solid $bright-orange;
+    }
+  }
+
+  div.error {
+    display: block;
+    font-family: "Barlow", sans-serif;
+    font-size: x-small;
+    color: $bright-orange;
+  }
 
   input,
   textarea {

@@ -10,14 +10,14 @@
         >
       </li>
       <li>
-        <a href="#posts" :class="{ selected: selectedItem == 'posts' }"
-          >Posts</a
+        <a href="#content" :class="{ selected: selectedItem == 'content' }"
+          >Content</a
         >
       </li>
     </ul>
     <div class="account-block">
       <UserInformationComponent v-if="selectedItem == 'information'" />
-      <UserPostsComponent v-if="selectedItem == 'posts'" />
+      <UserContentComponent v-if="selectedItem == 'content'" />
     </div>
   </div>
 </template>
@@ -26,7 +26,7 @@
 import Vue from "vue";
 import { User } from "../../types/index";
 import UserInformationComponent from "./UserInformationComponent.vue";
-import UserPostsComponent from "./UserPostsComponent.vue";
+import UserContentComponent from "./UserContentComponent.vue";
 import ErrorCard from "../shared/ErrorCard.vue";
 import session from "../../session";
 
@@ -58,7 +58,7 @@ export default Vue.extend({
   },
   components: {
     UserInformationComponent,
-    UserPostsComponent,
+    UserContentComponent,
     ErrorCard,
   },
 });
