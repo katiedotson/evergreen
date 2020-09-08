@@ -3,11 +3,7 @@
     <ErrorCard :show="showError" :message="errorMessage" />
     <Loader :show="isLoading" />
     <div class="posts" v-if="!isLoading">
-      <ContentCard
-        v-for="(result, i) in results"
-        v-bind:key="i"
-        v-bind:item="result"
-      />
+      <ContentCard v-for="(result, i) in results" v-bind:key="i" v-bind:item="result" />
     </div>
   </div>
 </template>
@@ -33,7 +29,7 @@ export default Vue.extend({
         .getPosts()
         .then((posts) => {
           this.results = posts.filter((post) => post.title.length);
-          session.gallery.getUserGalleries().then((galleries) => {
+          session.gallery.getGalleries().then((galleries) => {
             this.results = this.results.concat(galleries);
             this.isLoading = false;
           });

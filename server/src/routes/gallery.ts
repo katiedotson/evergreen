@@ -24,7 +24,7 @@ router.get("/new", isAuthorized, (req, res) => {
     type: "gallery",
     published: false,
   };
-  services
+  services.gallery
     .newGallery(gallery)
     .then((result) => {
       res.send(result);
@@ -36,7 +36,7 @@ router.post("/save", isAuthorized, (req, res) => {
   const gallery: Gallery = req.body.gallery;
   gallery.urlName = util.createUrlNameFromTitle(gallery.title);
   const userId = getUserDataFromHeader(req).id;
-  services
+  services.gallery
     .updateGallery(gallery, userId)
     .then((result) => {
       res.status(200).send(result);
@@ -47,11 +47,36 @@ router.post("/save", isAuthorized, (req, res) => {
     });
 });
 
-router.get("/getOne", isAuthorized, (req, res) => {
+router.get("/getOne", (req, res) => {
+  const urlName = String(req.query.urlName);
+  services.gallery
+    .getGalleryByUrlName(urlName)
+    .then((result) => {
+      res.status(200).send(result);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send(error);
+    });
+});
+
+router.get("/getRegardless", isAuthorized, (req, res) => {
   const urlName = String(req.query.urlName);
   const userId = getUserDataFromHeader(req).id;
-  services
+  services.gallery
     .getGalleryByUrlName(urlName, userId)
+    .then((result) => {
+      res.status(200).send(result);
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send(error);
+    });
+});
+
+router.get("/getPublished", (req, res) => {
+  services.gallery
+    .getPublishedGalleries()
     .then((result) => {
       res.status(200).send(result);
     })
@@ -65,7 +90,7 @@ router.delete("/delete", isAuthorized, (req, res) => {
   const gallery = req.body.gallery;
   const userId = getUserDataFromHeader(req).id;
 
-  services
+  services.gallery
     .deleteGallery(gallery, userId)
     .then((result) => {
       res.status(200).send(result);
@@ -78,7 +103,7 @@ router.delete("/delete", isAuthorized, (req, res) => {
 
 router.get("/getAllByUserId", isAuthorized, (req, res) => {
   const userId = getUserDataFromHeader(req).id;
-  services
+  services.gallery
     .getGalleriesByUserId(userId)
     .then((result) => {
       res.status(200).send(result);
@@ -92,7 +117,7 @@ router.get("/getAllByUserId", isAuthorized, (req, res) => {
 router.post("/publish", isAuthorized, (req, res) => {
   const gallery = req.body.gallery;
   const userId = getUserDataFromHeader(req).id;
-  services
+  services.gallery
     .updateGalleryPublished(gallery, userId, true)
     .then((result) => {
       res.status(200).send(result);
@@ -106,7 +131,7 @@ router.post("/publish", isAuthorized, (req, res) => {
 router.post("/unpublish", isAuthorized, (req, res) => {
   const gallery = req.body.gallery;
   const userId = getUserDataFromHeader(req).id;
-  services
+  services.gallery
     .updateGalleryPublished(gallery, userId, false)
     .then((result) => {
       res.status(200).send(result);

@@ -5,7 +5,7 @@
     <GalleryView
       v-bind:gallery="gallery"
       v-bind:author="author"
-      v-if="!isLoading"
+      v-if="!isLoading && !galleryNotFound"
     />
     <NotFound v-if="galleryNotFound" />
   </div>
@@ -49,7 +49,7 @@ export default Vue.extend({
   methods: {
     loadGallery() {
       session.gallery
-        .getGallery(this.urlName)
+        .getGallery(this.urlName, true)
         .then((gallery) => {
           if (gallery) {
             this.gallery = gallery;

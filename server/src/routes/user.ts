@@ -15,7 +15,7 @@ const router = Router();
 
 router.get("/getAuthor", (req, res) => {
   const authorId = String(req.query.authorId);
-  services
+  services.user
     .getAuthorByUserId(authorId)
     .then((user) => {
       res.json(user);
@@ -29,7 +29,7 @@ router.get("/getAuthor", (req, res) => {
 router.get("/get", (req, res) => {
   const userId = String(req.query.userId);
   const platform = String(req.query.platform);
-  services
+  services.user
     .getUserByIdAndPlatform(userId, platform)
     .then((user) => {
       const token = getUserToken(user.userId, platform);
@@ -49,9 +49,9 @@ router.post("/new", (req, res) => {
   const errMessage = validateUser(user);
   if (!errMessage) {
     user.active = false;
-    services.isUniqueUser(user.email).then((result) => {
+    services.user.isUniqueUser(user.email).then((result) => {
       if (!result) {
-        services
+        services.user
           .insertNewUser(userData, user)
           .then((user) => {
             sendAuthEmail(userData, user);
@@ -74,7 +74,7 @@ router.get("/activate", (req, res) => {
   const token = String(req.query.authToken);
   try {
     const userData = decodeToken(token);
-    services.activateUser(userData);
+    services.user.activateUser(userData);
     console.info(`User Activated: ${userData.id} \n \t ${userData.platform}`);
     res.send(200);
   } catch (err) {
@@ -85,7 +85,7 @@ router.get("/activate", (req, res) => {
 router.post("/update", isAuthorized, (req, res) => {
   const userData = getUserDataFromHeader(req);
   const user = req.body.user;
-  services
+  services.user
     .updateUser(userData, user)
     .then((user) => {
       res.json(user);

@@ -40,10 +40,28 @@ export default {
         });
     });
   },
+  /**
+   * get by URL name. Only matches published 
+   * @param urlName 
+   */
   getGallery(urlName: string): Promise<Gallery> {
     return new Promise((resolve, reject) => {
       axios
-        .get(`gallery/getOne?urlName=${urlName}`, {
+        .get(`gallery/getOne?urlName=${urlName}`)
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
+          reject(error);
+        });
+    });
+  },
+  getGalleryForEdit(urlName: string): Promise<Gallery> {
+    return new Promise((resolve, reject) => {
+      axios
+        .request({
+          method: "GET",
+          url: `gallery/getRegardless?urlName=${urlName}`,
           headers: {
             "User-Token": session.getUserToken(),
           },
@@ -52,8 +70,6 @@ export default {
           resolve(res.data);
         })
         .catch((error) => {
-          if (error.response.status === 401)
-            session.user.logoutUserAndRedirect();
           reject(error);
         });
     });
@@ -77,6 +93,21 @@ export default {
         .catch((error) => {
           if (error.response.status === 401)
             session.user.logoutUserAndRedirect();
+          reject(error);
+        });
+    });
+  },
+  getRelevantGalleries(): Promise<Gallery[]> {
+    return new Promise<Gallery[]>((resolve, reject) => {
+      axios
+        .request({
+          method: "GET",
+          url: "gallery/getPublished",
+        })
+        .then((res) => {
+          resolve(res.data);
+        })
+        .catch((error) => {
           reject(error);
         });
     });

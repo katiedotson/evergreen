@@ -41,10 +41,10 @@ export default {
     urlName: string,
     published?: boolean
   ): Promise<Post | undefined> {
-    if (published !== null && published !== undefined) {
+    if (published !== null && published !== undefined && published) {
       return new Promise<Post>((resolve, reject) => {
         api
-          .getPost(urlName, published)
+          .getPost(urlName)
           .then((post) => resolve(post))
           .catch((error) => {
             console.error(error);
@@ -54,7 +54,7 @@ export default {
     } else {
       return new Promise<Post>((resolve, reject) => {
         api
-          .getPostRegardless(urlName)
+          .getPostForEdit(urlName)
           .then((post) => resolve(post))
           .catch((error) => {
             console.error(error);

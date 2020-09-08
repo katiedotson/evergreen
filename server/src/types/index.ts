@@ -1,7 +1,7 @@
 import { MongoClient } from "mongodb";
 
 export interface ExecutableMongoInsertCallback {
-  (client: MongoClient, data: Record<string, unknown>): Promise<any>;
+  (client: MongoClient, data: any): Promise<any>;
 }
 
 export interface ExecutableMongoFindCallback {

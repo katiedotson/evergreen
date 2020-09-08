@@ -11,11 +11,18 @@ export default {
           .uploadImage(file)
           .then((response) => {
             session.storeTempFile(response.id, type);
-            if (type == "banner" || type == "profile") {
+            if (type == "banner") {
               const prevPostBanner = session.getInitialPost()?.img;
               const prevPostBannerId = this.cleanImgSrc(prevPostBanner);
               if (prevPostBannerId.length)
                 this.deleteUnusedImageFile(prevPostBannerId);
+            }
+            if (type === "profile") {
+              const prevAvatar = session.getUser().img;
+              if (prevAvatar && prevAvatar.length) {
+                const prevImgSrc = this.cleanImgSrc(prevAvatar);
+                this.deleteUnusedImageFile(prevImgSrc);
+              }
             }
             resolve(`https://media.publit.io/file/${response.id}.jpg`);
           })

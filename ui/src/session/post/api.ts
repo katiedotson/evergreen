@@ -21,10 +21,10 @@ export default {
         });
     });
   },
-  getPost(urlName: string, isPublished: boolean | true): Promise<Post> {
+  getPost(urlName: string): Promise<Post> {
     return new Promise((resolve, reject) => {
       axios
-        .get(`post/getOne?urlName=${urlName}&published=${isPublished}`)
+        .get(`post/getOne?urlName=${urlName}`)
         .then((res) => {
           resolve(res.data);
         })
@@ -34,7 +34,7 @@ export default {
         });
     });
   },
-  getPostRegardless(urlName: string): Promise<Post> {
+  getPostForEdit(urlName: string): Promise<Post> {
     return new Promise((resolve, reject) => {
       axios
         .get(`post/getRegardless?urlName=${urlName}`, {

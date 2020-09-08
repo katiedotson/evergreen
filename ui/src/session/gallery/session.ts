@@ -34,18 +34,32 @@ export default {
         });
     });
   },
-  getGallery(id: string) {
-    return new Promise<Gallery>((resolve, reject) => {
-      api
-        .getGallery(id)
-        .then((gallery) => {
-          resolve(gallery);
-        })
-        .catch((error) => {
-          console.error(error);
-          reject(error);
-        });
-    });
+  getGallery(urlName: string, published?: boolean) {
+    if (published !== null && published !== undefined && published) {
+      return new Promise<Gallery>((resolve, reject) => {
+        api
+          .getGallery(urlName)
+          .then((gallery) => {
+            resolve(gallery);
+          })
+          .catch((error) => {
+            console.error(error);
+            reject(error);
+          });
+      });
+    } else {
+      return new Promise<Gallery>((resolve, reject) => {
+        api
+          .getGalleryForEdit(urlName)
+          .then((gallery) => {
+            resolve(gallery);
+          })
+          .catch((error) => {
+            console.error(error);
+            reject(error);
+          });
+      });
+    }
   },
   deleteGallery(gallery: Gallery): Promise<any> {
     return new Promise<any>((resolve, reject) => {
@@ -72,6 +86,19 @@ export default {
     return new Promise<Gallery[]>((resolve, reject) => {
       api
         .getGalleriesByUserId()
+        .then((galleries) => {
+          resolve(galleries);
+        })
+        .catch((error) => {
+          console.error(error);
+          reject(error);
+        });
+    });
+  },
+  getGalleries(): Promise<Gallery[]> {
+    return new Promise<Gallery[]>((resolve, reject) => {
+      api
+        .getRelevantGalleries()
         .then((galleries) => {
           resolve(galleries);
         })
